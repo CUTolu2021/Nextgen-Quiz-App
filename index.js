@@ -1,39 +1,77 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
-//const userRouter = require("./routers/user");
 const authRouter = require("./routers/auth");
 const { restrictTo, verifyJWTAuthToken } = require("./middleware/auth");
-require("dotenv").config();
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const dotenv = require("dotenv");
+const morgan = require("morgan");
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log("Connected to MongoDB");
-}).catch((err) => {
-  console.error("Error connecting to MongoDB",err);
-});
+dotenv.config();
+
+const app = express();
+
+// Swagger Setup
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: "Authentication for Quiz API",
+            description: "Authentication API Information",
+            contact: {
+                name: "Amazing Developer",
+            },
+        },
+            servers:[
+                {url:'http://localhost:8000/api'}, //you can change you server url
+            ],
+        },
+    apis: ["./routers/*.js"],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Middleware
 app.use(express.json());
+app.use(morgan("dev")); // Logging middleware
+
+// Connect to MongoDB
+const connectWithRetry = async () => {
+    try {
+        await mongoose.connect(process.env.MONGODB_URL, {
+            minPoolSize: 10,
+        });
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        console.error("Error connecting to MongoDB, retrying in 5 seconds...", err);
+        setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+    }
+};
+
+connectWithRetry();
 
 // Routes
-app.get("/", verifyJWTAuthToken, (req, res) => {
-  res.send("Hello World");
+app.get("/", (req, res) => {
+    res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
 });
 app.use("/auth", authRouter);
 
-// Start the server
-const server = app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+// Centralized Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error("An Error Occurred: ", err.message);
+    res.status(err.status || 500).json({ message: err.message });
 });
 
-//Handing Error
+// Start the server
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+// Handling Unhandled Rejections
 process.on("unhandledRejection", (err) => {
-  console.error("An Error Occured: ", err.message);
-  server.close(() => {
-    process.exit(1);
-  });
+    console.error("An Error Occurred: ", err.message);
+    server.close(() => {
+        process.exit(1);
+    });
 });

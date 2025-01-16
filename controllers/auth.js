@@ -2,160 +2,150 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const { sendEmail } = require('../utils/emailService');
 
-const signup = async (req, res, next) => {
-    const { username, email, role } = req.body
-    let { password } = req.body
+const generateToken = (user) => {
+    return jwt.sign(
+        {
+            username: user.username,
+            userId: user._id,
+            role: user.role,
+        },
+        process.env.JWT_KEY,
+        { expiresIn: "1h" }
+    );
+};
+
+const hashPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10); // Increased salt rounds for better security
+    return await bcrypt.hash(password, salt);
+};
+
+const signup = async (req, res) => {
+    const { username, email, password, role } = req.body;
+
+    // Validation
+    if (!username || !password || !email) {
+        return res.status(400).json({ message: "Missing fields" });
+    }
     if (password.length < 4) {
-        return res.status(400).json({ message: "Password less than 4 characters" })
+        return res.status(400).json({ message: "Password must be at least 4 characters" });
     }
     if (!validator.isEmail(email)) {
         return res.status(400).json({ message: 'Invalid email address' });
-      }
-    if (!username || !password || !email) {
-        return res.status(400).json({ message: "Missing fields" })
     }
-    const hashPassword = async (req, res, next) => {
-        if (!req.body.password) return "Password is required";
-        const salt = await bcrypt.genSalt(5);
-        //console.log("old: " + password);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        return hashedPassword;
-    };
-    const hashedPassword = await hashPassword(req, res, next);
-    try {
-        await User.create({
-            username,
-            password : hashedPassword,
-            email,
-            role
-        }).then(user => {
-            const token = jwt.sign(
-                {
-                    username,
-                    userId: user._id,
-                    role,
-                },
-                process.env.JWT_KEY,
-                {
-                    expiresIn: "1h",
-                }
-            );
-            res.status(201).json({
-                message: "User successfully created",
-                token,
-                user,
-            })
-        })
-    } catch (err) {
-        console.log(err)
-        res.status(401).json({
-            message: "User not successful created " + err.message,
-            err: err.mesage,
-        })
-    }
-}
 
-const login = async (req, res, next) => {
-    const { username, password } = req.body
     try {
-        const user = await User.findOne({ username })
-        if (!user) {
-            return res.status(401).json({ message: "User not found" })
-        }
-        bcrypt.compare(password, user.password, (err, result) => {
-            if (err) {
-                return res.status(401).json({ message: "Auth failed" })
-            }
-            if (result) {
-                const token = jwt.sign(
-                    {
-                        username: user.username,
-                        userId: user._id,
-                        role: user.role,
-                    },
-                    process.env.JWT_KEY,
-                    {
-                        expiresIn: "1h",
-                    }
-                )
-                return res.status(200).json({
-                    message: "Auth successful",
-                    token,
-                })
-            }
-            return res.status(401).json({ message: "Invalid Username or Password" })
-        })
+        const hashedPassword = await hashPassword(password);
+        const user = await User.create({ username, password: hashedPassword, email, role });
+        const token = generateToken(user);
+        
+        return res.status(201).json({
+            message: "User successfully created",
+            token,
+            user,
+        });
     } catch (err) {
-        res.status(401).json({
-            message: "Auth failed: " + err.message,
+        console.error(err);
+        return res.status(500).json({
+            message: "User not successfully created",
             error: err.message,
-        })
+        });
     }
-}
+};
 
-const forgotPassword = async (req, res, next) => {
-    const { email } = req.body;
+const login = async (req, res) => {
+    const { username, password } = req.body;
+
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ username }, "password");
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({ message: "User not found" });
         }
-        const token = jwt.sign(
-            {
-                username: user.username,
-                userId: user._id,
-                role: user.role,
-            },
-            process.env.JWT_KEY,
-            {
-                expiresIn: "1h",
-            }
-        );
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid Username or Password" });
+        }
+
+        const token = generateToken(user);
         return res.status(200).json({
-            message: "Token sent to your email",
+            message: "Authentication successful",
             token,
         });
     } catch (err) {
-        res.status(401).json({
-            message: "Auth failed: " + err.message,
+        console.error(err);
+        return res.status(500).json({
+            message: "Authentication failed",
             error: err.message,
         });
     }
 };
 
-const resetPassword = async (req, res, next) => {
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User  not found" });
+        }
+        const token = generateToken(user); 
+        const resetLink = `http://quizzy.com/reset-password?token=${token}`; // Reset link
+
+        await sendEmail(user.email, 'Quizzy Password Reset', `Click the link to reset your quizzy application password: ${resetLink}`);
+
+        return res.status(200).json({
+            message: "Reset link sent to your email, Check your spam folder if you can't find it",
+            token,
+            user,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Failed to send reset link",
+            error: err.message,
+        });
+    }
+};
+
+const resetPassword = async (req, res) => {
     const { token, password } = req.body;
+
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_KEY);
-        const user = await User.findOne({ _id: decodedToken.userId });
+        const user = await User.findById(decodedToken.userId, "password email");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const salt = await bcrypt.genSalt(5);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        user.password = hashedPassword;
+
+        user.password = await hashPassword(password);
         await user.save();
+
+        await sendEmail(user.email, 'Password Reset Confirmation', 'Your password has been successfully reset.');
+
         return res.status(200).json({ message: "Password reset successful" });
     } catch (err) {
-        res.status(401).json({
-            message: "Reset Password failed: " + err.message,
+        console.error(err);
+        return res.status(500).json({
+            message: "Reset Password failed",
             error: err.message,
         });
     }
 };
 
-const getProfile = async (req, res, next) => {
-    const { userId } = req.user;
+const getProfile = async (req, res) => {
+    const { userId } = req.user 
     try {
-        const user = await User.findOne({ _id: userId });
+        const user = await User.findById(userId, { password: 0, __v: 0, createdAt: 0, updatedAt: 0, _id: 0 });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
         return res.status(200).json({ user });
     } catch (err) {
-        res.status(401).json({
-            message: "Failed to get profile: " + err.message,
+        console.error(err);
+        return res.status(500).json({
+            message: "Failed to get profile",
             error: err.message,
         });
     }
@@ -167,4 +157,4 @@ module.exports = {
     forgotPassword,
     resetPassword,
     getProfile
-}
+};
