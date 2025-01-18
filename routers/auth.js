@@ -1,6 +1,7 @@
 const route = require('express').Router();
 const { signup, login, forgotPassword, resetPassword, getProfile } = require('../controllers/auth');
 const { verifyJWTAuthToken } = require('../middleware/auth');
+const passport = require('passport');
 
 /**
  * @swagger
@@ -183,5 +184,14 @@ route.post('/reset-password', resetPassword);
  *         description: Internal server error
  */
 route.get('/me', verifyJWTAuthToken, getProfile);
+
+//Google Auth
+route.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+route.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/');
+});
+route.get('/profile', (req, res) => {
+    res.send(`Hello ${req.user.displayName}`);
+  });
 
 module.exports = route;

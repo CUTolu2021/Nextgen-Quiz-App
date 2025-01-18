@@ -1,11 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routers/auth");
-const { restrictTo, verifyJWTAuthToken } = require("./middleware/auth");
+const userRouter = require("./routers/user");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const session = require('express-session');
+const passport_setup = require('./passport');
+const passport = require('passport');
 
 dotenv.config();
 
@@ -31,6 +34,16 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Passport Middleware for google auth
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  }));
+  
+  app.use(passport.initialize());
+  app.use(passport.session());
+
 // Middleware
 app.use(express.json());
 app.use(morgan("dev")); // Logging middleware
@@ -55,6 +68,7 @@ app.get("/", (req, res) => {
     res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
 });
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {

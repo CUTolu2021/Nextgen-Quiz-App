@@ -1,8 +1,12 @@
 const route = require('express').Router();
 const User = require('../models/user');
-const { register, login } = require('../middleware/auth');
+const { getUserById, getAllUsers, updateUserById, deleteUserById } = require('../controllers/user');
+const { verifyJWTAuthToken, restrictToUser } = require('../middleware/auth');
 
-route.post('/register', register);
-route.post('/login', login);
+
+//route.get('/', verifyJWTAuthToken, getAllUsers);
+route.get('/:id', verifyJWTAuthToken, getUserById);
+route.patch('/:id', verifyJWTAuthToken, restrictToUser, updateUserById);
+route.delete('/:id', verifyJWTAuthToken, restrictToUser, deleteUserById);
 
 module.exports = route;
