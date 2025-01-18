@@ -91,7 +91,7 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "User  not found" });
         }
         const token = generateToken(user); 
-        const resetLink = `${req.protocol}://${req.get('host')}auth/reset-password?token=${token}`; // Reset link
+        const resetLink = `${req.protocol}://${req.get('host')}/auth/reset-password?token=${token}`; // Reset link
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Click the link to reset your quizzy application password: ${resetLink}\n\nThis link is valid for 10 minutes. If you did not request this please ignore this email.`);
 
