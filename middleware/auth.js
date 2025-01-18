@@ -27,7 +27,16 @@ const restrictTo = (...roles) => (req, res, next) => {
     next(); // Proceed to the next middleware or route handler
 };
 
+//Middleware to restrict access to routes unqiue to the user
+const restrictToUser = (req, res, next) => {
+    if (req.user.userId !== req.params.id) {
+        return res.status(403).json({ message: "Unauthorized to access this route" });
+    }
+    next(); // Proceed to the next middleware or route handler
+};
+
 module.exports = {
     verifyJWTAuthToken,
     restrictTo,
+    restrictToUser
 };

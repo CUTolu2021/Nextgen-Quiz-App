@@ -12,7 +12,7 @@ const generateToken = (user) => {
             role: user.role,
         },
         process.env.JWT_KEY,
-        { expiresIn: "1h" }
+        { expiresIn: "10m" }
     );
 };
 
@@ -91,9 +91,9 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "User  not found" });
         }
         const token = generateToken(user); 
-        const resetLink = `http://quizzy.com/reset-password?token=${token}`; // Reset link
+        const resetLink = `${req.protocol}://${req.get('host')}auth/reset-password?token=${token}`; // Reset link
 
-        await sendEmail(user.email, 'Quizzy Password Reset', `Click the link to reset your quizzy application password: ${resetLink}`);
+        await sendEmail(user.email, 'Quizzy Password Reset', `Click the link to reset your quizzy application password: ${resetLink}\n\nThis link is valid for 10 minutes. If you did not request this please ignore this email.`);
 
         return res.status(200).json({
             message: "Reset link sent to your email, Check your spam folder if you can't find it",
@@ -110,7 +110,8 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-    const { token, password } = req.body;
+    const { password } = req.body;
+    const { token } = req.query;
 
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_KEY);
@@ -119,6 +120,9 @@ const resetPassword = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        if (password.length < 4) {
+            return res.status(400).json({ message: "Password must be at least 4 characters" });
+        }
         user.password = await hashPassword(password);
         await user.save();
 
@@ -128,7 +132,7 @@ const resetPassword = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "Reset Password failed",
+            message: "Reset Password failed. Token may have expired",
             error: err.message,
         });
     }
@@ -156,5 +160,6 @@ module.exports = {
     login,
     forgotPassword,
     resetPassword,
-    getProfile
+    getProfile,
+    hashPassword
 };
