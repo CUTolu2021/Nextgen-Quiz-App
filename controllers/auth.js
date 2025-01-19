@@ -16,6 +16,11 @@ const generateToken = (user) => {
     );
 };
 
+const generateValidationToken = () => {
+    return Math.random().toString(36).substr(2, 10);
+};
+
+
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10); // Increased salt rounds for better security
     return await bcrypt.hash(password, salt);
@@ -36,14 +41,53 @@ const signup = async (req, res) => {
     }
 
     try {
+        const validationToken = generateValidationToken();
+
+        const token = jwt.sign(
+            {
+                username: username,
+                email: email,
+                userId: null,
+                validationToken: validationToken,
+            },
+            process.env.JWT_KEY,
+            { expiresIn: "10m" }
+        );
+
+        const checkUser = await User.findOne({ email }, "email emailVerified validationToken");
+        if (checkUser && checkUser.emailVerified) {
+            return res.status(200).json({ message: "User already exists" });
+        }
+
+        if (checkUser && !checkUser.emailVerified) {
+            const token = jwt.sign(
+                {
+                    username: username,
+                    email: email,
+                    userId: checkUser._id,
+                    validationToken: checkUser.validationToken,
+                },
+                process.env.JWT_KEY,
+                { expiresIn: "10m" }
+            );
+
+            const verificationLink = `${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+            await sendEmail(checkUser.email, 'Quizzy Email Verification', `Click the link to verify your quizzy application email: ${verificationLink}\n\nThis link is valid for 10 minutes. If you did not request this please ignore this email.`);
+            return res.status(200).json({ message: "Please verify your email. A verification link has been sent to your email." });
+        }
+
         const hashedPassword = await hashPassword(password);
-        const user = await User.create({ username, password: hashedPassword, email, role });
-        const token = generateToken(user);
-        
+        const user = await User.create({ username, password: hashedPassword, email, role, validationToken });
+
+        const verificationLink = `${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+
+        await sendEmail(user.email, 'Quizzy Email Verification', `Click the link to verify your quizzy application email: ${verificationLink}\n\nThis link is valid for 10 minutes. If you did not request this please ignore this email.`);
+
+
         return res.status(201).json({
-            message: "User successfully created",
+            message: "Please verify your email. A verification link has been sent to your email.",
             token,
-            user,
+
         });
     } catch (err) {
         console.error(err);
@@ -54,13 +98,46 @@ const signup = async (req, res) => {
     }
 };
 
+const verifyEmail = async (req, res) => {
+    const { token } = req.query;
+
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+        const user = await User.findOne({ email: decodedToken.email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (user.emailVerified) {
+            return res.status(400).json({ message: "Email already verified" });
+        }
+
+        if (decodedToken.validationToken !== user.validationToken) {
+            return res.status(401).json({ message: "Invalid validation token" });
+        }
+
+        user.emailVerified = true;
+        await user.save();
+        return res.status(200).json({ message: "Email successfully verified" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Email verification failed",
+            error: err.message,
+        });
+    }
+};
+
 const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ username }, "password");
+        const user = await User.findOne({ username }, "password email emailVerified");
         if (!user) {
             return res.status(401).json({ message: "User not found" });
+        }
+        if (!user.emailVerified) {
+            return res.status(401).json({ message: "Email not verified, Please register again to get a new verification link" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -90,7 +167,7 @@ const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User  not found" });
         }
-        const token = generateToken(user); 
+        const token = generateToken(user);
         const resetLink = `${req.protocol}://${req.get('host')}/auth/reset-password?token=${token}`; // Reset link
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Click the link to reset your quizzy application password: ${resetLink}\n\nThis link is valid for 10 minutes. If you did not request this please ignore this email.`);
@@ -139,7 +216,7 @@ const resetPassword = async (req, res) => {
 };
 
 const getProfile = async (req, res) => {
-    const { userId } = req.user 
+    const { userId } = req.user
     try {
         const user = await User.findById(userId, { password: 0, __v: 0, createdAt: 0, updatedAt: 0, _id: 0 });
         if (!user) {
@@ -161,5 +238,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     getProfile,
-    hashPassword
+    hashPassword,
+    verifyEmail
 };

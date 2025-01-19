@@ -61,7 +61,7 @@ passport.deserializeUser (async (id, done) => {
         if (user) {
             return done(null, user);
         }
-        console.log('User  not found during deserialization');
+        console.log('User not found during deserialization');
         return done(null, false);
     } catch (err) {
         console.error('Error during user deserialization:', err);

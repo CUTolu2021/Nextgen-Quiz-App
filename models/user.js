@@ -29,6 +29,18 @@ const userSchema = new Schema({
         enum: ['Creator', 'Participant'],
         default: 'Participant',
     },
+    active_status: {
+        type: Boolean,
+        default: true,
+    },
+    emailVerified: {
+        type: Boolean,
+        default: false,
+    },
+    emailVerificationToken: {
+        type: String,
+        default: null,
+    },
 }, {
     timestamps: true, // Automatically manage createdAt and updatedAt fields
 });
