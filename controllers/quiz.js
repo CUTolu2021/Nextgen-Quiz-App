@@ -26,3 +26,5 @@ app.post('/quizzes', async(req,res) =>{
         res.status(500).json({message: 'An error occured while creating the quiz.', error});
     }
 })
+
+// get route to get all quizzes
