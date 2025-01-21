@@ -26,10 +26,10 @@ app.post('/quizzes', async(req,res) =>{
         res.status(500).json({message: 'An error occured while creating the quiz.', error});
     }
 })
-// Basic controller structure
-const Quiz = require("../models/quiz");
+// controller function for fetching the all the quizzes
+const Quiz = require("../models/Quiz");
 
-// Fetching all quizzes
+// Fetch all quizzes
 const getQuizzes = async (req, res) => {
   try {
     const quizzes = await Quiz.find();
@@ -39,4 +39,21 @@ const getQuizzes = async (req, res) => {
   }
 };
 
-module.exports = { getQuizzes };
+// Add a new quiz
+const createQuiz = async (req, res) => {
+  try {
+    const { question, options, answer } = req.body;
+    if (!question || !options || !answer) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    
+    const newQuiz = new Quiz({ question, options, answer });
+    await newQuiz.save();
+    
+    res.status(201).json(newQuiz);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = { getQuizzes, createQuiz };
