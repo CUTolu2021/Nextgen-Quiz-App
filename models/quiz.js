@@ -40,10 +40,12 @@ const quizSchema = new Schema({
 // Fetching all quizzes
 const mongoose = require("mongoose");
 
-const quizSchema = new mongoose.Schema({
-  question: { type: String, required: true },
-  options: [{ type: String, required: true }],
-  answer: { type: String, required: true },
+const quiz = new mongoose.Schema({
+  questions: { type: String, required: true },
+  title: [{ type: String, required: true }],
+  description: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Quiz", quizSchema);
+module.exports = mongoose.model("Quiz", quiz);
+
+

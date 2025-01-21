@@ -93,9 +93,17 @@ process.on("unhandledRejection", (err) => {
 const express = require("express");
 const { getQuizzes, createQuiz } = require("./controllers/quiz");
 
-const router = express.Router();
+const route = express.Router();
 
 router.get("/", getQuizzes);
 router.post("/", createQuiz);
+
+module.exports = router;
+// Updating routes to handle query parameters
+const express = require('express');
+const router = express.Router();
+const quizController = require('./controllers/quiz');
+
+router.get('/quizzes', quizController.getQuizzes);
 
 module.exports = router;
