@@ -42,7 +42,7 @@ const getQuizzes = async (req, res) => {
 // Add a new quiz
 const createQuiz = async (req, res) => {
   try {
-    const { question, options, answer } = req.body;
+    const { question, title, description } = req.body;
     if (!question || !title || !description) {
       return res.status(400).json({ message: "All fields are required" });
     }
