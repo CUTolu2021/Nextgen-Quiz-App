@@ -134,7 +134,8 @@ const updateQuestionImage = async (req, res) => {
     }
 };
 
-// post route to create a new quiz
+
+// post route to create a new quiz** IRENE
 // app.post('/quizzes', async (req, res) => {
 //     try {
 //         const { title, questions } = req.body;
@@ -164,20 +165,10 @@ const updateQuestionImage = async (req, res) => {
 module.exports = {
     createQuiz, uploadCSV, updateQuestionImage
 }
-// controller function for fetching the all the quizzes
-const Quiz = require("../models/Quiz");
 
-// Fetch all quizzes
-const getQuizzes = async (req, res) => {
-  try {
-    const quizzes = await Quiz.find();
-    res.json(quizzes);
-  } catch (error) {
-    res.status(500).json({ message: "Server Error" });
-  }
-};
 
-// Add a new quiz
+// controller function for fetching the all the quizzes MONICA
+/*const Quiz = require("../models/Quiz");
 const createQuiz = async (req, res) => {
   try {
     const { question, title, description } = req.body;
@@ -271,3 +262,4 @@ exports.getQuizzes = async (req, res) => {
         res.status(500).json({ message: "Error fetching quizzes", error: error.message });
     }
 };
+*/
