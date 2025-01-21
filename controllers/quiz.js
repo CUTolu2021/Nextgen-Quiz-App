@@ -26,3 +26,17 @@ app.post('/quizzes', async(req,res) =>{
         res.status(500).json({message: 'An error occured while creating the quiz.', error});
     }
 })
+// Basic controller structure
+const Quiz = require("../models/quiz");
+
+// Fetching all quizzes
+const getQuizzes = async (req, res) => {
+  try {
+    const quizzes = await Quiz.find();
+    res.json(quizzes);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = { getQuizzes };

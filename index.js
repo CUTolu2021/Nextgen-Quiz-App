@@ -89,3 +89,13 @@ process.on("unhandledRejection", (err) => {
         process.exit(1);
     });
 });
+// get route to fetch all quizzes
+const express = require("express");
+const { getQuizzes, createQuiz } = require("./controllers/quiz");
+
+const router = express.Router();
+
+router.get("/", getQuizzes);
+router.post("/", createQuiz);
+
+module.exports = router;
