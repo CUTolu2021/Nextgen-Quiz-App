@@ -26,3 +26,35 @@ app.post('/quizzes', async(req,res) =>{
         res.status(500).json({message: 'An error occured while creating the quiz.', error});
     }
 })
+
+// Import the Quiz model
+const Quiz = require('../models/quizModel'); // Adjust the path to your model file
+
+// Controller function to find a quiz by ID
+const findQuizById = async (req, res) => {
+  try {
+    const { id } = req.params; // Get the ID from the request parameters
+
+    // Validate the ID format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid quiz ID format.' });
+    }
+
+    // Find the quiz by ID
+    const quiz = await Quiz.findById(id);
+
+    // Check if the quiz exists
+    if (!quiz) {
+      return res.status(404).json({ message: 'Quiz not found.' });
+    }
+
+    // Respond with the quiz
+    res.status(200).json(quiz);
+  } catch (error) {
+    // Handle any server errors
+    console.error(error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+};
+
+module.exports = findQuizById;
