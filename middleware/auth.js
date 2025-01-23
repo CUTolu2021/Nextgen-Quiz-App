@@ -14,7 +14,8 @@ const verifyJWTAuthToken = (req, res, next) => {
             return res.status(403).json({ message: "Unauthorized" });
         }
 
-        req.user = user; // Attach user information to the request object
+        req.user = user; 
+        console.log("User:", req.user);
         next(); // Proceed to the next middleware or route handler
     });
 };
@@ -32,7 +33,7 @@ const restrictToUser = (req, res, next) => {
     if (req.user.userId !== req.params.id) {
         return res.status(403).json({ message: "Unauthorized to access this route" });
     }
-    next(); // Proceed to the next middleware or route handler
+    next(); 
 };
 
 module.exports = {

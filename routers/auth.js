@@ -1,5 +1,5 @@
 const route = require('express').Router();
-const { signup, login, forgotPassword, resetPassword, getProfile } = require('../controllers/auth');
+const { signup, login, forgotPassword, resetPassword, getProfile, verifyEmail } = require('../controllers/auth');
 const { verifyJWTAuthToken } = require('../middleware/auth');
 const passport = require('passport');
 
@@ -184,6 +184,8 @@ route.post('/reset-password', resetPassword);
  *         description: Internal server error
  */
 route.get('/me', verifyJWTAuthToken, getProfile);
+
+route.get('/verify', verifyEmail);
 
 //Google Auth
 route.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
