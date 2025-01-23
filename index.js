@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
+const quizRouter = require("./routers/quiz");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const dotenv = require("dotenv");
@@ -9,6 +10,9 @@ const morgan = require("morgan");
 const session = require('express-session');
 const passport_setup = require('./passport');
 const passport = require('passport');
+const multer = require('multer');
+const { uploadToCloudinary } = require('./utils/cloudinary');
+const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
 
 dotenv.config();
 
@@ -63,12 +67,15 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 
+
 // Routes
 app.get("/", (req, res) => {
     res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
 });
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/quizzes", verifyJWTAuthToken, quizRouter);
+
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
