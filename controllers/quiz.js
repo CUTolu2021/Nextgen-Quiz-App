@@ -10,7 +10,7 @@ const createQuiz = async (req, res) => {
         if (!title || !description || !settings) {
             return res.status(400).json({ message: 'Title, description, and settings are required' });
         }
-        const quiz =  await Quiz.create({ title, description, settings, creatorId: req.user.userId });
+        const quiz = await Quiz.create({ title, description, settings, creatorId: req.user.userId });
         req.session.quizId = quiz._id; // Save the quiz ID in the session
         console.log(req.session);
         res.status(201).json({ message: 'Quiz created successfully', quiz });
@@ -23,7 +23,16 @@ const createQuiz = async (req, res) => {
 const uploadCSV = async (req, res) => {
     const quizId = req.session.quizId;  // Get the quiz ID from the user object
     const results = [];
-    console.log("in the uploadCSV function:", req.session);
+
+    //check if the user logged in is the one that created the quiz
+    const quiz = await Quiz.findById(quizId, 'creatorId questions');
+    if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+    }
+    if (quiz.creatorId.toString() !== req.user.userId) {
+        return res.status(403).json({ message: 'Unauthorized to update this quiz' });
+    }
+    console.log("Current", quiz)
 
     // Check if a file was uploaded
     if (!req.file) {
@@ -38,22 +47,19 @@ const uploadCSV = async (req, res) => {
             try {
                 // Create questions from the parsed data
                 const questions = results.map(item => ({
-                    text: item.question,
+                    question: item.question,
                     options: [item.option1, item.option2, item.option3, item.option4],
-                    correctAnswers: item.correctAnswers.split(','), // Split by comma for multiple answers
+                    correctAnswers: item.correctAnswers, // Split by comma for multiple answers
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null, // Optional image URL
                     videoUrl: item.videoUrl || null,  // Optional video URL
                     quizId
                 }));
 
-                // Find the quiz and update it with the new questions
-                const quiz = await Quiz.findById(quizId);
-                if (!quiz) {
-                    return res.status(404).json({ message: 'Quiz not found' });
-                }
+                let checkQuestion = await Question.create(questions);
+                console.log(checkQuestion)
 
-                quiz.questions.push(...questions);
+                quiz.questions.push(...checkQuestion.map(question => question._id));
                 await quiz.save();
 
                 // Clean up the uploaded file
@@ -70,6 +76,17 @@ const uploadCSV = async (req, res) => {
 const uploadQuestions = async (req, res) => {
     const quizId = req.params.quizId;
     const results = [];
+
+    //check if the user logged in is the one that created the quiz
+    const quiz = await Quiz.findById(quizId, 'creatorId questions');
+    if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+    }
+    if (quiz.creatorId.toString() !== req.user.userId) {
+        return res.status(403).json({ message: 'Unauthorized to update this quiz' });
+    }
+    console.log("Current", quiz)
+
     // Check if a file was uploaded
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
@@ -82,20 +99,21 @@ const uploadQuestions = async (req, res) => {
             try {
                 // Create questions from the parsed data
                 const questions = results.map(item => ({
-                    text: item.question,
+                    question: item.question,
                     options: [item.option1, item.option2, item.option3, item.option4],
-                    correctAnswers: item.correctAnswers.split(','), // Split by comma for multiple answers
+                    correctAnswers: item.correctAnswers, // Split by comma for multiple answers
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null, // Optional image URL
                     videoUrl: item.videoUrl || null,  // Optional video URL
                     quizId
                 }));
-                // Find the quiz and update it with the new questions
-                const quiz = await Quiz.findById(quizId);
-                if (!quiz) {
-                    return res.status(404).json({ message: 'Quiz not found' });
-                }
-                quiz.questions.push(...questions);
+                console.log(questions)
+
+                //upload the question in the question db and add them to the question array from the quiz model
+                let checkQuestion = await Question.create(questions);
+                console.log(checkQuestion)
+
+                quiz.questions.push(...checkQuestion.map(question => question._id));
                 await quiz.save();
                 // Clean up the uploaded file
                 fs.unlinkSync(req.file.path); // Delete the file after processing
@@ -134,6 +152,68 @@ const updateQuestionImage = async (req, res) => {
     }
 };
 
+//Monica Updated
+const getQuizzes = async (req, res) => {
+    try {
+        let { page, limit } = req.query;
+
+        // Validate query parameters
+        if (page && isNaN(page)) {
+            return res.status(400).json({ message: "Invalid 'page' parameter. It must be a number. Please try Again!" });
+        }
+        if (limit && isNaN(limit)) {
+            return res.status(400).json({ message: "Invalid 'limit' parameter. It must be a number. Please try Again!" });
+        }
+
+        // Convert to numbers and set defaults
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 10;
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).json({ message: "'page' and 'limit' must be greater than 0." });
+        }
+
+        const skip = (page - 1) * limit;
+
+        // Fetch quizzes with pagination
+       // const quizzes = await Quiz.find().skip(skip).limit(limit);
+        const quizzes = await Quiz.find()
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .skip(skip)
+            .limit(limit);
+
+        // Get total count for pagination metadata
+        const total = await Quiz.countDocuments();
+
+        res.json({
+            message:`Total number of quizzes is ${total}. You are on page ${page}, a page is limited to ${limit} items, There are ${Math.ceil(total/limit)} pages in total.`,
+            data: quizzes
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching quizzes", error });
+    }
+};
+
+const getQuestionByQuizId = async (req, res) => {
+    try { 
+        const { quizId } = req.params;
+        const quiz = await Quiz.findById(quizId).populate('questions', '');
+        //populate only shows the id of each question i need the actual question
+        
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        res.json(quiz.questions);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+module.exports = {
+    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId
+}
 
 // post route to create a new quiz** IRENE
 // app.post('/quizzes', async (req, res) => {
@@ -162,9 +242,6 @@ const updateQuestionImage = async (req, res) => {
 //     }
 // })
 
-module.exports = {
-    createQuiz, uploadCSV, updateQuestionImage
-}
 
 
 // controller function for fetching the all the quizzes MONICA
