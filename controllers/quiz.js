@@ -19,6 +19,20 @@ const createQuiz = async (req, res) => {
     }
 };
 
+const addQuestions = async (req, res) => {
+    try {
+        const { question, option1, option2, option3, option4, correctAnswer } = req.body;
+        const quizId = req.session.quizId;  // Get the quiz ID from the user object
+        if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+        const questionData = await Question.create({ question, options: [option1, option2, option3, option4], correctAnswers: correctAnswer, quizId });
+        res.status(201).json({ message: 'Question added successfully', questionData });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+        }
+}
+
 // Upload CSV and create questions
 const uploadCSV = async (req, res) => {
     const quizId = req.session.quizId;  // Get the quiz ID from the user object
@@ -177,7 +191,7 @@ const getQuizzes = async (req, res) => {
 
         // Fetch quizzes with pagination
        // const quizzes = await Quiz.find().skip(skip).limit(limit);
-        const quizzes = await Quiz.find()
+        const quizzes = await Quiz.find({ active_status: 'active' })
             .sort({ createdAt: -1 }) // Sort by newest first
             .skip(skip)
             .limit(limit);
@@ -194,16 +208,43 @@ const getQuizzes = async (req, res) => {
     }
 };
 
+//get questions by quiz id
 const getQuestionByQuizId = async (req, res) => {
     try { 
         const { quizId } = req.params;
-        const quiz = await Quiz.findById(quizId).populate('questions', '');
-        //populate only shows the id of each question i need the actual question
-        
+        const quiz = await Quiz.findById(quizId).populate('questions');
+        if (!quiz || quiz.active_status === 'inactive') {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        let quizQuestions = [];
+        for (const question of quiz.questions) {
+            const questionData = await Question.findById(question._id);
+            if (questionData) {
+                quizQuestions.push(questionData);
+            }
+        }
+        res.json(quizQuestions);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+//update quiz by id
+
+//delete quiz by id
+const deleteQuizById = async (req, res) => {
+    try{
+        const { quizId } = req.params;
+        const quiz = await Quiz.findById(quizId);
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
-        res.json(quiz.questions);
+        if (quiz.creatorId.toString() !== req.user.userId) {
+            return res.status(403).json({ message: 'Unauthorized to delete this quiz' });
+        }
+        quiz.active_status = 'inactive';
+        await quiz.save();
+        res.json({ message: 'Quiz deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -212,7 +253,7 @@ const getQuestionByQuizId = async (req, res) => {
 
 
 module.exports = {
-    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId
+    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById
 }
 
 // post route to create a new quiz** IRENE
@@ -340,7 +381,7 @@ exports.getQuizzes = async (req, res) => {
     }
 
 };
-*/
+
 
 
 // Import the Quiz model
@@ -374,4 +415,4 @@ const findQuizById = async (req, res) => {
 };
 
 module.exports = findQuizById;
-
+*/
