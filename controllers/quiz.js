@@ -229,6 +229,20 @@ const getQuestionByQuizId = async (req, res) => {
     }
 }
 
+//Controller function to fetch a quiz by its ID.
+const getQuizById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const quiz = await Quiz.findById(id);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        res.status(200).json(quiz);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred', error: error.message });
+    }
+};
+
 //update quiz by id
 
 //delete quiz by id
@@ -252,9 +266,10 @@ const deleteQuizById = async (req, res) => {
 
 
 
-module.exports = {
-    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById
-}
+module.exports = { 
+    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById 
+};
+
 
 // post route to create a new quiz** IRENE
 // app.post('/quizzes', async (req, res) => {
