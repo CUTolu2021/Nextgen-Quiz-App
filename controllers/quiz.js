@@ -233,7 +233,12 @@ const getQuestionByQuizId = async (req, res) => {
 const getQuizById = async (req, res) => {
     const { id } = req.params;
     try {
-        const quiz = await Quiz.findById(id);
+        //logic to return quiz data along with its questions
+        const quiz = await Quiz.findById(id)
+            .populate({
+                path: 'questions',
+                model: 'Question'
+            });
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
