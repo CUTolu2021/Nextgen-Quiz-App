@@ -25,7 +25,7 @@ router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('f
 router.get('/questions/:quizId', getQuestionByQuizId);
 
 // GET single quiz by ID
-router.get('/:id', getQuizById);
+router.get('quizzes/:id', getQuizById);
 
 
 module.exports = router;

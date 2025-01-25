@@ -229,22 +229,72 @@ const getQuestionByQuizId = async (req, res) => {
     }
 }
 
-//Controller function to fetch a quiz by its ID.
+//Get Quiz by ID (GET /quizzes/:id)-Daisy 
 const getQuizById = async (req, res) => {
+    //Controller function to fetch a quiz by its ID
     const { id } = req.params;
+
     try {
-        //logic to return quiz data along with its questions
+        //Validate ID format
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid quiz ID format' 
+            });
+        }
+
+        //Fetch quiz with questions
         const quiz = await Quiz.findById(id)
             .populate({
                 path: 'questions',
                 model: 'Question'
             });
+
+        //Handle non-existing quiz
         if (!quiz) {
-            return res.status(404).json({ message: 'Quiz not found' });
+            return res.status(404).json({ 
+                success: false,
+                message: 'Quiz not found' 
+            });
         }
-        res.status(200).json(quiz);
+
+        //Prepare structured response
+        const quizResponse = {
+            _id: quiz._id,
+            title: quiz.title,
+            description: quiz.description,
+            creatorId: quiz.creatorId,
+            settings: quiz.settings,
+            status: quiz.status,
+            active_status: quiz.active_status,
+            questions: quiz.questions.map(q => ({
+                _id: q._id,
+                question: q.question,
+                options: q.options,
+                correctAnswers: q.correctAnswers,
+                isMultipleChoice: q.isMultipleChoice,
+                imageUrl: q.imageUrl,
+                videoUrl: q.videoUrl
+            })),
+            //Add metadata
+            totalQuestions: quiz.questions.length,
+            estimatedTime: quiz.settings.timer * quiz.questions.length
+        };
+
+        // Send successful response
+        res.status(200).json({
+            success: true,
+            data: quizResponse
+        });
+
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred', error: error.message });
+        //Comprehensive error handling
+        console.error('Error fetching quiz:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'An error occurred while fetching the quiz',
+            error: error.message 
+        });
     }
 };
 
