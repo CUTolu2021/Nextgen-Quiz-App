@@ -215,6 +215,11 @@ module.exports = {
     createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId
 }
 
+
+
+
+
+
 // post route to create a new quiz** IRENE
 // app.post('/quizzes', async (req, res) => {
 //     try {
