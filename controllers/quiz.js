@@ -250,7 +250,7 @@ const getQuizById = async (req, res) => {
                 model: 'Question'
             });
 
-        //Handle non-existing quiz
+        // Check if quiz exists
         if (!quiz) {
             return res.status(404).json({ 
                 success: false,
@@ -258,34 +258,15 @@ const getQuizById = async (req, res) => {
             });
         }
 
-        //Prepare structured response
-        const quizResponse = {
-            _id: quiz._id,
-            title: quiz.title,
-            description: quiz.description,
-            creatorId: quiz.creatorId,
-            settings: quiz.settings,
-            status: quiz.status,
-            active_status: quiz.active_status,
-            questions: quiz.questions.map(q => ({
-                _id: q._id,
-                question: q.question,
-                options: q.options,
-                correctAnswers: q.correctAnswers,
-                isMultipleChoice: q.isMultipleChoice,
-                imageUrl: q.imageUrl,
-                videoUrl: q.videoUrl
-            })),
-            //Add metadata
-            totalQuestions: quiz.questions.length,
-            estimatedTime: quiz.settings.timer * quiz.questions.length
-        };
-
-        // Send successful response
+        // Prepare full quiz response with complete question details
         res.status(200).json({
             success: true,
-            data: quizResponse
+            quiz: {
+                ...quiz.toObject(), // Convert Mongoose document to plain object
+                questions: quiz.questions // Include full questions array
+            }
         });
+
 
     } catch (error) {
         //Comprehensive error handling
