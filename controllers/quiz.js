@@ -229,7 +229,7 @@ const getQuestionByQuizId = async (req, res) => {
     }
 }
 
-//Get Quiz by ID (GET /quizzes/:id)-Daisy 
+//Get Quiz by ID (GET /quizzes/:id)
 const getQuizById = async (req, res) => {
     //Controller function to fetch a quiz by its ID
     const { id } = req.params;
