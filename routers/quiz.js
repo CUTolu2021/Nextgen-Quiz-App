@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { createQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, getQuizById} = require('../controllers/quiz');
+const { createQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId} = require('../controllers/quiz');
 const { restrictTo } = require('../middleware/auth');
 
 // Multer setup
@@ -16,6 +16,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/',restrictTo('Creator'),createQuiz);
+router.delete('/:quizId',restrictTo('Creator'),deleteQuizById);
+router.post('/add-questions',restrictTo('Creator'),addQuestions);
 router.get('/', getQuizzes)
 router.post('/upload-csv',restrictTo('Creator'), upload.single('file'), uploadCSV);
 router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('image'), updateQuestionImage);
