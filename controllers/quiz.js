@@ -243,7 +243,26 @@ const getQuizById = async (req, res) => {
     }
 };
 
-//update quiz by id
+//update quiz 
+const quizElement = document.getElementById('quiz-details');
+const quizCreatorId = parseInt(quizElement.getAttribute('data-creator-id'));
+const editTitleField = document.getElementById('edit-title');
+const editDescriptionField =  document.getElementById('edit-description');
+if (current_user_id !==quizCreatorId) {
+    editTitleField.disabled = true;
+    editDescriptionField.disabled = true;
+    alert('You are not autorized to  edit this quiz.')
+} else {
+    editTitleField.disabled = false;
+    editDescriptionField.disabled = false;
+    
+    editTitleField.addEventListener('change', function(){
+        console.log('Updated title:', editTitleField.value);
+    });
+    editDescriptionField.addEventListener('change', function(){
+        console.log('Updated description:', editDescriptionField.value);
+    });
+}
 
 //delete quiz by id
 const deleteQuizById = async (req, res) => {
@@ -278,6 +297,7 @@ const getQuizById = async (req,res) =>{
         res.status(500).json ({message: 'Server error'});
     }
 }
+
 
 
 
