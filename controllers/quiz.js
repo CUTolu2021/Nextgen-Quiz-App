@@ -208,42 +208,41 @@ const getQuizzes = async (req, res) => {
 // Get questions by quiz ID
 const getQuestionByQuizId = async (req, res) => {
     const { quizId } = req.params;
+    console.log(quizId);
+    let result = [];
 
     try {
         const quiz = await Quiz.findById(quizId).populate('questions');
         if (!quiz || quiz.active_status === 'inactive') {
             return res.status(404).json({ message: 'Quiz not found' });
         }
-
-        res.json(quiz.questions);
+        for (const question of quiz.questions) {
+            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl'));   
+            }
+        res.json({message: 'Questions fetched successfully',
+                    data: result});
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching questions', error: error.message });
     }
 };
 
-//Get Quiz by ID (GET /quizzes/:id)-Daisy 
+//Get Quiz by ID (GET /quizzes/:id)
 const getQuizById = async (req, res) => {
     //Controller function to fetch a quiz by its ID
-    const { id } = req.params;
+    const { quizId } = req.params;
+    console.log(quizId);
 
     try {
-        //Validate ID format
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ 
-                success: false,
-                message: 'Invalid quiz ID format' 
-            });
-        }
-
         //Fetch quiz with questions
-        const quiz = await Quiz.findById(id)
+        const quiz = await Quiz.findById(quizId)
             .populate({
                 path: 'questions',
                 model: 'Question'
             });
+        console.log(quiz);
 
-        //Handle non-existing quiz
+        // Check if quiz exists
         if (!quiz) {
             return res.status(404).json({ 
                 success: false,
@@ -251,34 +250,15 @@ const getQuizById = async (req, res) => {
             });
         }
 
-        //Prepare structured response
-        const quizResponse = {
-            _id: quiz._id,
-            title: quiz.title,
-            description: quiz.description,
-            creatorId: quiz.creatorId,
-            settings: quiz.settings,
-            status: quiz.status,
-            active_status: quiz.active_status,
-            questions: quiz.questions.map(q => ({
-                _id: q._id,
-                question: q.question,
-                options: q.options,
-                correctAnswers: q.correctAnswers,
-                isMultipleChoice: q.isMultipleChoice,
-                imageUrl: q.imageUrl,
-                videoUrl: q.videoUrl
-            })),
-            //Add metadata
-            totalQuestions: quiz.questions.length,
-            estimatedTime: quiz.settings.timer * quiz.questions.length
-        };
-
-        // Send successful response
+        // Prepare full quiz response with complete question details
         res.status(200).json({
             success: true,
-            data: quizResponse
+            quiz: {
+                ...quiz.toObject(), // Convert Mongoose document to plain object
+                questions: quiz.questions // Include full questions array
+            }
         });
+
 
     } catch (error) {
         //Comprehensive error handling

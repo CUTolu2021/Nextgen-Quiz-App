@@ -22,10 +22,8 @@ router.get('/', getQuizzes)
 router.post('/upload-csv',restrictTo('Creator'), upload.single('file'), uploadCSV);
 router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('image'), updateQuestionImage);
 router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('file'), uploadQuestions);
-router.get('/questions/:quizId', getQuestionByQuizId);
-
-// GET single quiz by ID
-router.get('quizzes/:id', getQuizById);
+router.get('/:quizId', getQuizById);
+router.get('/:quizId/questions', getQuestionByQuizId);
 
 
 module.exports = router;
