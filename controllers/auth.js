@@ -12,7 +12,7 @@ const generateToken = (user, expiresIn = "10m") => {
             userId: user._id,
             role: user.role,
             email: user.email,
-            validationToken: user.emailVerificationToken,
+            emailVerificationToken: user.emailVerificationToken,
         },
         process.env.JWT_KEY,
         { expiresIn }
@@ -46,7 +46,7 @@ const signup = async (req, res) => {
     }
 
     try {
-        const existingUser  = await User.findOne({ email }, "email emailVerified emailVerificationToken, active_status");
+        const existingUser  = await User.findOne({ email });
         
         if (existingUser) {
             if (!existingUser.active_status) {
@@ -55,8 +55,9 @@ const signup = async (req, res) => {
             if (existingUser.emailVerified) {
                 return res.status(200).json({ message: "User already exists, please login" });
             } else {
-                const token = generateToken(existingUser );
-                const verificationLink = `${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+                const token = generateToken(existingUser, "10m");
+                
+                const verificationLink = `http://127.0.0.1:5500/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
                 await sendEmail(existingUser .email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
                 return res.status(200).json({ message: "Email already exists, please verify your email. A verification link has been sent to your email." });
             }
@@ -67,10 +68,11 @@ const signup = async (req, res) => {
         
         const newUser  = await User.create({ username, password: hashedPassword, email, role, emailVerificationToken: validationToken });
 
-        const token = generateToken(newUser );
-        const verificationLink = `${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+        const token = generateToken(newUser);
 
-        await sendEmail(newUser .email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
+        const verificationLink = `http://127.0.0.1:5500/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+
+        await sendEmail(newUser.email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
 
         return res.status(201).json({
             message: "Please verify your email. A verification link has been sent to your email.",
@@ -79,7 +81,7 @@ const signup = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "User  not successfully created",
+            message: "An error occured please try again.",
             error: err.message,
         });
     }
@@ -88,11 +90,10 @@ const signup = async (req, res) => {
 // Email verification
 const verifyEmail = async (req, res) => {
     const { token } = req.query;
-
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_KEY);
         const user = await User.findOne({ email: decodedToken.email }, "emailVerified emailVerificationToken");
-        
+        console.log("Decoded Token:", decodedToken);
         if (!user) {
             return res.status(404).json({ message: "User  not found" });
         }
@@ -100,11 +101,11 @@ const verifyEmail = async (req, res) => {
         if (user.emailVerified) {
             return res.status(400).json({ message: "Email already verified" });
         }
+        console.log("User  Found:", user);
 
-        if (decodedToken.validationToken !== user.emailVerificationToken) {
-            return res.status(401).json({ message: "Invalid validation token" });
+        if (decodedToken.emailVerificationToken !== user.emailVerificationToken) {
+            return res.status(403).json({ message: "Invalid validation token" });
         }
-
         user.emailVerified = true;
         user.emailVerificationToken = null; // Clear the validation token
         await user.save();
@@ -142,6 +143,7 @@ const login = async (req, res) => {
         }
 
         const token = generateToken(user, "3d");
+        console.log("token just created",jwt.verify(token, process.env.JWT_KEY))
         return res.status(200).json({
             message: "Authentication successful",
             token,
@@ -162,15 +164,15 @@ const forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ email }, "email username");
         if (!user) {
-            return res.status(404).json({ message: "User  not found" });
+            return res.status(404).json({ message: "User not found, please register" });
         }
 
         const OTP = generateValidationToken();
         user.emailVerificationToken = OTP;
         await user.save();
 
-        const token = generateToken(user);
-        const resetLink = `${req.protocol}://${req.get('host')}/auth/reset-password?token=${token}`;
+        const token = generateToken(user, "10m");
+        const resetLink = `http://127.0.0.1:5500/reset-password.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/reset-password?token=${token}`;
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Hi ${user.username},\n\nClick the link to reset your password: ${resetLink}\n\nThis link is valid for 10 minutes.\nYour OTP is: ${OTP}\n\nIf you did not request this, please ignore this email.`);
 
@@ -180,7 +182,7 @@ const forgotPassword = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "Failed to send reset link",
+            message: "Failed to send reset link, please try again",
             error: err.message,
         });
     }
@@ -196,7 +198,7 @@ const resetPassword = async (req, res) => {
         const user = await User.findById(decodedToken.userId, "password email emailVerificationToken");
         
         if (!user) {
-            return res.status(404).json({ message: "User  not found" });
+            return res.status(404).json({ message: "User not found, please register" });
         }
 
         if (password.length < 6) {
