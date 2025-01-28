@@ -229,17 +229,53 @@ const getQuestionByQuizId = async (req, res) => {
     }
 }
 
-//Controller function to fetch a quiz by its ID.
+//Get Quiz by ID (GET /quizzes/:id)
 const getQuizById = async (req, res) => {
+    //Controller function to fetch a quiz by its ID
     const { id } = req.params;
+
     try {
-        const quiz = await Quiz.findById(id);
-        if (!quiz) {
-            return res.status(404).json({ message: 'Quiz not found' });
+        //Validate ID format
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid quiz ID format' 
+            });
         }
-        res.status(200).json(quiz);
+
+        //Fetch quiz with questions
+        const quiz = await Quiz.findById(id)
+            .populate({
+                path: 'questions',
+                model: 'Question'
+            });
+
+        // Check if quiz exists
+        if (!quiz) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Quiz not found' 
+            });
+        }
+
+        // Prepare full quiz response with complete question details
+        res.status(200).json({
+            success: true,
+            quiz: {
+                ...quiz.toObject(), // Convert Mongoose document to plain object
+                questions: quiz.questions // Include full questions array
+            }
+        });
+
+
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred', error: error.message });
+        //Comprehensive error handling
+        console.error('Error fetching quiz:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'An error occurred while fetching the quiz',
+            error: error.message 
+        });
     }
 };
 
