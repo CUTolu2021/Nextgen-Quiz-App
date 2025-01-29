@@ -73,7 +73,7 @@ const uploadCSV = async (req, res) => {
                 const questions = results.map(item => ({
                     question: item.question,
                     options: [item.option1, item.option2, item.option3, item.option4],
-                    correctAnswers: item.correctAnswers.split(','), // Assuming correctAnswers is a comma-separated string
+                    correctAnswers: item.correctAnswers, // Assuming correctAnswers is a comma-separated string
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
@@ -122,7 +122,7 @@ const uploadQuestions = async (req, res) => {
                 const questions = results.map(item => ({
                     question: item.question,
                     options: [item.option1, item.option2, item.option3, item.option4],
-                    correctAnswers: item.correctAnswers.split(','), // Assuming correctAnswers is a comma-separated string
+                    correctAnswers: item.correctAnswers, // Assuming correctAnswers is a comma-separated string
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
