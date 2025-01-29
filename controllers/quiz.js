@@ -244,25 +244,42 @@ const getQuizById = async (req, res) => {
 };
 
 //update quiz 
-const quizElement = document.getElementById('quiz-details');
-const quizCreatorId = parseInt(quizElement.getAttribute('data-creator-id'));
-const editTitleField = document.getElementById('edit-title');
-const editDescriptionField =  document.getElementById('edit-description');
-if (current_user_id !==quizCreatorId) {
-    editTitleField.disabled = true;
-    editDescriptionField.disabled = true;
-    alert('You are not autorized to  edit this quiz.')
-} else {
-    editTitleField.disabled = false;
-    editDescriptionField.disabled = false;
+const checkQuizCreator = async (req, res, next) => {
+    const quizId = req.params.quizId;
+    const userId = req.user._id;
+    try {
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({message: 'Quiz not found'})
+        }
+        if (quiz.creator_id.toString() !==userId.toString()) {
+            return res.status(403).json({message: 'You are not authorised to update this quiz'});
+        }
+        next();
+        } catch (error) {
+            return res.status(500).json({message: 'Server error'})
+        }
+};
+
+checkQuizCreator, async (req, res) => {
+    try {
+        const quizId = req.params.quizId;
+        const updatedData = req.body;
+        const updatedQuiz = await Quiz.findByIdAndUpdate(quizId, updatedData, {new: true});
+        if (!updatedQuiz) {
+            return res.status(404).json({message: 'Quiz not found'});
+        }
+        return res.json (updatedQuiz);
     
-    editTitleField.addEventListener('change', function(){
-        console.log('Updated title:', editTitleField.value);
-    });
-    editDescriptionField.addEventListener('change', function(){
-        console.log('Updated description:', editDescriptionField.value);
-    });
+    } catch (error) {
+        return res.status(500).json({message: 'Error updating quiz'});
+ }
 }
+
+
+
+
+
 
 //delete quiz by id
 const deleteQuizById = async (req, res) => {
