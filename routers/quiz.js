@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { createQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById} = require('../controllers/quiz');
+const { createQuiz,updateQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById} = require('../controllers/quiz');
 const { restrictTo } = require('../middleware/auth');
 
 // Multer setup
@@ -24,6 +24,7 @@ router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('ima
 router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('file'), uploadQuestions);
 router.get('/:quizId', getQuizById);
 router.get('/:quizId/questions', getQuestionByQuizId);
+router.put('/:quizId',restrictTo('Creator'),updateQuiz);
 
 
 module.exports = router;

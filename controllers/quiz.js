@@ -115,7 +115,7 @@ const uploadQuestions = async (req, res) => {
 
     const results = [];
     fs.createReadStream(req.file.path)
-        .pipe(csv ())
+        .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', async () => {
             try {
@@ -217,10 +217,12 @@ const getQuestionByQuizId = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
         for (const question of quiz.questions) {
-            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl'));   
-            }
-        res.json({message: 'Questions fetched successfully',
-                    data: result});
+            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl'));
+        }
+        res.json({
+            message: 'Questions fetched successfully',
+            data: result
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching questions', error: error.message });
@@ -244,9 +246,9 @@ const getQuizById = async (req, res) => {
 
         // Check if quiz exists
         if (!quiz) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: 'Quiz not found' 
+                message: 'Quiz not found'
             });
         }
 
@@ -263,34 +265,57 @@ const getQuizById = async (req, res) => {
     } catch (error) {
         //Comprehensive error handling
         console.error('Error fetching quiz:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'An error occurred while fetching the quiz',
-            error: error.message 
+            error: error.message
         });
     }
 };
 
 //update quiz 
-// const quizElement = document.getElementById('quiz-details');
-// const quizCreatorId = parseInt(quizElement.getAttribute('data-creator-id'));
-// const editTitleField = document.getElementById('edit-title');
-// const editDescriptionField =  document.getElementById('edit-description');
-// if (current_user_id !==quizCreatorId) {
-//     editTitleField.disabled = true;
-//     editDescriptionField.disabled = true;
-//     alert('You are not autorized to edit this quiz.')
-// } else {
-//     editTitleField.disabled = false;
-//     editDescriptionField.disabled = false;
-    
-//     editTitleField.addEventListener('change', function(){
-//         console.log('Updated title:', editTitleField.value);
-//     });
-//     editDescriptionField.addEventListener('change', function(){
-//         console.log('Updated description:', editDescriptionField.value);
-//     });
+const updateQuiz = async (req, res) => {
+    const { quizId } = req.params; // quizId = req.params.id;
+    const { userId } = req.user; // userId = req.user.userId;
+    try {
+        const quiz = await Quiz.findById(quizId);
+       
+        if (!quiz || quiz.active_status === 'inactive') {
+            return res.status(404).json({ message: 'Quiz not found' })
+        }
+        if (quiz.creatorId.toString() !== userId) {
+            return res.status(403).json({ message: 'You are not authorised to update this quiz' });
+        }
+        const updatedQuiz = await Quiz.findByIdAndUpdate(quizId, req.body, { new: true });
+        return res.json ({
+            message: 'Quiz updated successfully', 
+            data: updatedQuiz
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+// checkQuizCreator, async (req, res) => {
+//     try {
+//         const quizId = req.params.quizId;
+//         const updatedData = req.body;
+//         const updatedQuiz = await Quiz.findByIdAndUpdate(quizId, updatedData, {new: true});
+//         if (!updatedQuiz) {
+//             return res.status(404).json({message: 'Quiz not found'});
+//         }
+//         return res.json (updatedQuiz);
+
+//     } catch (error) {
+//         return res.status(500).json({message: 'Error updating quiz'});
+//  }
 // }
+
+
+
+
+
 
 //delete quiz by id
 const deleteQuizById = async (req, res) => {
@@ -301,7 +326,7 @@ const deleteQuizById = async (req, res) => {
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
-        if (quiz.creatorId .toString() !== req.user.userId) {
+        if (quiz.creatorId.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Unauthorized to delete this quiz' });
         }
 
@@ -314,14 +339,15 @@ const deleteQuizById = async (req, res) => {
     }
 };
 
-module.exports = { 
-    createQuiz, 
-    uploadCSV, 
-    updateQuestionImage, 
-    uploadQuestions, 
-    getQuizzes, 
-    getQuestionByQuizId, 
-    addQuestions, 
-    deleteQuizById, 
-    getQuizById 
+module.exports = {
+    createQuiz,
+    uploadCSV,
+    updateQuestionImage,
+    uploadQuestions,
+    getQuizzes,
+    getQuestionByQuizId,
+    addQuestions,
+    deleteQuizById,
+    getQuizById,
+    updateQuiz
 };
