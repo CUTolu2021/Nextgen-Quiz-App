@@ -21,13 +21,13 @@ const quizSchema = new Schema({
         required: true,
     },
     settings: {
-        timer: {
+        time_limit: {
+            type: Number,
+            default: 5,
+        },
+        total_points: {
             type: Number,
             default: 0,
-        },
-        points: {
-            type: Number,
-            default: 1,
         },    
     },
     active_status: {

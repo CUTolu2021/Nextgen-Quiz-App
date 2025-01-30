@@ -24,7 +24,7 @@ const createQuiz = async (req, res) => {
 
 // Add new questions through the form
 const addQuestions = async (req, res) => {
-    const { question, option1, option2, option3, option4, correctAnswer } = req.body;
+    const { question, option1, option2, option3, option4, correctAnswer, point } = req.body;
     const quizId = req.session.quizId;
 
     // Validation
@@ -37,8 +37,20 @@ const addQuestions = async (req, res) => {
             question,
             options: [option1, option2, option3, option4],
             correctAnswers: correctAnswer,
-            quizId
+            quizId,
+            point
         });
+
+        // Add the question to the quiz
+        const quiz = await Quiz.findById(quizId);
+        quiz.questions.push(questionData._id);
+
+        // Get points for each question add them all together to get the total
+        const totalPoints = questionData.reduce((total, question) => total + question.point, 0);
+
+        // Update the points for the quiz
+        quiz.total_points = totalPoints;
+        await quiz.save();
         res.status(201).json({ message: 'Question added successfully', questionData });
     } catch (error) {
         console.error(error);
@@ -77,11 +89,19 @@ const uploadCSV = async (req, res) => {
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
-                    quizId
+                    quizId,
+                    point: item.point || 1      
                 }));
 
                 const createdQuestions = await Question.insertMany(questions);
                 quiz.questions.push(...createdQuestions.map(q => q._id));
+                await quiz.save();
+
+                // Get points for each question add them all together to get the total
+                const totalPoints = createdQuestions.reduce((total, question) => total + question.point, 0);
+
+                // Update the points for the quiz
+                quiz.total_points = totalPoints;
                 await quiz.save();
 
                 // Clean up the uploaded file
@@ -126,11 +146,19 @@ const uploadQuestions = async (req, res) => {
                     isMultipleChoice: item.isMultipleChoice === 'true',
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
-                    quizId
+                    quizId,
+                    point: item.point
                 }));
 
                 const createdQuestions = await Question.insertMany(questions);
                 quiz.questions.push(...createdQuestions.map(q => q._id));
+                await quiz.save();
+
+                // Get points for each question add them all together to get the total
+                const totalPoints = createdQuestions.reduce((total, question) => total + question.point, 0);
+
+                // Update the points for the quiz
+                quiz.total_points = totalPoints;
                 await quiz.save();
 
                 // Clean up the uploaded file
@@ -296,25 +324,6 @@ const updateQuiz = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
-// checkQuizCreator, async (req, res) => {
-//     try {
-//         const quizId = req.params.quizId;
-//         const updatedData = req.body;
-//         const updatedQuiz = await Quiz.findByIdAndUpdate(quizId, updatedData, {new: true});
-//         if (!updatedQuiz) {
-//             return res.status(404).json({message: 'Quiz not found'});
-//         }
-//         return res.json (updatedQuiz);
-
-//     } catch (error) {
-//         return res.status(500).json({message: 'Error updating quiz'});
-//  }
-// }
-
-
-
-
 
 
 //delete quiz by id
