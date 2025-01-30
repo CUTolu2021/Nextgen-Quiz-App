@@ -44,4 +44,39 @@ const quizSchema = new Schema({
     timestamps: true,
 });
 
-module.exports = model('Quiz', quizSchema);
+
+// Defining the schema for quiz attempt
+const quizAttemptSchema =  new mongoose.Schema({
+    attemptId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    quizId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quuiz',
+        required: true
+    },
+    startTime: {
+        type: Date,
+        default: Date.now
+    },
+    currentQuestion: {
+        type: Number,
+        required: true
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: true
+
+})
+
+module.exports = model(quizSchema, quizAttemptSchema);
