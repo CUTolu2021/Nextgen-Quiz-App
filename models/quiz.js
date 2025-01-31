@@ -111,4 +111,10 @@ const quizResponseSchema = new Schema({
     }
 })
 
-module.exports = model(quizSchema, quizAttemptSchema, quizResponseSchema);
+
+module.exports = {
+    Quiz: model('Quiz', quizSchema),
+    QuizAttempt: model('QuizAttempt', quizAttemptSchema),
+    QuizResponse: model('QuizResponse', quizResponseSchema)
+  };
+

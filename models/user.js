@@ -45,4 +45,4 @@ const userSchema = new Schema({
     timestamps: true, // Automatically manage createdAt and updatedAt fields
 });
 
-module.exports = model('User ', userSchema);
+module.exports = model('User', userSchema);
