@@ -88,7 +88,7 @@ exports.getQuizzes = async (req, res) => {
     }
 };
 //Implementing error handling for invalid parameters and add sorting by creation date.
-const Quiz = require('../models/Quiz');
+const Quiz = require('../models/quiz');
 
 exports.getQuizzes = async (req, res) => {
     try {
@@ -133,3 +133,79 @@ exports.getQuizzes = async (req, res) => {
         res.status(500).json({ message: "Error fetching quizzes", error: error.message });
     }
 };
+
+// GET /quiz/:quizId/score - Calculate and return user score
+module.exports = { getQuizScore };
+const express = require("express");
+const { getQuizScore } = require("../controllers/quiz");
+
+const router = express.Router();
+router.get("/quiz/:quizId/score", getQuizScore);
+
+module.exports = router;
+
+const Quiz = require("../models/quiz");
+const UserResponse = require("../models/UserResponse");
+
+const getQuizScore = async (req, res) => {
+    try {
+        const { quizId } = req.params;
+        const { userId } = req.query;
+
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        const userResponses = await UserResponse.find({ quizId, userId });
+        if (!userResponses.length) return res.status(404).json({ message: "No responses found" });
+
+        let score = 0;
+        quiz.questions.forEach(question => {
+            const userAnswer = userResponses.find(r => r.questionId.toString() === question._id.toString());
+            if (userAnswer && userAnswer.answer === question.correctAnswer) score++;
+        });
+
+        res.json({ quizId, userId, score, totalQuestions: quiz.questions.length });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+module.exports = { getQuizScore };
+
+//Update getQuizScore in the Controller
+const Quiz = require("../models/quiz");
+const UserResponse = require("../models/UserResponse");
+const QuizAttempt = require("../models/QuizAttempt"); // Import the new model
+
+const getQuizScore = async (req, res) => {
+    try {
+        const { quizId } = req.params;
+        const { userId } = req.query;
+
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        const userResponses = await UserResponse.find({ quizId, userId });
+        if (!userResponses.length) return res.status(404).json({ message: "No responses found" });
+
+        let score = 0;
+        quiz.questions.forEach(question => {
+            const userAnswer = userResponses.find(r => r.questionId.toString() === question._id.toString());
+            if (userAnswer && userAnswer.answer === question.correctAnswer) score++;
+        });
+
+        // Update or create a quiz attempt record for the user
+        await QuizAttempt.findOneAndUpdate(
+            { userId, quizId }, // Find by userId & quizId
+            { score, totalQuestions: quiz.questions.length, completedAt: new Date() }, // Update values
+            { upsert: true, new: true } // Create if not exists, return updated document
+        );
+
+        res.json({ quizId, userId, score, totalQuestions: quiz.questions.length });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+module.exports = { getQuizScore };
+
