@@ -125,7 +125,7 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ username }, "password role email emailVerified active_status");
+        const user = await User.findOne({ username });
         
         if (!user) {
             return res.status( 401).json({ message: "User  not found" });
@@ -172,7 +172,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         const token = generateToken(user, "10m");
-        const resetLink = `http://127.0.0.1:5500/reset-password.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/reset-password?token=${token}`;
+        const resetLink = `${req.protocol}://${req.get('host')}/auth/verifyOTP?token=${token}`;//`http://127.0.0.1:5500/reset-password.html?token=${token}`;
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Hi ${user.username},\n\nClick the link to reset your password: ${resetLink}\n\nThis link is valid for 10 minutes.\nYour OTP is: ${OTP}\n\nIf you did not request this, please ignore this email.`);
 
@@ -188,9 +188,40 @@ const forgotPassword = async (req, res) => {
     }
 };
 
+// Verify OTP
+const verifyOTP = async (req, res) => {
+    const { OTP } = req.body;
+    const { token } = req.query;
+
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+        const user = await User.findById(decodedToken.userId, "password email emailVerificationToken");
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found, please register" });
+        }
+
+        if (user.emailVerificationToken !== OTP) {
+            return res.status(401).json({ message: "Invalid OTP" });
+        }
+
+        user.emailVerificationToken = null; // Clear the OTP after successful reset
+        await user.save();
+
+        return res.redirect(`/reset-password?token=${token}`);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Reset Password failed. Token may have expired",
+            error: err.message,
+        });
+    }
+};
+
 // Reset user password
 const resetPassword = async (req, res) => {
-    const { password, confirmPassword, OTP } = req.body;
+    const { password, confirmPassword } = req.body;
     const { token } = req.query;
 
     try {
@@ -209,12 +240,8 @@ const resetPassword = async (req, res) => {
             return res.status(400).json({ message: "Passwords do not match" });
         }
 
-        if (user.emailVerificationToken !== OTP) {
-            return res.status(401).json({ message: "Invalid OTP" });
-        }
-
         user.password = await hashPassword(password);
-        user.emailVerificationToken = null; // Clear the OTP after successful reset
+        
         await user.save();
 
         await sendEmail(user.email, 'Quizzy Application, Password Reset Confirmation', 'Your password has been successfully reset.');
@@ -253,5 +280,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     getProfile,
-    verifyEmail
+    verifyEmail,
+    verifyOTP
 };

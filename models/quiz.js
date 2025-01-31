@@ -12,9 +12,9 @@ const quizSchema = new Schema({
     },
     questions: [
         {
-          type: { type: Schema.Types.ObjectId, ref: 'Question' },
+            type: { type: Schema.Types.ObjectId, ref: 'Question' },
         },
-      ],
+    ],
     creatorId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -28,7 +28,7 @@ const quizSchema = new Schema({
         total_points: {
             type: Number,
             default: 0,
-        },    
+        },
     },
     active_status: {
         type: String,
@@ -46,25 +46,32 @@ const quizSchema = new Schema({
 
 
 // Defining the schema for quiz attempt
-const quizAttemptSchema =  new mongoose.Schema({
-    attemptId: {
-        type: String,
-        required: true,
-        unique: true
-    },
+const quizAttemptSchema = new Schema({
+    // attemptId: {
+    //     type: String,
+    //     required: true,
+    //     unique: true
+    // },
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     quizId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Quuiz',
+        type: Schema.Types.ObjectId,
+        ref: 'Quiz',
         required: true
     },
     startTime: {
         type: Date,
         default: Date.now
+    },
+    endTime: {
+        type: Date
+    },
+    score: {
+        type: Number,
+        default: 0
     },
     currentQuestion: {
         type: Number,
@@ -76,7 +83,32 @@ const quizAttemptSchema =  new mongoose.Schema({
     }
 }, {
     timestamps: true
-
 })
 
-module.exports = model(quizSchema, quizAttemptSchema);
+const quizResponseSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    questionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Question',
+        required: true
+    },
+    quizId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Quiz',
+        required: true
+    },
+    selectedAnswer: {
+        type: String,
+        required: true
+    },
+    isCorrect: {
+        type: Boolean,
+        required: true
+    }
+})
+
+module.exports = model(quizSchema, quizAttemptSchema, quizResponseSchema);
