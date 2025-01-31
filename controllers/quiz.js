@@ -1,3 +1,5 @@
+
+const {Quiz,QuizAttempt,QuizResponse} = require('../models/quiz');
 const Question = require('../models/question');
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -41,13 +43,51 @@ const addQuestions = async (req, res) => {
             quizId,
             point
         });
+        console.log(questionData)
 
         // Add the question to the quiz
         const quiz = await Quiz.findById(quizId);
         quiz.questions.push(questionData._id);
 
         // Get points for each question add them all together to get the total
-        const totalPoints = questionData.reduce((total, question) => total + question.point, 0);
+        const totalPoints = question.point;
+
+        // Update the points for the quiz
+        quiz.total_points = totalPoints;
+        await quiz.save();
+        res.status(201).json({ message: 'Question added successfully', questionData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to add question', error: error.message });
+    }
+};
+
+// Add new questions by quizid
+const addQuestionsByID = async (req, res) => {
+    const { question, option1, option2, option3, option4, correctAnswer, point } = req.body;
+    const {quizId} = req.params
+
+    // Validation
+    if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const questionData = await Question.create({
+            question,
+            options: [option1, option2, option3, option4],
+            correctAnswers: correctAnswer,
+            quizId,
+            point
+        });
+        console.log(questionData)
+
+        // Add the question to the quiz
+        const quiz = await Quiz.findById(quizId);
+        quiz.questions.push(questionData._id);
+
+        // Get points for each question add them all together to get the total
+        const totalPoints = question.point;
 
         // Update the points for the quiz
         quiz.total_points = totalPoints;
@@ -359,5 +399,6 @@ module.exports = {
     addQuestions,
     deleteQuizById,
     getQuizById,
-    updateQuiz
+    updateQuiz,
+    addQuestionsByID
 };

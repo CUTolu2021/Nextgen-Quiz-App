@@ -1,6 +1,5 @@
-const quizAttemptSchema = require('../models/quiz');
+const {QuizAttempt, Quiz, QuizResponse} = require('../models/quiz');
 const User = require('../models/user');
-const Quiz = require('../models/quiz');
 const Question = require('../models/question');
 
 const startQuiz = async (req, res) => {
