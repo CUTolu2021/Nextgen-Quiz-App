@@ -45,7 +45,7 @@ const quizSchema = new Schema({
 });
 
 
-// Defining the schema for quiz attempt
+//Defining the schema for quiz attempt
 const quizAttemptSchema = new Schema({
     // attemptId: {
     //     type: String,
@@ -110,5 +110,8 @@ const quizResponseSchema = new Schema({
         required: true
     }
 })
-
-module.exports = model(quizSchema, quizAttemptSchema, quizResponseSchema);
+module.exports = {
+    Quiz: model('Quiz', quizSchema),
+    QuizAttempt: model('QuizAttempt', quizAttemptSchema),
+    QuizResponse: model('QuizResponse', quizResponseSchema)
+  };
