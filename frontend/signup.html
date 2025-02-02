@@ -6,7 +6,7 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: "Inter", sans-serif;
             background-color: #f3e9ff;
             display: flex;
             justify-content: center;
@@ -88,22 +88,24 @@
             font-size: 14px;
         }
         .form-group .password-input {
-            display: flex;
-            align-items: center;
+            position: relative; /* Changed to relative for proper positioning */
         }
         .form-group .password-input input {
-            flex: 1;
-            border-right: none;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+            padding-right: 40px; /* Add padding to prevent text overlap with icons */
         }
-        .form-group .password-input .toggle-password {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-left: none;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
+        .form-group .toggle-password {
+            position: absolute;
+            right: 10px; /* Position the toggle icon */
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
+        }
+        .form-group .lock-icon {
+            position: absolute;
+            left: 10px; /* Position the lock icon */
+            top: 50%;
+            transform: translateY(-50%);
+            transition: opacity 0.3s; /* Smooth transition for opacity */
         }
         .password-strength {
             display: flex;
@@ -171,7 +173,7 @@
             <h2>Create Account</h2>
             <p>Start your journey with us</p>
             <div class="google-btn">
-                <img alt="Google logo" height="20" src="https://storage.googleapis.com/a1aa/image/iO0VYV7A7Bj6ur7BOhqomQdNlx5uxHIJdOF2raHHuis.jpg" width="20"/>
+                <img alt="Google logo" height="20" src="https://storage.googleapis.com/a1aa/image/i_foqQaFop5J-mcfDZ5rAGxAJUzz4wGsu2-XmdbPhxM.jpg" width="20"/>
                 <span>Continue with Google</span>
             </div>
             <form id="signup-form">
@@ -186,8 +188,9 @@
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="password-input">
-                        <input id="password" placeholder="Password" type="password" required/>
-                        <div class="toggle-password">
+                        <i id="lock-icon" class="fas fa-lock lock-icon"></i>
+                        <input id="password" placeholder="Password" type="password" required oninput="hideLockIcon()"/>
+                        <div class="toggle-password" onclick="togglePasswordVisibility()">
                             <i class="fas fa-eye"></i>
                         </div>
                     </div>
@@ -202,17 +205,23 @@
                 </div>
                 <button type="submit" class="sign-up-btn">Sign Up</button>
                 <div class="sign-in-link">
-                    Already have an account? <a href="#" id="go-to-login-btn">Sign In</a>
+                    Already have an account? <a href="signin.html" id="go-to-login-btn">Sign In</a>
                 </div>
             </form>
             <div id="message" class="message"></div>
         </div>
     </div>
     <script>
+        // Update the Google button click event
+        document.querySelector('.google-btn').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default behavior
+            window.location.href = 'coming-soon.html'; // Redirect to the coming soon page
+        });
+
         const goToLoginBtn = document.getElementById('go-to-login-btn');
         goToLoginBtn.addEventListener('click', (e) => {
             e.preventDefault(); // Prevent default anchor behavior
-            window.location.href = 'login.html';
+            window.location.href = 'signin.html';
         });
 
         const form = document.getElementById('signup-form');
@@ -225,48 +234,53 @@
             const password = document.getElementById('password').value;
 
             // Clear previous messages
-            messageDiv.textContent = '';
-            messageDiv.className = '';
+            messageDiv.textContent = "";
+            messageDiv.className = "";
 
-            fetch('http://localhost:8000/auth/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            fetch("http://localhost:8000/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),
             })
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
-                    messageDiv.textContent = 'Signup successful! Please check your email to verify your account.';
-                    messageDiv.className = 'success';
+                    messageDiv.textContent = "Signup successful! Please check your email to verify your account.";
+                    messageDiv.className = "success";
                     form.reset(); // Reset the form fields
                 } else {
                     messageDiv.textContent = data.message; // Display error message from backend
-                    messageDiv.className = 'error';
+                    messageDiv.className = "error";
                 }
             })
             .catch((err) => {
                 console.error(err);
                 messageDiv.textContent = 'An error occurred. Please try again later.';
-                messageDiv.className = 'error';
+                messageDiv.className = "error";
             });
         });
 
         // Toggle password visibility
-        const togglePassword = document.querySelector('.toggle-password');
-        const passwordInput = document.getElementById('password');
-
-        togglePassword.addEventListener('click', () => {
+        const togglePasswordVisibility = () => {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password i');
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            togglePassword.querySelector('i').classList.toggle('fa-eye-slash');
-        });
+            toggleIcon.classList.toggle('fa-eye-slash');
+        };
+
+        // Hide lock icon when typing
+        const hideLockIcon = () => {
+            const lockIcon = document.getElementById('lock-icon');
+            lockIcon.style.opacity = "0"; // Hide the lock icon smoothly
+        };
 
         // Password strength meter
         const passwordStrengthText = document.querySelector('.password-strength-text');
         const passwordStrengthBars = document.querySelectorAll('.password-strength div');
 
-        passwordInput.addEventListener('input', () => {
-            const password = passwordInput.value;
+        document.getElementById('password').addEventListener('input', () => {
+            const password = document.getElementById('password').value;
             let strength = 0;
 
             if (password.length > 6) strength++;
@@ -284,15 +298,15 @@
             });
 
             if (strength === 0) {
-                passwordStrengthText.textContent = 'Password Strength: Too Weak';
+                passwordStrengthText.textContent = "Password Strength: Too Weak";
             } else if (strength === 1) {
-                passwordStrengthText.textContent = 'Password Strength: Too Easy';
+                passwordStrengthText.textContent = "Password Strength: Too Easy";
             } else if (strength === 2) {
-                passwordStrengthText.textContent = 'Password Strength: Medium';
+                passwordStrengthText.textContent = "Password Strength: Medium";
             } else if (strength === 3) {
-                passwordStrengthText.textContent = 'Password Strength: Strong';
+                passwordStrengthText.textContent = "Password Strength: Strong";
             } else {
-                passwordStrengthText.textContent = 'Password Strength: Very Strong';
+                passwordStrengthText.textContent = "Password Strength: Very Strong";
             }
         });
     </script>

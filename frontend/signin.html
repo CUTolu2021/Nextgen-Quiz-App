@@ -33,11 +33,9 @@
             // Clear previous messages
             messageDiv.textContent = '';
             messageDiv.className = '';
-
            
                 await fetch('http://localhost:8000/auth/login', {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }), // Assuming username is the email
                 })
@@ -70,7 +68,7 @@
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold text-center">Sign In</h2>
         <p class="text-center text-gray-500 mb-6">Welcome back!</p>
-        <button class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-4">
+        <button class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-4" onclick="window.location.href='coming-soon signin.html'">
             <img alt="Google logo with a colorful G" class="mr-2" height="20" src="https://storage.googleapis.com/a1aa/image/i_foqQaFop5J-mcfDZ5rAGxAJUzz4wGsu2-XmdbPhxM.jpg" width="20"/>
             Continue with Google
         </button>
@@ -89,14 +87,14 @@
                 </div>
             </div>
             <div class="text-right mb-4">
-                <a class="text-purple-500" href="#">Forgot Password</a>
+                <a class="text-purple-500" href="forgotpassword.html">Forgot Password</a>
             </div>
             <button type="submit" class="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600">Sign In</button>
         </form>
         <div id="message" class="text-center mt-4"></div>
         <div class="text-center mt-4">
             <span class="text-gray-500">Don’t have an account?</span>
-            <a class="text-purple-500" href="#">Sign Up</a>
+            <a class="text-purple-500" href="signup.html">Sign Up</a>
         </div>
     </div>
 </body>
