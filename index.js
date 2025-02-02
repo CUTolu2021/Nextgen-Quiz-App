@@ -13,6 +13,7 @@ const passport = require('passport');
 const multer = require('multer');
 const { uploadToCloudinary } = require('./utils/cloudinary');
 const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -67,7 +68,10 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 
-
+app.use(cors({
+    origin: 'http://127.0.0.1:5500',
+    credentials: true
+}))
 // Routes
 app.get("/", (req, res) => {
     res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
