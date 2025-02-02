@@ -13,7 +13,6 @@ const passport = require('passport');
 const multer = require('multer');
 const { uploadToCloudinary } = require('./utils/cloudinary');
 const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
-const cors = require('cors');
 
 dotenv.config();
 
@@ -68,7 +67,6 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 
-app.use(cors());
 
 // Routes
 app.get("/", (req, res) => {

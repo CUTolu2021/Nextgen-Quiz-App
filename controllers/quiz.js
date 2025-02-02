@@ -1,10 +1,8 @@
-
 const {Quiz,QuizAttempt,QuizResponse} = require('../models/quiz');
 const Question = require('../models/question');
 const fs = require('fs');
 const csv = require('csv-parser');
 
-const {Quiz,QuizAttempt,QuizResponse} = require('../models/quiz');
 
 // Create a new quiz
 const createQuiz = async (req, res) => {
