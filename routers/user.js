@@ -4,7 +4,7 @@ const { getUserById, getAllUsers, updateUserById, deleteUserById } = require('..
 const { verifyJWTAuthToken, restrictToUser } = require('../middleware/auth');
 
 
-route.get('/', verifyJWTAuthToken, getAllUsers);
+route.get('/', getAllUsers);
 route.get('/:id', verifyJWTAuthToken, getUserById);
 route.patch('/', verifyJWTAuthToken, updateUserById);
 route.delete('/:id', verifyJWTAuthToken, restrictToUser, deleteUserById);

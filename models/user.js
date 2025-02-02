@@ -3,19 +3,19 @@ const { Schema, model } = require('mongoose');
 const userSchema = new Schema({
     username: {
         type: String,
-        unique: true, // Simplified unique definition
+        unique: [true, 'Username already Taken'],
         required: [true, 'Username is required'],
-        trim: true, // Trim whitespace from the username
-        minlength: [3, 'Username must be at least 3 characters long'], // Consider a minimum length for usernames
+        trim: true, 
+        minlength: [3, 'Username must be at least 3 characters long'],
     },
     email: {
         type: String,
-        unique: true, // Simplified unique definition
+        unique: [true, 'Email already Taken'],
         required: [true, 'Email is required'],
-        lowercase: true, // Store emails in lowercase for consistency
-        trim: true, // Trim whitespace from the email
+        lowercase: true, 
+        trim: true, 
         validate: {
-            validator: (v) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v), // Basic email regex validation
+            validator: (v) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v),
             message: 'Invalid email format',
         },
     },

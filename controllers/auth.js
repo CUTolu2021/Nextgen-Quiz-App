@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../models/user')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
@@ -44,6 +44,7 @@ const signup = async (req, res) => {
     if (!validator.isEmail(email)) {
         return res.status(400).json({ message: 'Invalid email address' });
     }
+    console.log(username, email, password, role);
 
     try {
         const existingUser  = await User.findOne({ email });
@@ -57,7 +58,7 @@ const signup = async (req, res) => {
             } else {
                 const token = generateToken(existingUser, "10m");
                 
-                const verificationLink = `http://127.0.0.1:5500/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+                const verificationLink = `http://127.0.0.1:5500/frontend/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
                 await sendEmail(existingUser .email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
                 return res.status(200).json({ message: "Email already exists, please verify your email. A verification link has been sent to your email." });
             }
@@ -70,7 +71,7 @@ const signup = async (req, res) => {
 
         const token = generateToken(newUser);
 
-        const verificationLink = `http://127.0.0.1:5500/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+        const verificationLink = `http://127.0.0.1:5500/frontend/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
 
         await sendEmail(newUser.email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
 
@@ -122,13 +123,13 @@ const verifyEmail = async (req, res) => {
 
 // User login
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ username });
-        
+        const user = await User.findOne({ email }, "password email emailVerified active_status");
+        console.log("User found:", user);
         if (!user) {
-            return res.status( 401).json({ message: "User  not found" });
+            return res.status(401).json({ message: "User not found" });
         }
         if (!user.emailVerified) {
             return res.status(401).json({ message: "Email not verified, please register again to get a new verification link" });
@@ -172,7 +173,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         const token = generateToken(user, "10m");
-        const resetLink = `${req.protocol}://${req.get('host')}/auth/verifyOTP?token=${token}`;//`http://127.0.0.1:5500/reset-password.html?token=${token}`;
+        const resetLink = `${req.protocol}://${req.get('host')}/auth/verifyOTP?token=${token}`;//`http://127.0.0.1:5500/frontend/passwordReset.html?token=${token}`;
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Hi ${user.username},\n\nClick the link to reset your password: ${resetLink}\n\nThis link is valid for 10 minutes.\nYour OTP is: ${OTP}\n\nIf you did not request this, please ignore this email.`);
 
