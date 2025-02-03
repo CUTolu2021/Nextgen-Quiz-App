@@ -1,0 +1,319 @@
+<html>
+<head>
+    <title>Quizzy - Create Account</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background-color: #f3e9ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .logo h1 {
+            font-size: 24px;
+            color: #7b2cbf;
+            margin: 0;
+        }
+        .card {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .card h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 10px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 20px;
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .google-btn span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s; /* Transition for input focus */
+        }
+        .form-group input:focus {
+            border-color: #7b2cbf; /* Purple highlight on focus */
+            outline: none; /* Remove default outline */
+        }
+        .form-group .password-input {
+            position: relative; /* Changed to relative for proper positioning */
+        }
+        .form-group .password-input input {
+            padding-right: 40px; /* Add padding to prevent text overlap with icons */
+        }
+        .form-group .toggle-password {
+            position: absolute;
+            right: 10px; /* Position the toggle icon */
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .form-group .lock-icon {
+            position: absolute;
+            left: 10px; /* Position the lock icon */
+            top: 50%;
+            transform: translateY(-50%);
+            transition: opacity 0.3s; /* Smooth transition for opacity */
+        }
+        .password-strength {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .password-strength div {
+            width: 18%;
+            height: 5px;
+            background-color: #ccc;
+            border-radius: 5px;
+        }
+        .password-strength div.active {
+            background-color: #7b2cbf;
+        }
+        .password-strength-text {
+            text-align: left;
+            color: #666;
+            margin-top: 5px;
+        }
+        .sign-up-btn {
+            background-color: #7b2cbf;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .sign-up-btn:hover {
+            background-color: #6a23a8;
+        }
+        .sign-in-link {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+        }
+        .sign-in-link a {
+            color: #7b2cbf;
+            text-decoration: none;
+        }
+        .sign-in-link a:hover {
+            text-decoration: underline;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img alt="Quizzy logo" height="40" src="https://storage.googleapis.com/a1aa/image/H7LBw4xJl0UdxIJBNWeHPlIuN9ZtxMFlci2WqyTRb9c.jpg" width="40"/>
+            <h1>QUIZZY</h1>
+        </div>
+        <div class="card">
+            <h2>Create Account</h2>
+            <p>Start your journey with us</p>
+            <div class="google-btn">
+                <img alt="Google logo" height="20" src="https://storage.googleapis.com/a1aa/image/iO0VYV7A7Bj6ur7BOhqomQdNlx5uxHIJdOF2raHHuis.jpg" width="20"/>
+                <span>Continue with Google</span>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="email">Create account with email</label>
+                    <input id="email" placeholder="Email" type="email" required/>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input id="username" placeholder="Username" type="text" required/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input">
+                        <i id="lock-icon" class="fas fa-lock lock-icon"></i>
+                        <input id="password" placeholder="Password" type="password" required oninput="hideLockIcon()"/>
+                        <div class="toggle-password" onclick="togglePasswordVisibility()">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                    </div>
+                    <div class="password-strength">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <div class="password-strength-text">Password Strength: Too Weak</div>
+                </div>
+                <button type="submit" class="sign-up-btn">Sign Up</button>
+                <div class="sign-in-link">
+                    Already have an account? <a href="signin.html" id="go-to-login-btn">Sign In</a>
+                </div>
+            </form>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+    <script>
+        // Update the Google button click event
+        document.querySelector('.google-btn').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default behavior
+            window.location.href = 'coming-soon.html'; // Redirect to the coming soon page
+        });
+
+        const goToLoginBtn = document.getElementById('go-to-login-btn');
+        goToLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default anchor behavior
+            window.location.href = 'signin.html';
+        });
+
+        const form = document.getElementById('signup-form');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Clear previous messages
+            messageDiv.textContent = "";
+            messageDiv.className = "";
+
+            fetch("http://localhost:8000/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password }),
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success) {
+                    messageDiv.textContent = "Signup successful! Please check your email to verify your account.";
+                    messageDiv.className = "success";
+                    form.reset(); // Reset the form fields
+                } else {
+                    messageDiv.textContent = data.message; // Display error message from backend
+                    messageDiv.className = "error";
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                messageDiv.textContent = 'An error occurred. Please try again later.';
+                messageDiv.className = "error";
+            });
+        });
+
+        // Toggle password visibility
+        const togglePasswordVisibility = () => {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            toggleIcon.classList.toggle('fa-eye-slash');
+        };
+
+        // Hide lock icon when typing
+        const hideLockIcon = () => {
+            const lockIcon = document.getElementById('lock-icon');
+            lockIcon.style.opacity = "0"; // Hide the lock icon smoothly
+        };
+
+        // Password strength meter
+        const passwordStrengthText = document.querySelector('.password-strength-text');
+        const passwordStrengthBars = document.querySelectorAll('.password-strength div');
+
+        document.getElementById('password').addEventListener('input', () => {
+            const password = document.getElementById('password').value;
+            let strength = 0;
+
+            if (password.length > 6) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            if (password.length > 12) strength++;
+
+            passwordStrengthBars.forEach((bar, index) => {
+                if (index < strength) {
+                    bar.classList.add('active');
+                } else {
+                    bar.classList.remove('active');
+                }
+            });
+
+            if (strength === 0) {
+                passwordStrengthText.textContent = "Password Strength: Too Weak";
+            } else if (strength === 1) {
+                passwordStrengthText.textContent = "Password Strength: Too Easy";
+            } else if (strength === 2) {
+                passwordStrengthText.textContent = "Password Strength: Medium";
+            } else if (strength === 3) {
+                passwordStrengthText.textContent = "Password Strength: Strong";
+            } else {
+                passwordStrengthText.textContent = "Password Strength: Very Strong";
+            }
+        });
+    </script>
+</body>
+</html>

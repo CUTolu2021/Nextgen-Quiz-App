@@ -31,62 +31,46 @@
             <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
         </div>
         <button onclick="verifyCode()" class="bg-purple-600 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition duration-300">Verify Code</button>
-        <p class="text-center text-gray-600 mt-4">Didn't receive code? <a href="#" onclick="resendCode()" class="text-purple-600 font-semibold hover:underline">Resend</a></p>
+        <p class="text-center text-gray-600 mt-4">Didn't receive code? <a href="forgotpassword.html" class="text-purple-600 font-semibold hover:underline">Resend</a></p>
     </div>
 
     <script>
         async function verifyCode() {
-            const inputs = document.querySelectorAll('.input-box');
-            let OTP = '';
-            inputs.forEach(input => OTP += input.value);
+    const inputs = document.querySelectorAll('.input-box');
+    let OTP = '';
+    inputs.forEach(input => OTP += input.value);
 
-            const token = new URLSearchParams(window.location.search).get('token');
+    const token = new URLSearchParams(window.location.search).get('token');
 
-            try {
-                const response = await fetch('/api/verify-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ OTP }),
-                    query: JSON.stringify({ token })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert("Code has been verified!");
-                    window.location.href = `/reset-password?token=${token}`;
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while verifying the code.');
-            }
+    await fetch(`http://localhost:8000/auth/verifyOTP?token=${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ OTP }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-
-        async function resendCode() {
-            try {
-                const response = await fetch('/api/resend-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert("A new code has been sent to your email!");
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while resending the code.');
-            }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Code has been verified!');
+            // Redirect to the next step, e.g., new password input page
+            setTimeout(() => {
+            window.location.href = `newpasswordinput.html?token=${token}`; // Redirect to login after 5 seconds
+        }, 3000);
+        } else {
+            alert(data.message);
         }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('An error occurred: ' + err.message);
+    });
+}
     </script>
 </body>
 </html>
