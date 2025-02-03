@@ -163,17 +163,18 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
-        const user = await User.findOne({ email }, "email username");
+        const user = await User.findOne({ email }, "email username emailVerificationToken");
         if (!user) {
             return res.status(404).json({ message: "User not found, please register" });
         }
 
         const OTP = generateValidationToken();
         user.emailVerificationToken = OTP;
+        console.log('user otp is', user.emailVerificationToken);
         await user.save();
 
         const token = generateToken(user, "10m");
-        const resetLink = `${req.protocol}://${req.get('host')}/auth/verifyOTP?token=${token}`;//`http://127.0.0.1:5500/frontend/passwordReset.html?token=${token}`;
+        const resetLink = `http://127.0.0.1:5500/frontend/codeVerification.html?token=${token}`;
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Hi ${user.username},\n\nClick the link to reset your password: ${resetLink}\n\nThis link is valid for 10 minutes.\nYour OTP is: ${OTP}\n\nIf you did not request this, please ignore this email.`);
 
@@ -193,11 +194,13 @@ const forgotPassword = async (req, res) => {
 const verifyOTP = async (req, res) => {
     const { OTP } = req.body;
     const { token } = req.query;
+    console.log("OTP:", OTP);
 
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_KEY);
         const user = await User.findById(decodedToken.userId, "password email emailVerificationToken");
         
+        console.log("User found:", user);
         if (!user) {
             return res.status(404).json({ message: "User not found, please register" });
         }
@@ -205,12 +208,11 @@ const verifyOTP = async (req, res) => {
         if (user.emailVerificationToken !== OTP) {
             return res.status(401).json({ message: "Invalid OTP" });
         }
-
-        user.emailVerificationToken = null; // Clear the OTP after successful reset
-        await user.save();
-
-        return res.redirect(`/reset-password?token=${token}`);
-
+        if(user.emailVerificationToken === OTP){
+            user.emailVerificationToken = null; // Clear the OTP after successful reset
+            await user.save();
+    
+            return res.status(200).json({ message: "OTP verified successfully" });}
     } catch (err) {
         console.error(err);
         return res.status(500).json({
