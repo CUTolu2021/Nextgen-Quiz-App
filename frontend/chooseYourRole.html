@@ -1,0 +1,99 @@
+<html>
+<head>
+    <title>Choose Your Role</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        // Simulate user authentication status
+        const isAuthenticated = false; // Change this to true to simulate an authenticated user
+
+        function handleParticipantClick() {
+            if (isAuthenticated) {
+                window.location.href = 'participant-quizzes.html'; // Redirect to participant quizzes page
+            } else {
+                alert('You need to sign in to access this feature.');
+            }
+        }
+
+        function handleCreatorClick() {
+            if (isAuthenticated) {
+                window.location.href = 'create-quiz.html'; // Redirect to create quiz page
+            } else {
+                alert('You need to sign in to access this feature.');
+            }
+        }
+
+        function handleSignInClick() {
+            window.location.href = 'sign-in.html'; // Redirect to sign-in page
+        }
+    </script>
+</head>
+<body class="bg-purple-100 flex items-center justify-center min-h-screen">
+    <div class="text-center">
+        <h1 class="text-3xl font-bold mb-2">Choose Your Role</h1>
+        <p class="text-lg mb-8">Select how you'd love to use quizzy</p>
+        
+        <div class="space-y-6">
+            <!-- Participant Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 relative">
+                <div class="flex items-center mb-4">
+                    <div class="bg-purple-200 p-4 rounded-full">
+                        <i class="fas fa-user text-purple-600 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-xl font-semibold">Join as a participant</h2>
+                        <p class="text-gray-600">Take quizzes, challenge yourself and compete with others</p>
+                    </div>
+                </div>
+                <ul class="text-gray-600 mb-6">
+                    <li class="flex items-center mb-2">
+                        <i class="fas fa-th-list text-purple-600 mr-2"></i>
+                        Access diverse quiz categories
+                    </li>
+                    <li class="flex items-center mb-2">
+                        <i class="fas fa-trophy text-purple-600 mr-2"></i>
+                        Compete on leaderboards
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-users text-purple-600 mr-2"></i>
+                        Join quiz communities
+                    </li>
+                </ul>
+                <button onclick="handleParticipantClick()" class="bg-purple-600 text-white py-2 px-4 rounded-full w-full">Ready, Set, Quiz!</button>
+                <i onclick="handleParticipantClick()" class="fas fa-arrow-right text-purple-600 absolute top-6 right-6 text-xl cursor-pointer"></i>
+            </div>
+            
+            <!-- Creator Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 relative">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-200 p-4 rounded-full">
+                        <i class="fas fa-pen text-blue-600 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-xl font-semibold">Join as a creator</h2>
+                        <p class="text-gray-600">Create engaging quizzes and share knowledge with the world</p>
+                    </div>
+                </div>
+                <ul class="text-gray-600 mb-6">
+                    <li class="flex items-center mb-2">
+                        <i class="fas fa-pencil-alt text-blue-600 mr-2"></i>
+                        Create custom quizzes
+                    </li>
+                    <li class="flex items-center mb-2">
+                        <i class="fas fa-users text-blue-600 mr-2"></i>
+                        Build your audience
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                        Track participant performance
+                    </li>
+                </ul>
+                <button onclick="handleCreatorClick()" class="bg-blue-600 text-white py-2 px-4 rounded-full w-full">Create a Quiz</button>
+                <i onclick="handleCreatorClick()" class="fas fa-arrow-right text-blue-600 absolute top-6 right-6 text-xl cursor-pointer"></i>
+            </div>
+        </div>
+        
+        <p class="mt-8 text-gray-600">Already have an account? <a href="#" onclick="handleSignInClick()" class="text-blue-600">Sign In</a></p>
+    </div>
+</body>
+</html>
