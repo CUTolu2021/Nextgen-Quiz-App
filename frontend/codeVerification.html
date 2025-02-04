@@ -31,7 +31,7 @@
             <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
         </div>
         <button onclick="verifyCode()" class="bg-purple-600 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition duration-300">Verify Code</button>
-        <p class="text-center text-gray-600 mt-4">Didn't receive code? <a href="forgotpassword.html" class="text-purple-600 font-semibold hover:underline">Resend</a></p>
+        <p class="text-center text-gray-600 mt-4">Didn't receive code? <a href="/forgotpassword" class="text-purple-600 font-semibold hover:underline">Resend</a></p>
     </div>
 
     <script>
@@ -42,7 +42,7 @@
 
     const token = new URLSearchParams(window.location.search).get('token');
 
-    await fetch(`http://localhost:8000/auth/verifyOTP?token=${token}`, {
+    await fetch(`https://nextgen-quiz-app.vercel.app/auth/verifyOTP?token=${token}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -58,7 +58,7 @@
     .then(data => {
         console.log(data);
         alert(data.message);
-        window.location.href = `newpasswordinput.html?token=${token}`;
+        window.location.href = `/newpasswordinput?token=${token}`;
 
     })
     .catch(err => {

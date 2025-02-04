@@ -175,7 +175,7 @@
         <a href="#" class="cta blue" id="creator-link">Create a Quiz</a>
         <i class="fas fa-arrow-right arrow blue"></i>
       </div>
-      <div class="signin">Already have an account? <a href="signin.html">Sign In</a></div>
+      <div class="signin">Already have an account? <a href="/signin">Sign In</a></div>
     </div>
 
     <script>
@@ -187,7 +187,7 @@
 
       participantLink.addEventListener("click", () => {
         // Send request to API to update user's role to participant
-        fetch("http://localhost:8000/user", {
+        fetch("https://nextgen-quiz-app.vercel.app/user", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -200,7 +200,7 @@
             if(data.message === "User updated successfully!"){
                 localStorage.setItem('token', token);
                 alert("Role updated successfully!");
-                window.location.href = "dashboard.html";
+                window.location.href = "/dashboard";
             }else{
                 alert(`Role update failed!: ${data.message}`);
             }
@@ -209,7 +209,7 @@
 
       creatorLink.addEventListener("click", () => {
         // Send request to API to update user's role to creator
-        fetch("http://localhost:8000/user", {
+        fetch("https://nextgen-quiz-app.vercel.app/user", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -222,7 +222,7 @@
             if(data.message === "User updated successfully!"){
                 localStorage.setItem('token', token);
                 alert("Role updated successfully!");
-                window.location.href = "dashboard.html";
+                window.location.href = "/dashboard";
             }else{
                 alert(`Role update failed!: ${data.message}`);
             }

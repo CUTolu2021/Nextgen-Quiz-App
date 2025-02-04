@@ -58,7 +58,7 @@ const signup = async (req, res) => {
             } else {
                 const token = generateToken(existingUser, "10m");
                 
-                const verificationLink = `${req.protocol}://${req.get('host')}/frontend/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+                const verificationLink = `${req.protocol}://${req.get('host')}/verify-email?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
                 await sendEmail(existingUser .email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
                 return res.status(200).json({ message: "Email already exists, please verify your email. A verification link has been sent to your email." });
             }
@@ -71,7 +71,7 @@ const signup = async (req, res) => {
 
         const token = generateToken(newUser);
 
-        const verificationLink = `${req.protocol}://${req.get('host')}/frontend/verify-email.html?token=${token}`;//`usie 127:00.1:5500/frontend/verify-email.html?token=${token}`;//${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+        const verificationLink = `${req.protocol}://${req.get('host')}/verify-email?token=${token}`;//`usie 127:00.1:5500/frontend/verify-email?token=${token}`;//${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
 
         await sendEmail(newUser.email, 'Quizzy Email Verification', `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`);
 
@@ -174,7 +174,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         const token = generateToken(user, "10m");
-        const resetLink = `${req.protocol}://${req.get('host')}/frontend/codeVerification.html?token=${token}`;
+        const resetLink = `${req.protocol}://${req.get('host')}/codeVerification?token=${token}`;
 
         await sendEmail(user.email, 'Quizzy Password Reset', `Hi ${user.username},\n\nClick the link to reset your password: ${resetLink}\n\nThis link is valid for 10 minutes.\nYour OTP is: ${OTP}\n\nIf you did not request this, please ignore this email.`);
 
