@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Choose Your Role</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3e8ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .container h1 {
+        font-size: 2em;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .container p {
+        font-size: 1em;
+        color: #666;
+        margin: 10px 0 20px;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 600px;
+        margin: 20px 0;
+        padding: 20px;
+        text-align: left;
+        position: relative;
+      }
+
+      .card .icon {
+        font-size: 2em;
+        color: #6c63ff;
+        margin-right: 10px;
+      }
+
+      .card h2 {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 10px 0;
+      }
+
+      .card p {
+        font-size: 1em;
+        color: #666;
+        margin: 10px 0;
+      }
+
+      .card ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+      }
+
+      .card ul li {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+      }
+
+      .card ul li .fa {
+        color: #6c63ff;
+        margin-right: 10px;
+      }
+
+      .card .cta {
+        display: block;
+        text-align: center;
+        background-color: #6c63ff;
+        color: #fff;
+        padding: 10px;
+        border-radius: 0 0 10px 10px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+      }
+
+      .card .cta.blue {
+        background-color: #4a90e2;
+      }
+
+      .card .arrow {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5em;
+        color: #6c63ff;
+      }
+
+      .card .arrow.blue {
+        color: #4a90e2;
+      }
+
+      .signin {
+        margin-top: 20px;
+        font-size: 1em;
+      }
+
+      .signin a {
+        color: #6c63ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Choose Your Role</h1>
+      <p>Select how you'd love to use quizzy</p>
+      <div class="card">
+        <i class="fas fa-user icon"></i>
+        <h2>Join as a participant</h2>
+        <p>Take quizzes, challenge yourself and compete with others</p>
+        <ul>
+          <li>
+            <i class="fas fa-th-list" style="margin-right: 10px"></i> Access
+            diverse quiz categories
+          </li>
+          <li>
+            <i class="fas fa-trophy" style="margin-right: 10px"></i> Compete on
+            leaderboards
+          </li>
+          <li>
+            <i class="fas fa-users" style="margin-right: 10px"></i> Join quiz
+            communities
+          </li>
+        </ul>
+        <a href="#" class="cta" id="participant-link">Ready, Set, Quiz!</a>
+        <i class="fas fa-arrow-right arrow"></i>
+      </div>
+      <div class="card">
+        <i class="fas fa-pen icon blue"></i>
+        <h2>Join as a creator</h2>
+        <p>Create engaging quizzes and share knowledge with the world</p>
+        <ul>
+          <li>
+            <i class="fas fa-pencil-alt" style="margin-right: 10px"></i> Create
+            custom quizzes
+          </li>
+          <li>
+            <i class="fas fa-users" style="margin-right: 10px"></i> Build your
+            audience
+          </li>
+          <li>
+            <i class="fas fa-chart-line" style="margin-right: 10px"></i> Track
+            participant performance
+          </li>
+        </ul>
+        <a href="#" class="cta blue" id="creator-link">Create a Quiz</a>
+        <i class="fas fa-arrow-right arrow blue"></i>
+      </div>
+      <div class="signin">Already have an account? <a href="signin.html">Sign In</a></div>
+    </div>
+
+    <script>
+
+        const token = new URLSearchParams(window.location.search).get('token');
+      // Add event listeners to the buttons
+      const participantLink = document.getElementById("participant-link");
+      const creatorLink = document.getElementById("creator-link");
+
+      participantLink.addEventListener("click", () => {
+        // Send request to API to update user's role to participant
+        fetch("http://localhost:8000/user", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role: "Participant" }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
+          });
+      });
+
+      creatorLink.addEventListener("click", () => {
+        // Send request to API to update user's role to creator
+        fetch("http://localhost:8000/user", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role: "Creator" }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
+            // Handle response from API
+          })
+          .catch((error) => {
+            alert(`Role update failed!: ${error.message}`);
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
+</html>

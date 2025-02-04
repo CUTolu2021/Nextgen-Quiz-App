@@ -9,10 +9,18 @@ const morgan = require("morgan");
 const session = require('express-session');
 const passport_setup = require('./passport');
 const passport = require('passport');
+const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
+const cors = require('cors');
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+        origin: 'http://127.0.0.1:5500',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        credentials: true
+    }));
 
 // Swagger Setup
 const swaggerOptions = {

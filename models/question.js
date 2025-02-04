@@ -9,6 +9,7 @@ const QuestionSchema = new Schema({
     imageUrl: { type: String }, // Field for image URL
     videoUrl: { type: String },
     quizId: { type: Schema.Types.ObjectId, ref: 'Quiz', required: true },
+    point: { type: Number, default: 1 },
   });
   
   module.exports = model('Question', QuestionSchema);
