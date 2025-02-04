@@ -76,6 +76,18 @@ app.get("/verify-email", (req, res) => {
     res.sendFile(__dirname + '/frontend/verify-email.html');
 })
 
+app.get("/chooseYourRole", (req, res) => {
+    res.sendFile(__dirname + '/frontend/chooseYourRole.html');
+})
+
+app.get("/newpasswordinput", (req, res) => {
+    res.sendFile(__dirname + '/frontend/newpasswordinput.html');
+})
+
+app.get("/password-confirmation", (req, res) => {
+    res.sendFile(__dirname + '/frontend/passwordResetConfirm.html');
+})
+
 
 
 
