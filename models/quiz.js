@@ -43,6 +43,46 @@ const quizSchema = new Schema({
 }, {
     timestamps: true,
 });
+
+module.exports = model('Quiz', quizSchema);const { Schema, model } = require('mongoose');
+const UserResponse = require("../models/UserResponse");
+const quizScores = new Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    questions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Question',
+        },
+    ],
+    creator_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    settings: {
+        type: Object,
+        required: true,
+    },
+    active_status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active',
+    },
+    status: {
+        type: String,
+        enum: ['Published', 'Draft'],
+        default: 'Draft',
+    },
+}, {
+    timestamps: true,
+});
 // Fetching all quizzes
 
 const quiz = new mongoose.Schema({
@@ -51,19 +91,6 @@ const quiz = new mongoose.Schema({
   description: { type: String, required: true },
 });
 
-
-
-//Implement GET /quiz/:quizId/score to calculate the user’s score during or after the quiz.
-const quizScores = new mongoose.Schema({
-    title: String,
-    questions: [
-        {
-            questionText: String,
-            options: [String],
-            correctAnswer: String,
-        }
-    ]
-});
 
 
 
@@ -78,5 +105,3 @@ const quizAttemptSchema = new mongoose.Schema({
 
 module.exports = mongoose.model(quizAttemptSchema, quiz, quizScores);
 
-
-module.exports = model('Quiz', quizSchema);
