@@ -175,7 +175,7 @@
         <a href="#" class="cta blue" id="creator-link">Create a Quiz</a>
         <i class="fas fa-arrow-right arrow blue"></i>
       </div>
-      <div class="signin">Already have an account? <a href="#">Sign In</a></div>
+      <div class="signin">Already have an account? <a href="signin.html">Sign In</a></div>
     </div>
 
     <script>
@@ -193,17 +193,17 @@
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify({ role: "participant" }),
+          body: JSON.stringify({ role: "Participant" }),
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
-            alert("Role participant updated successfully!");
-            window.location.href = "dashboard.html";
-            // Handle response from API
-          })
-          .catch((error) => {
-            console.error(error);
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
           });
       });
 
@@ -215,16 +215,21 @@
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify({ role: "creator" }),
+          body: JSON.stringify({ role: "Creator" }),
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
-            alert("Role updated successfully!");
-            window.location.href = "dashboard.html";
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
             // Handle response from API
           })
           .catch((error) => {
+            alert(`Role update failed!: ${error.message}`);
             console.error(error);
           });
       });

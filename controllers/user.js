@@ -34,13 +34,13 @@ const updateUserById = async (req, res) => {
         const { userId } = req.user;
         const user = await User.findByIdAndUpdate(userId, req.body, { new: true }, { password: 0 , __v: 0, createdAt: 0, updatedAt: 0 });
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
         if(req.body.password){
             user.password = hashPassword(req.body.password);
             await user.save();
         }
-        res.status(200).json(user);
+        res.status(200).json({ message: 'User updated successfully', data: user });
     } catch (error) {
         res.status(500).json({ 
             message: "Failed to update user",
