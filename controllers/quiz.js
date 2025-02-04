@@ -1,45 +1,343 @@
-const Quiz = require('./models/Quiz'); //Import the quiz model
+const Quiz = require('../models/quiz');
+const Question = require('../models/question');
+const fs = require('fs');
+const csv = require('csv-parser');
 
-// post route to create a new quiz
-app.post('/quizzes', async(req,res) =>{
-    try{
-        const{title, questions} = req.body;
-
-        //validate the title and qeuestions provided
-        if (!title || !Array.isArray(questions) || questions.length === 0) {
-            return res.status(400).json({ message: 'Title and questions are required' });
-         }
-
-        //  Ensure each question contains text data
-        for (const question of questions) {
-            if (!question.questionText || !question.answerText){
-                return res.status(400).json({ message: 'Each question must have both qeustionText and answerText.' });
-            }
+// Create a new quiz
+const createQuiz = async (req, res) => {
+    try {
+        const { title, description, settings } = req.body;
+        if (!title || !description || !settings) {
+            return res.status(400).json({ message: 'Title, description, and settings are required' });
         }
-
-        // create a new quiz document and save it
-        const newQuiz = newQuiz({title, questions});
-        await newQuiz.save();
-        res.status(201).json(newQuiz); //Respond with the created Quiz
-    } 
-    catch (error) {
-        res.status(500).json({message: 'An error occured while creating the quiz.', error});
+        const quiz = await Quiz.create({ title, description, settings, creatorId: req.user.userId });
+        req.session.quizId = quiz._id; // Save the quiz ID in the session
+        console.log(req.session);
+        res.status(201).json({ message: 'Quiz created successfully', quiz });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-})
-// controller function for fetching the all the quizzes
-const Quiz = require("../models/Quiz");
-
-// Fetch all quizzes
-const getQuizzes = async (req, res) => {
-  try {
-    const quizzes = await Quiz.find();
-    res.json(quizzes);
-  } catch (error) {
-    res.status(500).json({ message: "Server Error" });
-  }
 };
 
-// Add a new quiz
+const addQuestions = async (req, res) => {
+    try {
+        const { question, option1, option2, option3, option4, correctAnswer } = req.body;
+        const quizId = req.session.quizId;  // Get the quiz ID from the user object
+        if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+        const questionData = await Question.create({ question, options: [option1, option2, option3, option4], correctAnswers: correctAnswer, quizId });
+        res.status(201).json({ message: 'Question added successfully', questionData });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+        }
+}
+
+// Upload CSV and create questions
+const uploadCSV = async (req, res) => {
+    const quizId = req.session.quizId;  // Get the quiz ID from the user object
+    const results = [];
+
+    //check if the user logged in is the one that created the quiz
+    const quiz = await Quiz.findById(quizId, 'creatorId questions');
+    if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+    }
+    if (quiz.creatorId.toString() !== req.user.userId) {
+        return res.status(403).json({ message: 'Unauthorized to update this quiz' });
+    }
+    console.log("Current", quiz)
+
+    // Check if a file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Parse the CSV file
+    fs.createReadStream(req.file.path)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            try {
+                // Create questions from the parsed data
+                const questions = results.map(item => ({
+                    question: item.question,
+                    options: [item.option1, item.option2, item.option3, item.option4],
+                    correctAnswers: item.correctAnswers, // Split by comma for multiple answers
+                    isMultipleChoice: item.isMultipleChoice === 'true',
+                    imageUrl: item.imageUrl || null, // Optional image URL
+                    videoUrl: item.videoUrl || null,  // Optional video URL
+                    quizId
+                }));
+
+                let checkQuestion = await Question.create(questions);
+                console.log(checkQuestion)
+
+                quiz.questions.push(...checkQuestion.map(question => question._id));
+                await quiz.save();
+
+                // Clean up the uploaded file
+                fs.unlinkSync(req.file.path); // Delete the file after processing
+
+                res.status(200).json({ message: 'Questions added successfully', quiz });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        });
+};
+
+//new function for upload questions using a patch request
+const uploadQuestions = async (req, res) => {
+    const quizId = req.params.quizId;
+    const results = [];
+
+    //check if the user logged in is the one that created the quiz
+    const quiz = await Quiz.findById(quizId, 'creatorId questions');
+    if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+    }
+    if (quiz.creatorId.toString() !== req.user.userId) {
+        return res.status(403).json({ message: 'Unauthorized to update this quiz' });
+    }
+    console.log("Current", quiz)
+
+    // Check if a file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+    // Parse the CSV file
+    fs.createReadStream(req.file.path)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            try {
+                // Create questions from the parsed data
+                const questions = results.map(item => ({
+                    question: item.question,
+                    options: [item.option1, item.option2, item.option3, item.option4],
+                    correctAnswers: item.correctAnswers, // Split by comma for multiple answers
+                    isMultipleChoice: item.isMultipleChoice === 'true',
+                    imageUrl: item.imageUrl || null, // Optional image URL
+                    videoUrl: item.videoUrl || null,  // Optional video URL
+                    quizId
+                }));
+                console.log(questions)
+
+                //upload the question in the question db and add them to the question array from the quiz model
+                let checkQuestion = await Question.create(questions);
+                console.log(checkQuestion)
+
+                quiz.questions.push(...checkQuestion.map(question => question._id));
+                await quiz.save();
+                // Clean up the uploaded file
+                fs.unlinkSync(req.file.path); // Delete the file after processing
+                res.status(200).json({ message: 'Questions added successfully', quiz });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        });
+};
+
+//find a question from a specify quiz and update the image link
+const updateQuestionImage = async (req, res) => {
+    try {
+        const { quizId, questionId } = req.params;
+        const result = await uploadToCloudinary(req.file.path);
+        const newImage = new Image({ url: result.url, publicId: result.publicId });
+        await newImage.save();
+        const imageUrl = newImage.url;
+
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+
+        const question = quiz.questions.find(q => q._id.toString() === questionId);
+        if (!question) {
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        question.imageUrl = imageUrl;
+        await quiz.save();
+
+        res.status(200).json({ message: 'Question image updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+//Monica Updated
+const getQuizzes = async (req, res) => {
+    try {
+        let { page, limit } = req.query;
+
+        // Validate query parameters
+        if (page && isNaN(page)) {
+            return res.status(400).json({ message: "Invalid 'page' parameter. It must be a number. Please try Again!" });
+        }
+        if (limit && isNaN(limit)) {
+            return res.status(400).json({ message: "Invalid 'limit' parameter. It must be a number. Please try Again!" });
+        }
+
+        // Convert to numbers and set defaults
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 10;
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).json({ message: "'page' and 'limit' must be greater than 0." });
+        }
+
+        const skip = (page - 1) * limit;
+
+        // Fetch quizzes with pagination
+       // const quizzes = await Quiz.find().skip(skip).limit(limit);
+        const quizzes = await Quiz.find({ active_status: 'active' })
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .skip(skip)
+            .limit(limit);
+
+        // Get total count for pagination metadata
+        const total = await Quiz.countDocuments();
+
+        res.json({
+            message:`Total number of quizzes is ${total}. You are on page ${page}, a page is limited to ${limit} items, There are ${Math.ceil(total/limit)} pages in total.`,
+            data: quizzes
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching quizzes", error });
+    }
+};
+
+//get questions by quiz id
+const getQuestionByQuizId = async (req, res) => {
+    try { 
+        const { quizId } = req.params;
+        const quiz = await Quiz.findById(quizId).populate('questions');
+        if (!quiz || quiz.active_status === 'inactive') {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        let quizQuestions = [];
+        for (const question of quiz.questions) {
+            const questionData = await Question.findById(question._id);
+            if (questionData) {
+                quizQuestions.push(questionData);
+            }
+        }
+        res.json(quizQuestions);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+//Get Quiz by ID (GET /quizzes/:id)
+const getQuizById = async (req, res) => {
+    //Controller function to fetch a quiz by its ID
+    const { id } = req.params;
+
+    try {
+        //Validate ID format
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid quiz ID format' 
+            });
+        }
+
+        //Fetch quiz with questions
+        const quiz = await Quiz.findById(id)
+            .populate({
+                path: 'questions',
+                model: 'Question'
+            });
+
+        // Check if quiz exists
+        if (!quiz) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Quiz not found' 
+            });
+        }
+
+        // Prepare full quiz response with complete question details
+        res.status(200).json({
+            success: true,
+            quiz: {
+                ...quiz.toObject(), // Convert Mongoose document to plain object
+                questions: quiz.questions // Include full questions array
+            }
+        });
+
+
+    } catch (error) {
+        //Comprehensive error handling
+        console.error('Error fetching quiz:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'An error occurred while fetching the quiz',
+            error: error.message 
+        });
+    }
+};
+
+//update quiz by id
+
+//delete quiz by id
+const deleteQuizById = async (req, res) => {
+    try{
+        const { quizId } = req.params;
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        if (quiz.creatorId.toString() !== req.user.userId) {
+            return res.status(403).json({ message: 'Unauthorized to delete this quiz' });
+        }
+        quiz.active_status = 'inactive';
+        await quiz.save();
+        res.json({ message: 'Quiz deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+module.exports = { 
+    createQuiz, uploadCSV, updateQuestionImage, uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById 
+};
+
+
+// post route to create a new quiz** IRENE
+// app.post('/quizzes', async (req, res) => {
+//     try {
+//         const { title, questions } = req.body;
+
+//         //validate the title and qeuestions provided
+//         if (!title || !Array.isArray(questions) || questions.length === 0) {
+//             return res.status(400).json({ message: 'Title and questions are required' });
+//         }
+
+//         //  Ensure each question contains text data
+//         for (const question of questions) {
+//             if (!question.questionText || !question.answerText) {
+//                 return res.status(400).json({ message: 'Each question must have both qeustionText and answerText.' });
+//             }
+//         }
+
+//         // create a new quiz document and save it
+//         const newQuiz = newQuiz({ title, questions });
+//         await newQuiz.save();
+//         res.status(201).json(newQuiz); //Respond with the created Quiz
+//     }
+//     catch (error) {
+//         res.status(500).json({ message: 'An error occured while creating the quiz.', error });
+//     }
+// })
+
+
+
+// controller function for fetching the all the quizzes MONICA
+/*const Quiz = require("../models/Quiz");
 const createQuiz = async (req, res) => {
   try {
     const { question, title, description } = req.body;
@@ -132,80 +430,5 @@ exports.getQuizzes = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error fetching quizzes", error: error.message });
     }
+
 };
-
-// GET /quiz/:quizId/score - Calculate and return user score
-module.exports = { getQuizScore };
-const express = require("express");
-const { getQuizScore } = require("../controllers/quiz");
-
-const router = express.Router();
-router.get("/quiz/:quizId/score", getQuizScore);
-
-module.exports = router;
-
-const Quiz = require("../models/quiz");
-const UserResponse = require("../models/UserResponse");
-
-const getQuizScore = async (req, res) => {
-    try {
-        const { quizId } = req.params;
-        const { userId } = req.query;
-
-        const quiz = await Quiz.findById(quizId);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
-
-        const userResponses = await UserResponse.find({ quizId, userId });
-        if (!userResponses.length) return res.status(404).json({ message: "No responses found" });
-
-        let score = 0;
-        quiz.questions.forEach(question => {
-            const userAnswer = userResponses.find(r => r.questionId.toString() === question._id.toString());
-            if (userAnswer && userAnswer.answer === question.correctAnswer) score++;
-        });
-
-        res.json({ quizId, userId, score, totalQuestions: quiz.questions.length });
-    } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-
-module.exports = { getQuizScore };
-
-//Update getQuizScore in the Controller
-const Quiz = require("../models/quiz");
-const UserResponse = require("../models/UserResponse");
-const QuizAttempt = require("../models/QuizAttempt"); // Import the new model
-
-const getQuizScore = async (req, res) => {
-    try {
-        const { quizId } = req.params;
-        const { userId } = req.query;
-
-        const quiz = await Quiz.findById(quizId);
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
-
-        const userResponses = await UserResponse.find({ quizId, userId });
-        if (!userResponses.length) return res.status(404).json({ message: "No responses found" });
-
-        let score = 0;
-        quiz.questions.forEach(question => {
-            const userAnswer = userResponses.find(r => r.questionId.toString() === question._id.toString());
-            if (userAnswer && userAnswer.answer === question.correctAnswer) score++;
-        });
-
-        // Update or create a quiz attempt record for the user
-        await QuizAttempt.findOneAndUpdate(
-            { userId, quizId }, // Find by userId & quizId
-            { score, totalQuestions: quiz.questions.length, completedAt: new Date() }, // Update values
-            { upsert: true, new: true } // Create if not exists, return updated document
-        );
-
-        res.json({ quizId, userId, score, totalQuestions: quiz.questions.length });
-    } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-
-module.exports = { getQuizScore };
-

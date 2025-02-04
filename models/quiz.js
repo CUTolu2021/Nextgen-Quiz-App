@@ -1,28 +1,34 @@
 const { Schema, model } = require('mongoose');
-const UserResponse = require("../models/UserResponse");
+const QuestionSchema = require('./question');
+
 const quizSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        required: [true, 'Title is required'],
     },
     description: {
         type: String,
-        required: true,
+        required: [true, 'Description is required'],
     },
     questions: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Question',
+          type: { type: Schema.Types.ObjectId, ref: 'Question' },
         },
-    ],
-    creator_id: {
+      ],
+    creatorId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
     settings: {
-        type: Object,
-        required: true,
+        timer: {
+            type: Number,
+            default: 0,
+        },
+        points: {
+            type: Number,
+            default: 1,
+        },    
     },
     active_status: {
         type: String,
@@ -72,3 +78,5 @@ const quizAttemptSchema = new mongoose.Schema({
 
 module.exports = mongoose.model(quizAttemptSchema, quiz, quizScores);
 
+
+module.exports = model('Quiz', quizSchema);
