@@ -38,10 +38,29 @@ const connectWithRetry = async () => {
 connectWithRetry();
 
 // Routes
+// Serve the signin.html file when the root route is requested
 app.get("/", (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
+    res.sendFile(__dirname + '/frontend/signin.html');
 });
+
+// Serve other HTML files when other routes are requested
+app.get("/signup", (req, res) => {
+    res.sendFile(__dirname + '/frontend/signup.html');
+});
+
+app.get("/dashboard", (req, res) => {
+    res.sendFile(__dirname + '/frontend/dashboard.html');
+});
+
+app.get("/forgotpassword", (req, res) => {
+    res.sendFile(__dirname + '/frontend/forgotpassword.html');
+});
+
+app.get("/codeVerification", (req, res) => {
+    res.sendFile(__dirname + '/frontend/codeVerification.html');
+})
+
+
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/quizzes", verifyJWTAuthToken, quizRouter);
