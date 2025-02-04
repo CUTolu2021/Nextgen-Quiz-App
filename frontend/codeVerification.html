@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .input-box:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-purple-100 flex items-center justify-center min-h-screen">
+    <div class="absolute top-10 left-10 flex items-center space-x-2">
+        <div class="bg-purple-600 p-2 rounded">
+            <i class="fas fa-question text-white"></i>
+        </div>
+        <span class="text-purple-600 font-bold text-xl">QUIZZY</span>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-2">Enter Verification Code</h2>
+        <p class="text-gray-600 mb-6">We've sent a code to you</p>
+        <div class="flex space-x-2 justify-center mb-6">
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+            <input type="text" maxlength="1" class="w-12 h-12 border border-gray-300 rounded text-center text-xl input-box" />
+        </div>
+        <button onclick="verifyCode()" class="bg-purple-600 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition duration-300">Verify Code</button>
+        <p class="text-center text-gray-600 mt-4">Didn't receive code? <a href="forgotpassword.html" class="text-purple-600 font-semibold hover:underline">Resend</a></p>
+    </div>
+
+    <script>
+        async function verifyCode() {
+    const inputs = document.querySelectorAll('.input-box');
+    let OTP = '';
+    inputs.forEach(input => OTP += input.value);
+
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    await fetch(`http://localhost:8000/auth/verifyOTP?token=${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ OTP }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Check your verification code');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        alert(data.message);
+        window.location.href = `newpasswordinput.html?token=${token}`;
+
+    })
+    .catch(err => {
+        console.error(err);
+        alert('An error occurred: ' + err.message);
+    });
+}
+    </script>
+</body>
+</html>
