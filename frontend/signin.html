@@ -34,7 +34,7 @@
             messageDiv.textContent = '';
             messageDiv.className = '';
            
-                await fetch('http://nextgen-quiz-app.vercel.app/auth/login', {
+                await fetch('https://nextgen-quiz-app.vercel.app/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }), // Assuming username is the email
@@ -68,7 +68,7 @@
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold text-center">Sign In</h2>
         <p class="text-center text-gray-500 mb-6">Welcome back!</p>
-        <button class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-4" onclick="window.location.href='coming-soon-signin.html'">
+        <button class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-4" onclick="window.location.href='/coming-soon-signin'">
             <img alt="Google logo with a colorful G" class="mr-2" height="20" src="https://storage.googleapis.com/a1aa/image/i_foqQaFop5J-mcfDZ5rAGxAJUzz4wGsu2-XmdbPhxM.jpg" width="20"/>
             Continue with Google
         </button>

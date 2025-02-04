@@ -64,6 +64,20 @@ app.get("/codeVerification", (req, res) => {
     res.sendFile(__dirname + '/frontend/codeVerification.html');
 })
 
+app.get("/coming-soon-signin", (req, res) => {
+    res.sendFile(__dirname + '/frontend/coming-soon-signin.html');
+})
+
+app.get("/coming-soon", (req, res) => {
+    res.sendFile(__dirname + '/frontend/coming-soon.html');
+})
+
+app.get("/verify-email", (req, res) => {
+    res.sendFile(__dirname + '/frontend/verify-email.html');
+})
+
+
+
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
