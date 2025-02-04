@@ -34,7 +34,7 @@
             messageDiv.textContent = '';
             messageDiv.className = '';
            
-                await fetch('http://localhost:8000/auth/login', {
+                await fetch('http://nextgen-quiz-app.vercel.app/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password }), // Assuming username is the email

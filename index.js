@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-        origin: "http://127.0.0.1:5500",
+        origin: "https://nextgen-quiz-app.vercel.app",
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
@@ -40,6 +40,10 @@ connectWithRetry();
 // Routes
 // Serve the signin.html file when the root route is requested
 app.get("/", (req, res) => {
+    res.sendFile(__dirname + '/frontend/signin.html');
+});
+
+app.get("/signin", (req, res) => {
     res.sendFile(__dirname + '/frontend/signin.html');
 });
 

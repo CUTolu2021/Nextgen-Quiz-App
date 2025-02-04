@@ -303,20 +303,20 @@
 
       if (
         !token ||
-        (window.location.pathname === "/dashboard.html" && !token)
+        (window.location.pathname === "/dashboard" && !token)
       ) {
-        window.location.replace("signin.html");
+        window.location.replace("/signin");
       }
 
       if (token) {
-        fetch("http://localhost:8000/auth/me", {
+        fetch("http://nextgen-quiz-app.vercel.app/auth/me", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => res.json())
           .then((data) => {
             if (!data.user) {
-              window.location.replace("signin.html"); 
+              window.location.replace("/signin"); 
             }
             console.log(data);
             usernameElement.innerText = data.user.username;
