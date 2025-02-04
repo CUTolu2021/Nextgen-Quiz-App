@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-
+const UserResponse = require("../models/UserResponse");
 const quizSchema = new Schema({
     title: {
         type: String,
@@ -38,7 +38,6 @@ const quizSchema = new Schema({
     timestamps: true,
 });
 // Fetching all quizzes
-const mongoose = require("mongoose");
 
 const quiz = new mongoose.Schema({
   questions: { type: String, required: true },
@@ -46,20 +45,10 @@ const quiz = new mongoose.Schema({
   description: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Quiz", quiz);
-
-//Implement GET /quiz/:quizId/score to calculate the user’s scoreduring or after the quiz.
-const express = require("express");
-const mongoose = require("mongoose");
-const Quiz = require("../models/quiz"); // Assume this stores quiz questions & correct answers
-const UserResponse = require("../models/UserResponse"); // Assume this stores user answers
-
-const router = express.Router();
 
 
-const mongoose = require("mongoose");
-
-const quizSchema = new mongoose.Schema({
+//Implement GET /quiz/:quizId/score to calculate the user’s score during or after the quiz.
+const quizScores = new mongoose.Schema({
     title: String,
     questions: [
         {
@@ -70,11 +59,9 @@ const quizSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = mongoose.model("Quiz", quizSchema);
+
 
 //Creating quiz attempt, this model tracks each user's quiz attempts and stores the final score.
-const mongoose = require("mongoose");
-
 const quizAttemptSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
@@ -83,5 +70,5 @@ const quizAttemptSchema = new mongoose.Schema({
     completedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("QuizAttempt", quizAttemptSchema);
+module.exports = mongoose.model(quizAttemptSchema, quiz, quizScores);
 
