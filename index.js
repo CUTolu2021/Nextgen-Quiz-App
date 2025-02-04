@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-        origin: 'http://127.0.0.1:5500',
+        origin: 'https://nextgen-quiz-app.vercel.app',// 'http://127.0.0.1:5500',
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
@@ -74,7 +74,9 @@ connectWithRetry();
 
 // Routes
 app.get("/", (req, res) => {
-    res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
+    //i want this home route to take users to the signin html page located in the frontend folder 
+    res.redirect("./frontend/signin.html");
+    res.header("Access-Control-Allow-Origin", "http://nextgen-quiz-app.vercel.app");
 });
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
