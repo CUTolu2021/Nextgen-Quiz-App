@@ -12,7 +12,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="config.js"></script>
     <style>
       body {
         font-family: "Inter", sans-serif;
@@ -188,7 +187,7 @@
 
       participantLink.addEventListener("click", () => {
         // Send request to API to update user's role to participant
-        fetch(`${config.apiBaseUrl}/user`, {
+        fetch("http://localhost:8000/user", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

@@ -3,13 +3,8 @@ const mongoose = require("mongoose");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
 const quizRouter = require("./routers/quiz");
-const swaggerUi = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const session = require('express-session');
-const passport_setup = require('./passport');
-const passport = require('passport');
 const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
 const cors = require('cors');
 
@@ -18,40 +13,10 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-        origin: 'https://nextgen-quiz-app.vercel.app',// 'http://127.0.0.1:5500',
+        origin: "http://127.0.0.1:5500",
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
-
-// Swagger Setup
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: "Authentication for Quiz API",
-            description: "Authentication API Information",
-            contact: {
-                name: "Amazing Developer",
-            },
-        },
-            servers:[
-                {url:'http://localhost:8000/api'}, //you can change you server url
-            ],
-        },
-    apis: ["./routers/*.js"],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-// Passport Middleware for google auth
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  }));
-  
-  app.use(passport.initialize());
-  app.use(passport.session());
 
 // Middleware
 app.use(express.json());
@@ -74,9 +39,8 @@ connectWithRetry();
 
 // Routes
 app.get("/", (req, res) => {
-    //i want this home route to take users to the signin html page located in the frontend folder 
-    res.redirect("./frontend/signin.html");
-    res.header("Access-Control-Allow-Origin", "http://nextgen-quiz-app.vercel.app");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.send("Welcome, to access the swagger docmentation go to /api-docs. I you are running this locally, you can access the swagger documentation at http://localhost:8000/api-docs");
 });
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
