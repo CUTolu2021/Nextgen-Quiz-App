@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
-const quizRouter = require("./routers/quiz");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const dotenv = require("dotenv");
@@ -19,7 +18,7 @@ const app = express();
 
 app.use(cors({
         origin: 'http://127.0.0.1:5500',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
 
@@ -78,8 +77,6 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-app.use("/quizzes", verifyJWTAuthToken, quizRouter);
-
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
@@ -100,3 +97,21 @@ process.on("unhandledRejection", (err) => {
         process.exit(1);
     });
 });
+// get route to fetch all quizzes
+const express = require("express");
+const { getQuizzes, createQuiz } = require("./controllers/quiz");
+
+const route = express.Router();
+
+router.get("/", getQuizzes);
+router.post("/", createQuiz);
+
+module.exports = router;
+// Updating routes to handle query parameters
+const express = require('express');
+const router = express.Router();
+const quizController = require('./controllers/quiz');
+
+router.get('/quizzes', quizController.getQuizzes);
+
+module.exports = router;

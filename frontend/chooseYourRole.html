@@ -1,99 +1,238 @@
-<html>
-<head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choose Your Role</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script>
-        // Simulate user authentication status
-        const isAuthenticated = false; // Change this to true to simulate an authenticated user
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3e8ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+      }
 
-        function handleParticipantClick() {
-            if (isAuthenticated) {
-                window.location.href = 'participant-quizzes.html'; // Redirect to participant quizzes page
-            } else {
-                alert('You need to sign in to access this feature.');
-            }
-        }
+      .container {
+        text-align: center;
+        margin-top: 20px;
+      }
 
-        function handleCreatorClick() {
-            if (isAuthenticated) {
-                window.location.href = 'create-quiz.html'; // Redirect to create quiz page
-            } else {
-                alert('You need to sign in to access this feature.');
-            }
-        }
+      .container h1 {
+        font-size: 2em;
+        font-weight: 700;
+        margin: 0;
+      }
 
-        function handleSignInClick() {
-            window.location.href = 'sign-in.html'; // Redirect to sign-in page
-        }
-    </script>
-</head>
-<body class="bg-purple-100 flex items-center justify-center min-h-screen">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold mb-2">Choose Your Role</h1>
-        <p class="text-lg mb-8">Select how you'd love to use quizzy</p>
-        
-        <div class="space-y-6">
-            <!-- Participant Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 relative">
-                <div class="flex items-center mb-4">
-                    <div class="bg-purple-200 p-4 rounded-full">
-                        <i class="fas fa-user text-purple-600 text-2xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <h2 class="text-xl font-semibold">Join as a participant</h2>
-                        <p class="text-gray-600">Take quizzes, challenge yourself and compete with others</p>
-                    </div>
-                </div>
-                <ul class="text-gray-600 mb-6">
-                    <li class="flex items-center mb-2">
-                        <i class="fas fa-th-list text-purple-600 mr-2"></i>
-                        Access diverse quiz categories
-                    </li>
-                    <li class="flex items-center mb-2">
-                        <i class="fas fa-trophy text-purple-600 mr-2"></i>
-                        Compete on leaderboards
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-users text-purple-600 mr-2"></i>
-                        Join quiz communities
-                    </li>
-                </ul>
-                <button onclick="handleParticipantClick()" class="bg-purple-600 text-white py-2 px-4 rounded-full w-full">Ready, Set, Quiz!</button>
-                <i onclick="handleParticipantClick()" class="fas fa-arrow-right text-purple-600 absolute top-6 right-6 text-xl cursor-pointer"></i>
-            </div>
-            
-            <!-- Creator Card -->
-            <div class="bg-white rounded-lg shadow-lg p-6 relative">
-                <div class="flex items-center mb-4">
-                    <div class="bg-blue-200 p-4 rounded-full">
-                        <i class="fas fa-pen text-blue-600 text-2xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <h2 class="text-xl font-semibold">Join as a creator</h2>
-                        <p class="text-gray-600">Create engaging quizzes and share knowledge with the world</p>
-                    </div>
-                </div>
-                <ul class="text-gray-600 mb-6">
-                    <li class="flex items-center mb-2">
-                        <i class="fas fa-pencil-alt text-blue-600 mr-2"></i>
-                        Create custom quizzes
-                    </li>
-                    <li class="flex items-center mb-2">
-                        <i class="fas fa-users text-blue-600 mr-2"></i>
-                        Build your audience
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-chart-line text-blue-600 mr-2"></i>
-                        Track participant performance
-                    </li>
-                </ul>
-                <button onclick="handleCreatorClick()" class="bg-blue-600 text-white py-2 px-4 rounded-full w-full">Create a Quiz</button>
-                <i onclick="handleCreatorClick()" class="fas fa-arrow-right text-blue-600 absolute top-6 right-6 text-xl cursor-pointer"></i>
-            </div>
-        </div>
-        
-        <p class="mt-8 text-gray-600">Already have an account? <a href="#" onclick="handleSignInClick()" class="text-blue-600">Sign In</a></p>
+      .container p {
+        font-size: 1em;
+        color: #666;
+        margin: 10px 0 20px;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 600px;
+        margin: 20px 0;
+        padding: 20px;
+        text-align: left;
+        position: relative;
+      }
+
+      .card .icon {
+        font-size: 2em;
+        color: #6c63ff;
+        margin-right: 10px;
+      }
+
+      .card h2 {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 10px 0;
+      }
+
+      .card p {
+        font-size: 1em;
+        color: #666;
+        margin: 10px 0;
+      }
+
+      .card ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+      }
+
+      .card ul li {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+      }
+
+      .card ul li .fa {
+        color: #6c63ff;
+        margin-right: 10px;
+      }
+
+      .card .cta {
+        display: block;
+        text-align: center;
+        background-color: #6c63ff;
+        color: #fff;
+        padding: 10px;
+        border-radius: 0 0 10px 10px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+      }
+
+      .card .cta.blue {
+        background-color: #4a90e2;
+      }
+
+      .card .arrow {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5em;
+        color: #6c63ff;
+      }
+
+      .card .arrow.blue {
+        color: #4a90e2;
+      }
+
+      .signin {
+        margin-top: 20px;
+        font-size: 1em;
+      }
+
+      .signin a {
+        color: #6c63ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Choose Your Role</h1>
+      <p>Select how you'd love to use quizzy</p>
+      <div class="card">
+        <i class="fas fa-user icon"></i>
+        <h2>Join as a participant</h2>
+        <p>Take quizzes, challenge yourself and compete with others</p>
+        <ul>
+          <li>
+            <i class="fas fa-th-list" style="margin-right: 10px"></i> Access
+            diverse quiz categories
+          </li>
+          <li>
+            <i class="fas fa-trophy" style="margin-right: 10px"></i> Compete on
+            leaderboards
+          </li>
+          <li>
+            <i class="fas fa-users" style="margin-right: 10px"></i> Join quiz
+            communities
+          </li>
+        </ul>
+        <a href="#" class="cta" id="participant-link">Ready, Set, Quiz!</a>
+        <i class="fas fa-arrow-right arrow"></i>
+      </div>
+      <div class="card">
+        <i class="fas fa-pen icon blue"></i>
+        <h2>Join as a creator</h2>
+        <p>Create engaging quizzes and share knowledge with the world</p>
+        <ul>
+          <li>
+            <i class="fas fa-pencil-alt" style="margin-right: 10px"></i> Create
+            custom quizzes
+          </li>
+          <li>
+            <i class="fas fa-users" style="margin-right: 10px"></i> Build your
+            audience
+          </li>
+          <li>
+            <i class="fas fa-chart-line" style="margin-right: 10px"></i> Track
+            participant performance
+          </li>
+        </ul>
+        <a href="#" class="cta blue" id="creator-link">Create a Quiz</a>
+        <i class="fas fa-arrow-right arrow blue"></i>
+      </div>
+      <div class="signin">Already have an account? <a href="signin.html">Sign In</a></div>
     </div>
-</body>
+
+    <script>
+
+        const token = new URLSearchParams(window.location.search).get('token');
+      // Add event listeners to the buttons
+      const participantLink = document.getElementById("participant-link");
+      const creatorLink = document.getElementById("creator-link");
+
+      participantLink.addEventListener("click", () => {
+        // Send request to API to update user's role to participant
+        fetch("http://localhost:8000/user", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role: "Participant" }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
+          });
+      });
+
+      creatorLink.addEventListener("click", () => {
+        // Send request to API to update user's role to creator
+        fetch("http://localhost:8000/user", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role: "Creator" }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.message === "User updated successfully!"){
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "dashboard.html";
+            }else{
+                alert(`Role update failed!: ${data.message}`);
+            }
+            // Handle response from API
+          })
+          .catch((error) => {
+            alert(`Role update failed!: ${error.message}`);
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
 </html>
