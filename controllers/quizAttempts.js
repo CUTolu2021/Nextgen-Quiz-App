@@ -4,7 +4,7 @@ const Question = require('../models/question');
 
 const startQuiz = async (req, res) => {
     const { quizId } = req.params;
-    const userId = req.user.userId; 
+    const userId = '678e6ab2f3311781752a6cd2'; //req.user.userId; 
 
     try {
         const quiz = await Quiz.findById(quizId);
@@ -12,7 +12,7 @@ const startQuiz = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = new quizAttemptSchema({
+        const attempt = new QuizAttempt({
             userId,
             quizId,
             startTime: new Date(),
@@ -28,7 +28,8 @@ const startQuiz = async (req, res) => {
 };
 const endQuiz = async (req, res) => {
     const { quizId } = req.params;
-    const userId = req.user.userId; // Assuming user ID is available in req.user
+    const { score,endTime,timeUsed } = req.body;
+    const userId = '678e6ab2f3311781752a6cd2';//req.user.userId; // Assuming user ID is available in req.user
 
     try {
         const quiz = await Quiz.findById(quizId);
@@ -36,13 +37,12 @@ const endQuiz = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = await quizAttemptSchema.findOne({ userId, quizId });
+        const attempt = await QuizAttempt.findOne({ userId, quizId });
         if (!attempt) {
             return res.status(404).json({ message: 'Attempt not found' });
         }
 
-        // Check if the time limit has been exceeded
-        const currentTime = new Date();
+    /*    const currentTime = new Date();
         const elapsedTime = (currentTime - attempt.startTime) / 1000; // Convert to seconds
         if (elapsedTime > quiz.time_limit) {
             attempt.isCompleted = true; 
@@ -55,16 +55,24 @@ const endQuiz = async (req, res) => {
             attempt.isCompleted = true; 
             attempt.endTime = currentTime; // Set end time
         await participation.save();
+    */
 
-        res.status(200).json({ message: 'Quiz ended', score: participation.score });
+        // Update the end time and status
+        attempt.isCompleted = true; 
+        attempt.endTime = endTime; // Set end time
+        attempt.timeUsed = timeUsed;
+        attempt.score = score;
+        await attempt.save();
+
+        res.status(200).json({ message: 'Quiz ended', score: attempt.score });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 const submitAnswer = async (req, res) => {
     const { quizId } = req.params;
-    const { questionId, selectedAnswer } = req.body;
-    const userId = req.user.id; // Assuming user ID is available in req.user
+    const { questionId, selectedAnswer, correctAnswer } = req.body;
+    const userId = '678e6ab2f3311781752a6cd2'; //req.user.id; // Assuming user ID is available in req.user
 
     try {
         const quiz = await Quiz.findById(quizId);
@@ -72,7 +80,7 @@ const submitAnswer = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = await quizAttemptSchema.findOne({ userId, quizId });
+        const attempt = await QuizAttempt.findOne({ userId, quizId });
         if (!attempt) {
             return res.status(404).json({ message: 'Attempt not found' });
         }
@@ -93,27 +101,21 @@ const submitAnswer = async (req, res) => {
             return res.status(404).json({ message: 'Question not found' });
         }
 
-        const isCorrect = selectedAnswer === question.correctAnswer;
 
-        const response = new Response({
+        const response = new QuizResponse({
             userId,
             quizId,
             questionId,
             selectedAnswer,
-            isCorrect
+            correctAnswer
         });
 
         await response.save();
 
-        // Update the user's score
-        if (isCorrect) {
-            participation.score += question.points; // Add points if correct
-        }
-
-        await participation.save();
-
-        res.status(200).json({ message: 'Answer submitted', isCorrect });
+        res.status(200).json({ message: 'Answer submitted' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+module.exports = { startQuiz, endQuiz, submitAnswer };

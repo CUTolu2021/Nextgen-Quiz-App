@@ -2,6 +2,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const { createQuiz,updateQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById, addQuestionsByID} = require('../controllers/quiz');
 const { restrictTo } = require('../middleware/auth');
+const { startQuiz, endQuiz, submitAnswer } = require('../controllers/quizAttempts');
 
 // Multer setup
 const storage = multer.diskStorage({
@@ -27,6 +28,10 @@ router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('f
 router.get('/:quizId', getQuizById);
 router.get('/:quizId/questions', getQuestionByQuizId);
 router.put('/:quizId',restrictTo('Creator'),updateQuiz);
+
+router.get('/:quizId/start_quiz', startQuiz);
+router.post('/:quizId/end_quiz', endQuiz);
+router.post('/:quizId/submit_answer', submitAnswer);
 
 
 module.exports = router;

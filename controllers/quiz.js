@@ -275,7 +275,6 @@ const getQuizzes = async (req, res) => {
 // Get questions by quiz ID
 const getQuestionByQuizId = async (req, res) => {
     const { quizId } = req.params;
-    console.log(quizId);
     let result = [];
 
     try {
@@ -300,7 +299,6 @@ const getQuestionByQuizId = async (req, res) => {
 const getQuizById = async (req, res) => {
     //Controller function to fetch a quiz by its ID
     const { quizId } = req.params;
-    console.log(quizId);
 
     try {
         //Fetch quiz with questions
@@ -309,7 +307,6 @@ const getQuizById = async (req, res) => {
                 path: 'questions',
                 model: 'Question'
             });
-        console.log(quiz);
 
         // Check if quiz exists
         if (!quiz) {
