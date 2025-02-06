@@ -1,0 +1,288 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Quizzy Dashboard
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <body class="bg-purple-50">
+  <div class="min-h-screen p-4">
+   <!-- Header -->
+   <div class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
+    <div class="flex items-center space-x-2">
+     <div class="bg-purple-500 text-white p-2 rounded-full">
+      <i class="fas fa-question">
+      </i>
+     </div>
+     <h1 class="text-xl font-bold text-purple-700">
+      QUIZZY
+     </h1>
+    </div>
+    <div class="flex items-center space-x-4">
+     <div class="relative">
+      <input class="bg-gray-100 p-2 rounded-lg pl-10" id="search-input" placeholder="Search quizzes..." type="text"/>
+      <i class="fas fa-search absolute left-3 top-3 text-gray-400 cursor-pointer" id="search-icon">
+      </i>
+     </div>
+     <i class="fas fa-bell text-gray-400 cursor-pointer" id="notification-icon">
+     </i>
+     <i class="fas fa-cog text-gray-400 cursor-pointer" id="settings-icon">
+     </i>
+     <div class="bg-gray-200 p-2 rounded-full">
+      <span class="text-gray-600">
+       UN
+      </span>
+     </div>
+    </div>
+   </div>
+   <!-- Welcome Section -->
+   <div class="mt-6 bg-purple-100 p-6 rounded-lg shadow-md">
+    <div class="flex items-center justify-between">
+     <div>
+      <h2 class="text-2xl font-bold">
+       Welcome back, Uchechukwu!
+       <span class="wave">
+        👋
+       </span>
+      </h2>
+      <p class="text-gray-600">
+       Let's create something amazing today
+      </p>
+     </div>
+     <div class="flex space-x-4">
+      <button class="bg-purple-500 text-white px-4 py-2 rounded-lg" id="create-new-quiz">
+       + Create New Quiz
+      </button>
+      <button class="bg-purple-200 text-purple-700 px-4 py-2 rounded-lg" id="upload-quiz">
+       Upload Quiz
+      </button>
+      <a class="text-purple-500 cursor-pointer" id="view-all">
+       View All
+      </a>
+     </div>
+    </div>
+    <div class="mt-4 flex space-x-4">
+     <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg" id="all-quizzes">
+      All Quizzes
+     </button>
+     <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg" id="general-questions">
+      General Questions
+     </button>
+     <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg" id="fun-trivia">
+      Fun &amp; Trivia
+     </button>
+     <button class="bg-purple-500 text-white px-4 py-2 rounded-lg" id="educational">
+      Educational
+     </button>
+    </div>
+    <div class="mt-4 space-y-4" id="quiz-list">
+     <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+       <img alt="Quiz icon" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/GB0_cMtPEOiLTwIzEpBTHZdI1EjmmeBYm8ciXGULOsk.jpg" width="40"/>
+       <div>
+        <h4 class="font-bold">
+         English Language Quiz
+        </h4>
+        <p class="text-gray-600">
+         Participants: 70
+        </p>
+       </div>
+      </div>
+      <div class="flex items-center space-x-4">
+       <p class="text-gray-600">
+        Avg. Score: 75
+       </p>
+       <p class="text-gray-600">
+        Time: 60mins
+       </p>
+       <i class="fas fa-chevron-right text-gray-400">
+       </i>
+      </div>
+     </div>
+     <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+       <img alt="Quiz icon" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/GB0_cMtPEOiLTwIzEpBTHZdI1EjmmeBYm8ciXGULOsk.jpg" width="40"/>
+       <div>
+        <h4 class="font-bold">
+         Mathematics Basics Quiz
+        </h4>
+        <p class="text-gray-600">
+         Participants: 120
+        </p>
+       </div>
+      </div>
+      <div class="flex items-center space-x-4">
+       <p class="text-gray-600">
+        Avg. Score: 80
+       </p>
+       <p class="text-gray-600">
+        Time: 60mins
+       </p>
+       <i class="fas fa-chevron-right text-gray-400">
+       </i>
+      </div>
+     </div>
+     <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+       <img alt="Quiz icon" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/GB0_cMtPEOiLTwIzEpBTHZdI1EjmmeBYm8ciXGULOsk.jpg" width="40"/>
+       <div>
+        <h4 class="font-bold">
+         Biology Quiz
+        </h4>
+        <p class="text-gray-600">
+         Participants: 70
+        </p>
+       </div>
+      </div>
+      <div class="flex items-center space-x-4">
+       <p class="text-gray-600">
+        Avg. Score: 75
+       </p>
+       <p class="text-gray-600">
+        Time: 50mins
+       </p>
+       <i class="fas fa-chevron-right text-gray-400">
+       </i>
+      </div>
+     </div>
+     <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+       <img alt="Quiz icon" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/GB0_cMtPEOiLTwIzEpBTHZdI1EjmmeBYm8ciXGULOsk.jpg" width="40"/>
+       <div>
+        <h4 class="font-bold">
+         Tech Quiz
+        </h4>
+        <p class="text-gray-600">
+         Participants: 70
+        </p>
+       </div>
+      </div>
+      <div class="flex items-center space-x-4">
+       <p class="text-gray-600">
+        Avg. Score: 75
+       </p>
+       <p class="text-gray-600">
+        Time: 30mins
+       </p>
+       <i class="fas fa-chevron-right text-gray-400">
+       </i>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Weekly Achievements Section -->
+   <div class="mt-6 bg-purple-100 p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold">
+     Weekly Achievements
+    </h3>
+    <p class="text-gray-600 mt-2">
+     Oops! No achievements this time. Don’t worry, every great journey starts with small steps. How about
+     <a class="text-purple-500" href="#">
+      creating a new quiz
+     </a>
+     or
+     <a class="text-purple-500" href="#">
+      Inviting friends
+     </a>
+     ? Next week could be epic!
+    </p>
+   </div>
+  </div>
+  <script>
+   document.getElementById('create-new-quiz').addEventListener('click', function() {
+            window.location.href = 'create_new_quiz.html';
+        });
+
+        document.getElementById('upload-quiz').addEventListener('click', function() {
+            const isFilled = confirm('Is the quiz form filled?');
+            if (isFilled) {
+                alert('Quiz uploaded successfully!');
+            } else {
+                alert('Please fill the quiz form before uploading.');
+            }
+        });
+
+        document.getElementById('notification-icon').addEventListener('click', function() {
+            const receiveNotifications = confirm('Do you want to receive notifications?');
+            if (receiveNotifications) {
+                alert('You will receive notifications.');
+            } else {
+                alert('You will not receive notifications.');
+            }
+        });
+
+        document.getElementById('settings-icon').addEventListener('click', function() {
+            window.location.href = 'settings.html';
+        });
+
+        document.getElementById('view-all').addEventListener('click', function() {
+            window.location.href = 'view_all_quizzes.html';
+        });
+
+        document.getElementById('search-icon').addEventListener('click', function() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const quizzes = document.querySelectorAll('#quiz-list > div');
+            quizzes.forEach(quiz => {
+                const quizTitle = quiz.querySelector('h4').textContent.toLowerCase();
+                if (quizTitle.includes(searchInput)) {
+                    quiz.style.display = 'flex';
+                } else {
+                    quiz.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('educational').addEventListener('click', function() {
+            const quizList = document.getElementById('quiz-list');
+            quizList.innerHTML = `
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <img alt="Quiz icon" class="rounded-full" height="40" src="https://placehold.co/40x40" width="40"/>
+                        <div>
+                            <h4 class="font-bold">Physics Quiz</h4>
+                            <p class="text-gray-600">Participants: 50</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <p class="text-gray-600">Avg. Score: 85</p>
+                        <p class="text-gray-600">Time: 45mins</p>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <img alt="Quiz icon" class="rounded-full" height="40" src="https://placehold.co/40x40" width="40"/>
+                        <div>
+                            <h4 class="font-bold">Chemistry Quiz</h4>
+                            <p class="text-gray-600">Participants: 60</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <p class="text-gray-600">Avg. Score: 78</p>
+                        <p class="text-gray-600">Time: 50mins</p>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <img alt="Quiz icon" class="rounded-full" height="40" src="https://placehold.co/40x40" width="40"/>
+                        <div>
+                            <h4 class="font-bold">History Quiz</h4>
+                            <p class="text-gray-600">Participants: 40</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <p class="text-gray-600">Avg. Score: 70</p>
+                        <p class="text-gray-600">Time: 40mins</p>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            `;
+        });
+  </script>
+ </body>
+</html>
