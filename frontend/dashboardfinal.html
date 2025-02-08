@@ -151,15 +151,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-purple-100 p-6 rounded-lg">
-            <h3 class="text-xl font-bold mb-4">Weekly Achievements</h3>
-            <div id="achievements-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Achievements will be dynamically added here -->
-            </div>
-            <div id="no-achievements-message" class="hidden text-center text-gray-600">
-                <p>Oops, No achievements this time. Don't worry, every great journey starts with small steps. How about <a href="#" id="create-new-quiz-link" class="text-purple-600">creating a new quiz</a> or <a href="#" id="invite-friends-link" class="text-purple-600">inviting friends</a>? Next week could be epic!</p>
-            </div>
-        </div>
+        
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -212,24 +204,6 @@
                     `;
                     quizzesList.appendChild(quizElement);
                 });
-            };
-
-            const renderAchievements = () => {
-                achievementsList.innerHTML = '';
-                if (achievements.length === 0) {
-                    noAchievementsMessage.classList.remove('hidden');
-                } else {
-                    noAchievementsMessage.classList.add('hidden');
-                    achievements.forEach(achievement => {
-                        const achievementElement = document.createElement('div');
-                        achievementElement.className = `${achievement.color} text-white p-4 rounded-lg shadow-md`;
-                        achievementElement.innerHTML = `
-                            <h4 class="text-lg font-bold">${achievement.title}</h4>
-                            <p>${achievement.description}</p>
-                        `;
-                        achievementsList.appendChild(achievementElement);
-                    });
-                }
             };
 
             const handleCategoryClick = (category) => {
@@ -322,7 +296,7 @@
             });
 
             renderQuizzes(null);
-            renderAchievements();
+            
         });
     </script>
 </body>
