@@ -1,0 +1,97 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Create New Quiz
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <body class="bg-purple-100">
+  <div class="p-4">
+   <a class="text-gray-500 text-lg flex items-center" href="#">
+    <i class="fas fa-arrow-left mr-2">
+    </i>
+    Back to Dashboard
+   </a>
+  </div>
+  <div class="flex justify-center mt-4">
+   <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8">
+    <div class="flex justify-between items-center mb-8">
+     <div class="flex flex-col items-center">
+      <button class="rounded-full bg-purple-500 p-2" onclick="navigateToBasicInfo()">
+       <i class="fas fa-brain text-white text-2xl">
+       </i>
+      </button>
+      <span class="mt-2 text-sm text-gray-700">
+       Basic Info
+      </span>
+     </div>
+     <div class="flex flex-col items-center">
+      <button class="rounded-full bg-gray-300 p-2" onclick="navigateToQuestions()">
+       <img alt="Questions Icon" height="50" src="https://placehold.co/50x50" width="50"/>
+      </button>
+      <span class="mt-2 text-sm text-gray-700">
+       Questions
+      </span>
+     </div>
+    </div>
+    <h1 class="text-2xl font-bold mb-6">
+     Create New Quiz
+    </h1>
+    <form>
+     <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="quiz-title">
+       Quiz Title
+      </label>
+      <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quiz-title" placeholder="Enter quiz title" type="text"/>
+     </div>
+     <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="quiz-title-2">
+       Quiz Title
+      </label>
+      <div class="relative">
+       <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pl-10" id="quiz-title-2" placeholder="Enter quiz title" type="text"/>
+       <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <i class="fas fa-hourglass-half text-gray-400">
+        </i>
+       </div>
+      </div>
+     </div>
+     <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="quiz-description">
+       Quiz Description
+      </label>
+      <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quiz-description" placeholder="Enter quiz description">
+      </textarea>
+     </div>
+     <div class="flex justify-end">
+      <button class="bg-purple-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="navigateToAddQuestion()" type="button">
+       <i class="fas fa-plus mr-2">
+       </i>
+       Add Question
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <script>
+   function navigateToBasicInfo() {
+      // Logic to navigate to the basic info page
+      window.location.href = '/basic-info'; // Update this URL to the actual basic info page URL
+    }
+
+    function navigateToQuestions() {
+      // Logic to navigate to the questions page
+      window.location.href = '/questions'; // Update this URL to the actual questions page URL
+    }
+
+    function navigateToAddQuestion() {
+      // Logic to navigate to the add question page
+      window.location.href = '/add-question'; // Update this URL to the actual add question page URL
+    }
+  </script>
+ </body>
+</html>
