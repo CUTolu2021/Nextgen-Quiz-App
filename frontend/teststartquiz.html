@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZZY - Quiz App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Welcome to QUIZZY</h1>
+        <h3>Quiz Instructions</h3>
+        <ul>
+            <li>Click 'Start Quiz' to begin.</li>
+            <li>Manage your time effectively.</li>
+            <li>Read each question carefully before selecting an answer.</li>
+            <li>Your score is based on correct answers.</li>
+        </ul>
+        <button id="start-btn">Start Quiz</button>
+        
+        <div class="progress">Question <span id="progress-count">1</span>/<span id="total-questions">10</span></div>
+        <div class="timer">Time Left: <span id="time">120</span>m</div>
+        <div id="question-container"></div>
+        <button id="finish-btn" style="display: none;">Finish Quiz</button>
+        <div id="result" class="hidden"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -81,13 +81,13 @@ const quizAttemptSchema = new Schema({
         type: Number,
         default: 0
     },
-    currentQuestion: {
-        type: Number,
-        required: true
-    },
     isCompleted: {
         type: Boolean,
         default: false
+    },
+    timeUsed: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true
@@ -113,10 +113,10 @@ const quizResponseSchema = new Schema({
         type: String,
         required: true
     },
-    isCorrect: {
-        type: Boolean,
+    correctAnswer: {
+        type: String,
         required: true
-    }
+    },
 })
 module.exports = {
     Quiz: model('Quiz', quizSchema),
