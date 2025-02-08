@@ -5,6 +5,7 @@ const QuestionSchema = new Schema({
     question: { type: String, required: true },
     options: [{ type: String, required: true }], // For multiple-choice options
     correctAnswers: { type: String, required: true }, // Store the correct answer
+    explanation: { type: String },
     isMultipleChoice: { type: Boolean, default: false },
     imageUrl: { type: String }, // Field for image URL
     videoUrl: { type: String },

@@ -182,6 +182,7 @@
       background: #594ed9;
     }
   </style>
+  <script src="authentication.js"></script>
 </head>
 <body>
   <div class="header">
@@ -230,7 +231,7 @@
         questionDiv.classList.add("question-card");
         questionDiv.innerHTML = `
           <p class="question-number">Question ${index + 1} of ${questions.length}</p>
-          <p class="points">10 Points</p>
+          <p class="points">Points: ${q.points}</p>
           <h3>${q.question}</h3>
           <div class="options">
             ${q.options
@@ -251,6 +252,16 @@
     }
 
     document.addEventListener("DOMContentLoaded", loadQuizData);
+
+    document.querySelector(".draft-btn").addEventListener("click", () => {
+      const quizId = localStorage.getItem("quizId");
+      window.location.href = `createQuiz.html`;
+    });
+
+    document.querySelector(".publish").addEventListener("click", () => {
+      const quizId = localStorage.getItem("quizId");
+      window.location.href = `createQuiz.html`;
+    });
   </script>
 </body>
 </html>

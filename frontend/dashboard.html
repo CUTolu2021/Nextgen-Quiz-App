@@ -184,6 +184,7 @@
         }
       }
     </style>
+    <script src="authentication.js"></script>
   </head>
   <body>
     <div class="container">
@@ -196,7 +197,7 @@
           <p>Let's create something amazing today</p>
         </div>
         <div class="actions">
-          <button>+ Create New Quiz</button>
+          <button onclick="createQuiz()">+ Create New Quiz</button>
           <button class="upload">
             <i class="fas fa-upload"></i> Upload Quiz
           </button>
@@ -322,6 +323,10 @@
             usernameElement.innerText = data.user.username;
           })
           .catch((err) => console.error(err));
+      }
+
+      function createQuiz() {
+        window.location.replace("createQuiz.html");
       }
     </script>
   </body>

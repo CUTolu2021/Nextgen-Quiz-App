@@ -23,6 +23,7 @@
             100% { transform: rotate( 0.0deg) }
         }
     </style>
+    <script src="authentication.js"></script>
 </head>
 <body class="bg-purple-50">
     <header class="bg-white shadow-md p-4 flex justify-between items-center">
@@ -262,7 +263,7 @@
             educationalBtn.addEventListener('click', () => handleCategoryClick('educational'));
 
             createQuizBtn.addEventListener('click', () => {
-                window.location.href = '/create-quiz';
+                window.location.href = 'createQuiz.html';
             });
 
             uploadQuizBtn.addEventListener('click', () => {

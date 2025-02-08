@@ -126,7 +126,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email }, "password email emailVerified active_status");
+        const user = await User.findOne({ email });
         console.log("User found:", user);
         if (!user) {
             return res.status(401).json({ message: "User not found" });

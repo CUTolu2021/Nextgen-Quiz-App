@@ -78,7 +78,7 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-app.use("/quizzes", quizRouter);
+app.use("/quizzes", verifyJWTAuthToken, quizRouter);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {

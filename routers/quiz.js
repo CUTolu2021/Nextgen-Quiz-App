@@ -27,7 +27,7 @@ router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('ima
 router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('file'), uploadQuestions);
 router.get('/:quizId', getQuizById);
 router.get('/:quizId/questions', getQuestionByQuizId);
-router.put('/:quizId',restrictTo('Creator'),updateQuiz);
+router.patch('/:quizId',restrictTo('Creator'),updateQuiz);
 
 router.get('/:quizId/start_quiz', startQuiz);
 router.post('/:quizId/end_quiz', endQuiz);
