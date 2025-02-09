@@ -123,3 +123,4 @@ module.exports = {
     QuizAttempt: model('QuizAttempt', quizAttemptSchema),
     QuizResponse: model('QuizResponse', quizResponseSchema)
   };
+  ''
