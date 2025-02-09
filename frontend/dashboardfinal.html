@@ -34,11 +34,13 @@
             <h1 class="text-purple-600 text-xl font-bold">QUIZZY</h1>
         </div>
         <div class="flex items-center space-x-4">
-            <input id="search-input" type="text" placeholder="Search quizzes..." class="p-2 rounded-md border border-gray-300">
-            <i id="search-icon" class="fas fa-search text-gray-600 cursor-pointer"></i>
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600"></i>
+                <input id="search-input" type="text" placeholder="Search quizzes..." class="pl-10 p-2 rounded-md border border-gray-300">
+            </div>
             <i id="notification-icon" class="fas fa-bell text-gray-600 cursor-pointer"></i>
             <i id="settings-icon" class="fas fa-cog text-gray-600 cursor-pointer"></i>
-            <div class="bg-gray-300 p-2 rounded-full">
+            <div class="bg-purple-600 p-2 rounded-full">
                 <span class="text-white">UN</span>
             </div>
         </div>
@@ -52,16 +54,17 @@
                 </div>
                 <div class="flex space-x-4">
                     <button id="create-quiz-btn" class="bg-purple-600 text-white px-4 py-2 rounded-md">+ Create New Quiz</button>
-                    <button id="upload-quiz-btn" class="bg-white text-purple-600 border border-purple-600 px-4 py-2 rounded-md">Upload Quiz</button>
+                    <button id="upload-quiz-btn" class="bg-white text-purple-600 border border-purple-600 px-4 py-2 rounded-md">
+                        <i class="fa-regular fa-arrow-up-from-bracket mr-2"></i>Upload Questions
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 gap-4 mb-6">
             <div class="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
                 <div>
                     <h3 class="text-gray-600">Total Quizzes</h3>
                     <p class="text-2xl font-bold">24</p>
-                    <p class="text-green-600">+3% this week</p>
                 </div>
                 <div class="bg-purple-100 p-2 rounded-full">
                     <i class="fas fa-cogs text-purple-600"></i>
@@ -71,7 +74,6 @@
                 <div>
                     <h3 class="text-gray-600">Active players</h3>
                     <p class="text-2xl font-bold">1.2k</p>
-                    <p class="text-green-600">+125 this week</p>
                 </div>
                 <div class="bg-purple-100 p-2 rounded-full">
                     <i class="fas fa-users text-purple-600"></i>
@@ -81,7 +83,6 @@
                 <div>
                     <h3 class="text-gray-600">Completion Rate</h3>
                     <p class="text-2xl font-bold">78%</p>
-                    <p class="text-green-600">+5% this week</p>
                 </div>
                 <div class="bg-purple-100 p-2 rounded-full">
                     <i class="fas fa-trophy text-purple-600"></i>
@@ -91,7 +92,6 @@
                 <div>
                     <h3 class="text-gray-600">Avg. Score</h3>
                     <p class="text-2xl font-bold">82%</p>
-                    <p class="text-green-600">+2% this week</p>
                 </div>
                 <div class="bg-purple-100 p-2 rounded-full">
                     <i class="fas fa-chart-line text-purple-600"></i>
@@ -114,7 +114,9 @@
                     <div>
                         <h4 class="text-lg font-bold">Geography Quiz</h4>
                         <p class="text-gray-600">Participants: 80</p>
-                        <p class="text-gray-600">Avg. Score: 78%</p>
+                    </div>
+                    <div class="text-gray-600 text-center">
+                        <p>Avg. Score: 78%</p>
                     </div>
                     <div class="text-gray-600">
                         <p>Time: 30mins</p>
@@ -124,7 +126,9 @@
                     <div>
                         <h4 class="text-lg font-bold">Sports Legend Quiz</h4>
                         <p class="text-gray-600">Participants: 120</p>
-                        <p class="text-gray-600">Avg. Score: 82</p>
+                    </div>
+                    <div class="text-gray-600 text-center">
+                        <p>Avg. Score: 82%</p>
                     </div>
                     <div class="text-gray-600">
                         <p>Time: 20mins</p>
@@ -134,7 +138,9 @@
                     <div>
                         <h4 class="text-lg font-bold">Current Events Quiz</h4>
                         <p class="text-gray-600">Participants: 60</p>
-                        <p class="text-gray-600">Avg. Score: 50</p>
+                    </div>
+                    <div class="text-gray-600 text-center">
+                        <p>Avg. Score: 50%</p>
                     </div>
                     <div class="text-gray-600">
                         <p>Time: 60mins</p>
@@ -144,21 +150,14 @@
                     <div>
                         <h4 class="text-lg font-bold">English Language Quiz</h4>
                         <p class="text-gray-600">Participants: 70</p>
-                        <p class="text-gray-600">Avg. Score: 75</p>
+                    </div>
+                    <div class="text-gray-600 text-center">
+                        <p>Avg. Score: 75%</p>
                     </div>
                     <div class="text-gray-600">
                         <p>Time: 30mins</p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="bg-purple-100 p-6 rounded-lg">
-            <h3 class="text-xl font-bold mb-4">Weekly Achievements</h3>
-            <div id="achievements-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Achievements will be dynamically added here -->
-            </div>
-            <div id="no-achievements-message" class="hidden text-center text-gray-600">
-                <p>Oops, No achievements this time. Don't worry, every great journey starts with small steps. How about <a href="#" id="create-new-quiz-link" class="text-purple-600">creating a new quiz</a> or <a href="#" id="invite-friends-link" class="text-purple-600">inviting friends</a>? Next week could be epic!</p>
             </div>
         </div>
     </main>
@@ -176,23 +175,12 @@
             const notificationIcon = document.getElementById('notification-icon');
             const settingsIcon = document.getElementById('settings-icon');
             const viewAllLink = document.getElementById('view-all-link');
-            const achievementsList = document.getElementById('achievements-list');
-            const noAchievementsMessage = document.getElementById('no-achievements-message');
-            const createNewQuizLink = document.getElementById('create-new-quiz-link');
-            const inviteFriendsLink = document.getElementById('invite-friends-link');
 
             const quizzes = [
                 { title: 'Geography Quiz', participants: 80, avgScore: 78, time: '30mins', category: 'general' },
                 { title: 'Sports Legend Quiz', participants: 120, avgScore: 82, time: '20mins', category: 'fun' },
                 { title: 'Current Events Quiz', participants: 60, avgScore: 50, time: '60mins', category: 'general' },
                 { title: 'English Language Quiz', participants: 70, avgScore: 75, time: '30mins', category: 'educational' }
-            ];
-
-            const achievements = [
-                { title: 'Rising Star', description: '100+ new plays', color: 'bg-purple-600' },
-                { title: 'Trending', description: 'Top 10% this week', color: 'bg-blue-600' },
-                { title: 'Quiz Master', description: 'Created 10 new quizzes', color: 'bg-orange-600' },
-                { title: 'New Followers', description: '45 new followers', color: 'bg-green-600' }
             ];
 
             const renderQuizzes = (category) => {
@@ -205,7 +193,9 @@
                         <div>
                             <h4 class="text-lg font-bold">${quiz.title}</h4>
                             <p class="text-gray-600">Participants: ${quiz.participants}</p>
-                            <p class="text-gray-600">Avg. Score: ${quiz.avgScore}%</p>
+                        </div>
+                        <div class="text-gray-600 text-center">
+                            <p>Avg. Score: ${quiz.avgScore}%</p>
                         </div>
                         <div class="text-gray-600">
                             <p>Time: ${quiz.time}</p>
@@ -213,24 +203,6 @@
                     `;
                     quizzesList.appendChild(quizElement);
                 });
-            };
-
-            const renderAchievements = () => {
-                achievementsList.innerHTML = '';
-                if (achievements.length === 0) {
-                    noAchievementsMessage.classList.remove('hidden');
-                } else {
-                    noAchievementsMessage.classList.add('hidden');
-                    achievements.forEach(achievement => {
-                        const achievementElement = document.createElement('div');
-                        achievementElement.className = `${achievement.color} text-white p-4 rounded-lg shadow-md`;
-                        achievementElement.innerHTML = `
-                            <h4 class="text-lg font-bold">${achievement.title}</h4>
-                            <p>${achievement.description}</p>
-                        `;
-                        achievementsList.appendChild(achievementElement);
-                    });
-                }
             };
 
             const handleCategoryClick = (category) => {
@@ -266,14 +238,38 @@
                 window.location.href = 'createQuiz.html';
             });
 
-            uploadQuizBtn.addEventListener('click', () => {
-                const quizData = {}; // Collect quiz data from form
-                if (Object.values(quizData).some(value => !value)) {
-                    alert('All fields are required to upload a quiz.');
-                } else {
-                    // Upload quiz logic
-                    alert('Quiz uploaded successfully.');
-                }
+            uploadQuizBtn.addEventListener('click', async () => {
+                const quizId = prompt('Enter the Quiz ID:');
+                if (!quizId) return alert('Quiz ID is required.');
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.csv';
+                fileInput.onchange = async (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return alert('No file selected.');
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    try {
+                        const response = await fetch(`/upload-questions/${quizId}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert('Questions added successfully');
+                        } else {
+                            alert(`Failed to upload questions: ${result.message}`);
+                        }
+                    } catch (error) {
+                        console.error('Error uploading questions:', error);
+                        alert('An error occurred while uploading questions.');
+                    }
+                };
+                fileInput.click();
             });
 
             searchIcon.addEventListener('click', () => {
@@ -287,7 +283,9 @@
                         <div>
                             <h4 class="text-lg font-bold">${quiz.title}</h4>
                             <p class="text-gray-600">Participants: ${quiz.participants}</p>
-                            <p class="text-gray-600">Avg. Score: ${quiz.avgScore}%</p>
+                        </div>
+                        <div class="text-gray-600 text-center">
+                            <p>Avg. Score: ${quiz.avgScore}%</p>
                         </div>
                         <div class="text-gray-600">
                             <p>Time: ${quiz.time}</p>
@@ -314,16 +312,7 @@
                 window.location.href = '/all-quizzes';
             });
 
-            createNewQuizLink.addEventListener('click', () => {
-                window.location.href = '/create-quiz';
-            });
-
-            inviteFriendsLink.addEventListener('click', () => {
-                window.location.href = '/invite-friends';
-            });
-
             renderQuizzes(null);
-            renderAchievements();
         });
     </script>
 </body>

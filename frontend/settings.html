@@ -1,0 +1,233 @@
+<html>
+<head>
+    <title>Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-purple-100 min-h-screen flex flex-col items-center transition-colors duration-300" id="body">
+
+    <div id="settings-page" class="w-full max-w-md mx-auto mt-0">
+        <div class="flex items-start mb-6 bg-white dark:bg-gray-900 rounded-lg shadow p-4 w-full">
+            <i class="fas fa-arrow-left text-xl text-gray-800 dark:text-gray-100"></i>
+            <h1 class="text-xl font-semibold ml-4 text-gray-800 dark:text-gray-100">Settings</h1>
+        </div>
+
+        <div class="flex items-center bg-purple-100 dark:bg-gray-900">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">APPEARANCE</h2>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-sun text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Dark Mode</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Switch between light and dark theme</p>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle" onclick="toggleDarkMode()">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+       
+        <div class="flex items-start bg-purple-100 dark:bg-gray-900">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">PREFERENCES</h2>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-globe text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Language</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Choose your preferred language</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-500 cursor-pointer" onclick="showPage('language-page')"></i>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-volume-up text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Sound Effects</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Enable quiz sound effects</p>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex items-start bg-purple-100 dark:bg-gray-900">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">ACCOUNT & PRIVACY</h2>
+        </div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-bell text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Notifications</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Allow background notifications</p>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Privacy</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Control your privacy settings</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-500 cursor-pointer" onclick="showPage('privacy-page')"></i>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-user-friends text-purple-500 text-xl mr-4"></i>
+                    <div>
+                        <h3 class="text-gray-800 dark:text-gray-100 font-medium">Invite Friends</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Invite friends to join quizzy</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-500 cursor-pointer" onclick="showPage('invite-friends-page')"></i>
+            </div>
+        </div>
+        <div class="flex flex-col items-center w-full">
+            <button class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 font-medium py-2 px-4 rounded-lg mb-4 w-full flex items-center justify-center" onclick="showPage('help-support-page')">
+                <i class="fas fa-question-circle mr-2"></i> Help & Support
+            </button>
+            <button class="bg-red-100 dark:bg-red-700 text-red-500 dark:text-red-100 font-medium py-2 px-4 rounded-lg w-full flex items-center justify-center" onclick="logOut()">
+                <i class="fas fa-sign-out-alt mr-2"></i> Log Out
+            </button>
+        </div>
+    </div>
+
+    <div id="language-page" class="hidden w-full max-w-md mx-auto mt-10">
+        <div class="flex items-center mb-6 bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <i class="fas fa-arrow-left text-xl text-gray-800 dark:text-gray-100 cursor-pointer" onclick="showPage('settings-page')"></i>
+            <h1 class="text-xl font-semibold ml-4 text-gray-800 dark:text-gray-100">Language</h1>
+        </div>
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">Choose Language</h2>
+            <ul>
+                <li class="mb-4">English</li>
+                <li class="mb-4">Spanish</li>
+                <li class="mb-4">French</li>
+                <li class="mb-4">German</li>
+                <li class="mb-4">Chinese</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="privacy-page" class="hidden w-full max-w-md mx-auto mt-10">
+        <div class="flex items-center mb-6 bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <i class="fas fa-arrow-left text-xl text-gray-800 dark:text-gray-100 cursor-pointer" onclick="showPage('settings-page')"></i>
+            <h1 class="text-xl font-semibold ml-4 text-gray-800 dark:text-gray-100">Privacy</h1>
+        </div>
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">Privacy Settings</h2>
+            <p class="text-gray-800 dark:text-gray-100">Manage your privacy settings here.</p>
+        </div>
+    </div>
+
+    <div id="invite-friends-page" class="hidden w-full max-w-md mx-auto mt-10">
+        <div class="flex items-center mb-6 bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <i class="fas fa-arrow-left text-xl text-gray-800 dark:text-gray-100 cursor-pointer" onclick="showPage('settings-page')"></i>
+            <h1 class="text-xl font-semibold ml-4 text-gray-800 dark:text-gray-100">Invite Friends</h1>
+        </div>
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">Select Friends to Invite</h2>
+            <ul>
+                <li class="mb-4">Friend 1</li>
+                <li class="mb-4">Friend 2</li>
+                <li class="mb-4">Friend 3</li>
+                <li class="mb-4">Friend 4</li>
+                <li class="mb-4">Friend 5</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="help-support-page" class="hidden w-full max-w-md mx-auto mt-10">
+        <div class="flex items-center mb-6 bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <i class="fas fa-arrow-left text-xl text-gray-800 dark:text-gray-100 cursor-pointer" onclick="showPage('settings-page')"></i>
+            <h1 class="text-xl font-semibold ml-4 text-gray-800 dark:text-gray-100">Help & Support</h1>
+        </div>
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
+            <h2 class="text-gray-600 dark:text-gray-300 font-semibold mb-4">How can we help you?</h2>
+            <p class="text-gray-800 dark:text-gray-100">Please contact our support team for assistance.</p>
+        </div>
+    </div>
+
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+    </style>
+    <script>
+        function showPage(pageId) {
+            const pages = ['settings-page', 'language-page', 'privacy-page', 'invite-friends-page', 'help-support-page'];
+            pages.forEach(page => {
+                document.getElementById(page).classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function toggleDarkMode() {
+            const body = document.getElementById('body');
+            body.classList.toggle('bg-black');
+            body.classList.toggle('text-gray-100');
+            body.classList.toggle('dark');
+        }
+
+        function logOut() {
+            alert('Logging out...');
+            // Add your log out logic here
+        }
+    </script>
+</body>
+</html>
