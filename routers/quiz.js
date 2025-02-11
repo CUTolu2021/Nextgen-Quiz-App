@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { createQuiz,updateQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById, addQuestionsByID} = require('../controllers/quiz');
+const { createQuiz,updateQuiz, uploadCSV, updateQuestionImage,uploadQuestions, getQuizzes, getQuestionByQuizId, addQuestions, deleteQuizById, getQuizById, addQuestionsByID, getQuizzesByUserId} = require('../controllers/quiz');
 const { restrictTo } = require('../middleware/auth');
 const { startQuiz, endQuiz, submitAnswer } = require('../controllers/quizAttempts');
 
@@ -22,6 +22,7 @@ router.post('/add-questions',restrictTo('Creator'),addQuestions);
 router.post('/:quizId/add-questions',restrictTo('Creator'),addQuestionsByID);
 
 router.get('/', getQuizzes)
+router.get('/:userId', getQuizzesByUserId)
 router.post('/upload-csv',restrictTo('Creator'), upload.single('file'), uploadCSV);
 router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('image'), updateQuestionImage);
 router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('file'), uploadQuestions);

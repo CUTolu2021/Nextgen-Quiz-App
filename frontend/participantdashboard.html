@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzy Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background: #6a0dad;
+            color: white;
+            padding: 10px;
+        }
+        .hero {
+            background: #8e44ad;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background: #ffcc00;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .quizzes, .recent-quizzes, .leaderboard {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .quiz {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .difficulty {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .easy { background: lightgreen; }
+        .medium { background: orange; }
+        .hard { background: red; }
+        .leaderboard ol {
+            list-style: none;
+            padding: 0;
+        }
+        .rank {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>QUIZZY</h1>
+        <input type="text" placeholder="Search quizzes...">
+    </header>
+    
+    <section class="hero">
+        <h2>Ready to Challenge Yourself?</h2>
+        <p>Take a quiz and test your knowledge!</p>
+        <button>Start New Quiz</button>
+    </section>
+    
+    <section class="quizzes">
+        <h3>Available Quizzes</h3>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>English Language Quiz</h4>
+                <p>70 participants | 30mins</p>
+            </div>
+            <span class="difficulty easy">Easy</span>
+            <button>Start Quiz →</button>
+        </div>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>Sports Legend Quiz</h4>
+                <p>120 participants | 20mins</p>
+            </div>
+            <span class="difficulty medium">Medium</span>
+            <button>Start Quiz →</button>
+        </div>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>Geography Quiz</h4>
+                <p>80 participants | 30mins</p>
+            </div>
+            <span class="difficulty hard">Hard</span>
+            <button>Start Quiz →</button>
+        </div>
+    </section>
+    
+    <section class="recent-quizzes">
+        <h3>Recent Quizzes</h3>
+        <p>You have not taken any quiz.</p>
+    </section>
+    
+    <section class="leaderboard">
+        <h3>Leaderboard</h3>
+        <ol>
+            <li><span class="rank">🥇 R</span> Rubby - 920 Points</li>
+            <li><span class="rank">🥈 V</span> Valentine - 905 Points</li>
+            <li><span class="rank">🥉 E</span> Eniola - 898 Points</li>
+            <li><span class="rank">4 T</span> Tolulope - 890 Points</li>
+            <li><span class="rank">5 U</span> Uchechukwu - 883 Points</li>
+            <li><span class="rank">6 O</span> Ogochukwu - 870 Points</li>
+            <li><span class="rank">7 D</span> Deborah - 864 Points</li>
+            <li><span class="rank">8 P</span> Praise - 880 Points</li>
+            <li><span class="rank">9 E</span> Emmanuel - 870 Points</li>
+            <li><span class="rank">10 B</span> Blessing - 863 Points</li>
+        </ol>
+    </section>
+
+    <script>
+        document.querySelector('button').addEventListener('click', function() {
+            alert('Starting a new quiz!');
+        });
+    </script>
+</body>
+</html>
