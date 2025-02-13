@@ -319,6 +319,39 @@ const getQuizzes = async (req, res) => {
     }
 };
 
+const getQuizzesByUserId = async (req, res) => {
+    const {userId} = req.params;
+    let { page, limit } = req.query;
+
+    // Validate query parameters
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    if (page < 1 || limit < 1) {
+        return res.status(400).json({ message: "'page' and 'limit' must be greater than 0." });
+    }
+
+    const skip = (page - 1) * limit;
+
+    try {
+        const quizzes = await Quiz.find({ active_status: 'active', creatorId:userId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Quiz.countDocuments({ active_status: 'active' });
+
+        res.json({
+            message: `Total number of quizzes is ${total}. You are on page ${page}, a page is limited to ${limit} items, There are ${Math.ceil(total / limit)} pages in total.`,
+            data: quizzes,
+            total
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching quizzes', error: error.message });
+    }
+};
+
 // Get questions by quiz ID
 const getQuestionByQuizId = async (req, res) => {
     const { quizId } = req.params;
@@ -437,6 +470,7 @@ module.exports = {
     updateQuestionImage,
     uploadQuestions,
     getQuizzes,
+    getQuizzesByUserId,
     getQuestionByQuizId,
     addQuestions,
     deleteQuizById,

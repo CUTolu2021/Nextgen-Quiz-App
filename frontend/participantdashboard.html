@@ -1,0 +1,432 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+=======
+>>>>>>> 0b836b6782ccf0160571e5de134562d0f3dd047b
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <title>Quizzy Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background: #6a0dad;
+            color: white;
+            padding: 10px;
+        }
+        .hero {
+            background: #8e44ad;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background: #ffcc00;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .quizzes, .recent-quizzes, .leaderboard {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .quiz {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .difficulty {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .easy { background: lightgreen; }
+        .medium { background: orange; }
+        .hard { background: red; }
+        .leaderboard ol {
+            list-style: none;
+            padding: 0;
+        }
+        .rank {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>QUIZZY</h1>
+        <input type="text" placeholder="Search quizzes...">
+    </header>
+    
+    <section class="hero">
+        <h2>Ready to Challenge Yourself?</h2>
+        <p>Take a quiz and test your knowledge!</p>
+        <button>Start New Quiz</button>
+    </section>
+    
+    <section class="quizzes">
+        <h3>Available Quizzes</h3>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>English Language Quiz</h4>
+                <p>70 participants | 30mins</p>
+            </div>
+            <span class="difficulty easy">Easy</span>
+            <button>Start Quiz →</button>
+        </div>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>Sports Legend Quiz</h4>
+                <p>120 participants | 20mins</p>
+            </div>
+            <span class="difficulty medium">Medium</span>
+            <button>Start Quiz →</button>
+        </div>
+        <div class="quiz">
+            <span class="quiz-icon">📘</span>
+            <div>
+                <h4>Geography Quiz</h4>
+                <p>80 participants | 30mins</p>
+            </div>
+            <span class="difficulty hard">Hard</span>
+            <button>Start Quiz →</button>
+        </div>
+    </section>
+    
+    <section class="recent-quizzes">
+        <h3>Recent Quizzes</h3>
+        <p>You have not taken any quiz.</p>
+    </section>
+    
+    <section class="leaderboard">
+        <h3>Leaderboard</h3>
+        <ol>
+            <li><span class="rank">🥇 R</span> Rubby - 920 Points</li>
+            <li><span class="rank">🥈 V</span> Valentine - 905 Points</li>
+            <li><span class="rank">🥉 E</span> Eniola - 898 Points</li>
+            <li><span class="rank">4 T</span> Tolulope - 890 Points</li>
+            <li><span class="rank">5 U</span> Uchechukwu - 883 Points</li>
+            <li><span class="rank">6 O</span> Ogochukwu - 870 Points</li>
+            <li><span class="rank">7 D</span> Deborah - 864 Points</li>
+            <li><span class="rank">8 P</span> Praise - 880 Points</li>
+            <li><span class="rank">9 E</span> Emmanuel - 870 Points</li>
+            <li><span class="rank">10 B</span> Blessing - 863 Points</li>
+        </ol>
+    </section>
+
+    <script>
+        document.querySelector('button').addEventListener('click', function() {
+            alert('Starting a new quiz!');
+        });
+    </script>
+</body>
+</html>
+=======
+    <title>Quizzy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .highlight {
+            border: 2px solid #030525;
+            box-shadow: 10px 10px 10px rgba(8, 237, 153, 0.5);
+            background-color: rgba(76, 81, 191, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="bg-purple-600 text-white rounded-full p-2">
+                    <i class="fas fa-question"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-purple-600 ml-2">QUIZZY</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <input type="text" placeholder="Search quizzes..." class="px-4 py-2 rounded-full border border-gray-300">
+                <i class="fas fa-bell text-gray-600"></i>
+                <div class="bg-gray-200 text-gray-600 rounded-full p-2">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <section id="start-quiz-section" class="bg-purple-600 text-white rounded-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-2">Ready to Challenge Yourself?</h2>
+            <p class="mb-4">Take a quiz and test your knowledge!</p>
+            <button id="start-quiz-button" class="bg-white text-purple-600 font-bold py-2 px-4 rounded-full flex items-center">
+                <i class="fas fa-book-open mr-2"></i> Start New Quiz
+            </button>
+        </section>
+        <section id="quizzes-section" class="bg-white rounded-lg shadow-md p-4 mb-8">
+            <div class="flex justify-between border-b border-gray-200 pb-2 mb-4">
+                <h3 id="available-quizzes-tab" class="text-lg cursor-pointer">Available Quizzes</h3>
+                <h3 class="text-lg text-gray-400">Recent Quizzes</h3>
+            </div>
+            <p class="text-center text-gray-600">No quizzes taken yet! <a href="#" id="get-started-link" class="text-blue-500">Get started</a> and take your first quiz</p>
+        </section>
+        <section class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-bold mb-4">Leaderboard</h3>
+            <ul>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-yellow-500"><i class="fas fa-medal"></i></span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">R</span>
+                        <span class="ml-2 font-bold">Rubby</span>
+                    </div>
+                    <span>920 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-400"><i class="fas fa-medal"></i></span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">V</span>
+                        <span class="ml-2 font-bold">Valentine</span>
+                    </div>
+                    <span>905 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-yellow-500"><i class="fas fa-medal"></i></span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">E</span>
+                        <span class="ml-2 font-bold">Eniola</span>
+                    </div>
+                    <span>898 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">4</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">T</span>
+                        <span class="ml-2 font-bold">Tolu</span>
+                    </div>
+                    <span>890 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">5</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">U</span>
+                        <span class="ml-2 font-bold">Uchechukwu</span>
+                    </div>
+                    <span>883 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">6</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">O</span>
+                        <span class="ml-2 font-bold">Ogochukwu</span>
+                    </div>
+                    <span>870 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">7</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">D</span>
+                        <span class="ml-2 font-bold">Deborah</span>
+                    </div>
+                    <span>864 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">8</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">P</span>
+                        <span class="ml-2 font-bold">Praise</span>
+                    </div>
+                    <span>880 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">9</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">E</span>
+                        <span class="ml-2 font-bold">Emmanuel</span>
+                    </div>
+                    <span>870 Points</span>
+                </li>
+                <li class="flex justify-between items-center py-2">
+                    <div class="flex items-center">
+                        <span class="text-gray-600">10</span>
+                        <span class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2">B</span>
+                        <span class="ml-2 font-bold">Blessing</span>
+                    </div>
+                    <span>863 Points</span>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <script>
+        document.getElementById('get-started-link').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('start-quiz-button').classList.add('highlight');
+            document.getElementById('available-quizzes-tab').classList.add('highlight');
+            document.getElementById('quizzes-section').classList.add('highlight-fill');
+        });
+
+        document.getElementById('available-quizzes-tab').addEventListener('click', function() {
+            this.classList.add('font-bold', 'text-purple-600');
+            this.nextElementSibling.classList.remove('font-bold', 'text-purple-600');
+            this.nextElementSibling.classList.add('text-gray-400');
+
+            const quizzesSection = document.createElement('section');
+            quizzesSection.className = 'bg-white p-6 rounded-lg shadow-md mb-8';
+            quizzesSection.innerHTML = `
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                    <h3 class="text-lg font-bold text-purple-600">Available Quizzes</h3>
+                    <h3 class="text-lg font-bold text-gray-500">Recent Quizzes</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-4 border rounded-lg">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-700">English Language Quiz</h4>
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-users mr-2"></i> 70 participants
+                                <i class="fas fa-clock ml-4 mr-2"></i> 30mins
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full">Easy</span>
+                            <button class="text-purple-600 font-bold flex items-center">
+                                Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center p-4 border rounded-lg">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-700">Sports Legend Quiz</h4>
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-users mr-2"></i> 120 participants
+                                <i class="fas fa-clock ml-4 mr-2"></i> 20mins
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full">Medium</span>
+                            <button class="text-purple-600 font-bold flex items-center">
+                                Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center p-4 border rounded-lg">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-700">Geography Quiz</h4>
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-users mr-2"></i> 80 participants
+                                <i class="fas fa-clock ml-4 mr-2"></i> 30mins
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full">Hard</span>
+                            <button class="text-purple-600 font-bold flex items-center">
+                                Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button id="view-all-button" class="text-purple-600 font-bold flex items-center">
+                        View All <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            `;
+            document.getElementById('quizzes-section').replaceWith(quizzesSection);
+
+            document.getElementById('view-all-button').addEventListener('click', function() {
+                const allQuizzesSection = document.createElement('section');
+                allQuizzesSection.className = 'bg-white p-6 rounded-lg shadow-md mb-8';
+                allQuizzesSection.innerHTML = `
+                    <div class="flex justify-between items-center border-b pb-2 mb-4">
+                        <h3 class="text-lg font-bold text-purple-600">All Available Quizzes</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 border rounded-lg">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-700">English Language Quiz</h4>
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users mr-2"></i> 70 participants
+                                    <i class="fas fa-clock ml-4 mr-2"></i> 30mins
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full">Easy</span>
+                                <button class="text-purple-600 font-bold flex items-center">
+                                    Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-4 border rounded-lg">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-700">Sports Legend Quiz</h4>
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users mr-2"></i> 120 participants
+                                    <i class="fas fa-clock ml-4 mr-2"></i> 20mins
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full">Medium</span>
+                                <button class="text-purple-600 font-bold flex items-center">
+                                    Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-4 border rounded-lg">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-700">Geography Quiz</h4>
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users mr-2"></i> 80 participants
+                                    <i class="fas fa-clock ml-4 mr-2"></i> 30mins
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded-full">Hard</span>
+                                <button class="text-purple-600 font-bold flex items-center">
+                                    Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-4 border rounded-lg">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-700">History Quiz</h4>
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users mr-2"></i> 50 participants
+                                    <i class="fas fa-clock ml-4 mr-2"></i> 25mins
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full">Moderate</span>
+                                <button class="text-purple-600 font-bold flex items-center">
+                                    Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-4 border rounded-lg">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-700">Science Quiz</h4>
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users mr-2"></i> 90 participants
+                                    <i class="fas fa-clock ml-4 mr-2"></i> 40mins
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded-full">Challenging</span>
+                                <button class="text-purple-600 font-bold flex items-center">
+                                    Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.querySelector('main').appendChild(allQuizzesSection);
+            });
+        });
+    </script>
+</body>
+</html>
+>>>>>>> 0b836b6782ccf0160571e5de134562d0f3dd047b

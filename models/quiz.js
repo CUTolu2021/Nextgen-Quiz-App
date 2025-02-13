@@ -45,19 +45,7 @@ const quizSchema = new Schema({
 });
  
 
-// //Creating quiz attempt, this model tracks each user's quiz attempts and stores the final score.
-// const quizAttemptSchema = new mongoose.Schema({
-//     userId: { type: String, required: true },
-//     quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
-//     score: { type: Number, required: true },
-//     totalQuestions: { type: Number, required: true },
-//     completedAt: { type: Date, default: Date.now }
-// });
-
-// module.exports = mongoose.model(quizAttemptSchema, quiz, quizScores);
-
-
-
+ 
 //Defining the schema for quiz attempt
 const quizAttemptSchema = new Schema({
     userId: {

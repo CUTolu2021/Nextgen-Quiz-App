@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const { sendEmail } = require('../utils/emailService');
+const e = require('cors');
 
 // Generate JWT token
 const generateToken = (user, expiresIn = "10m") => {
@@ -53,9 +54,13 @@ const signup = async (req, res) => {
             if (!existingUser.active_status) {
                 return res.status(401).json({ message: "Account is inactive, please contact admin" });
             }
-            if (existingUser.emailVerified) {
+            if (existingUser.emailVerified && username === existingUser.username) {
                 return res.status(200).json({ message: "User already exists, please login" });
-            } else {
+            }
+            if(existingUser.emailVerified && username !== existingUser.username) {
+                return res.status(200).json({ message: "Email already exists" });
+            }
+             else {
                 const token = generateToken(existingUser, "10m");
                 
                 const verificationLink = `http://127.0.0.1:5500/frontend/verify-email.html?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
@@ -82,8 +87,7 @@ const signup = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "An error occured please try again.",
-            error: err.message,
+            message: err.message,
         });
     }
 };

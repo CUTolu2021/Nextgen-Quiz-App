@@ -193,7 +193,7 @@
       </div>
       <div class="input-group">
         <label for="quizTime">Quiz Time (minutes)</label>
-        <input type="number" id="quizTime" value="15" min="0.5" />
+        <input type="number" id="quizTime" value="15" min="0.5"/>
       </div>
       <div class="input-group">
         <label for="quizDescription">Quiz Description</label>
@@ -243,7 +243,7 @@
                 <input type="text" class="option" placeholder="Option 2">
                 <input type="text" class="option" placeholder="Option 3">
                 <input type="text" class="option" placeholder="Option 4">
-                <input type="text" class="correct-option" placeholder="Correct option">
+                <input type="text" class="correct-option" placeholder="Correct Answer">
                 <textarea class="explanation" placeholder="Explanation (optional)"></textarea>
                 <input type="number" class="points" placeholder="Points (e.g., 5)" min="1">
                 <i class="fas fa-trash delete-icon"></i>
@@ -281,7 +281,7 @@
         document.getElementById("quizTitle").value =
           localStorage.getItem("quizTitle") || "";
         document.getElementById("quizTime").value =
-          localStorage.getItem("quizTime") || "30";
+          localStorage.getItem("quizTime") || "";
         document.getElementById("quizDescription").value =
           localStorage.getItem("quizDescription") || "";
 
@@ -532,6 +532,11 @@
           if (quizId) {
             await submitQuestions(); // Then submit questions
             alert("Quiz published successfully!");
+            localStorage.removeItem("quizTitle");
+            localStorage.removeItem("quizDescription");
+            localStorage.removeItem("quizTime");
+            localStorage.removeItem("questions");
+            window.location.href = "quizpublished.html";
           }
         });
 
@@ -542,6 +547,11 @@
           if (quizId) {
             await submitQuestions(); // Then submit questions
             alert("Draft saved successfully!");
+            localStorage.removeItem("quizTitle");
+            localStorage.removeItem("quizDescription");
+            localStorage.removeItem("quizTime");
+            localStorage.removeItem("questions");
+            window.location.href = "savedraft.html";
           }
         });
     </script>
