@@ -211,29 +211,27 @@ button:focus, button:active {
         const token = new URLSearchParams(window.location.search).get('token');
 
         // Add event listeners to the buttons
-        document.getElementById("participant-link").addEventListener("click", () => {
-            fetch("https://nextgen-quiz-app.vercel.app/user", {
+        document.getElementById("participant-link").addEventListener("click", async () => {
+            const response = await fetch("http://localhost:8000/user", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({ role: "Participant" }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.message === "User updated successfully!") {
-                    localStorage.setItem('token', token);
-                    alert("Role updated successfully!");
-                    window.location.href = "/dashboard";
-                } else {
-                    alert(`Role update failed!: ${data.message}`);
-                }
             });
+            const data = await response.json();
+            if(data.message === "Role updated successfully") {
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "/dashboard";
+            } else {
+                alert(`Role update failed!`);
+            }
         });
 
-        document.getElementById("creator-link").addEventListener("click", () => {
-            fetch("https://nextgen-quiz-app.vercel.app/user", {
+        document.getElementById("creator-link").addEventListener("click", async () => {
+            const response = await fetch("http://localhost:8000/user", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -241,20 +239,14 @@ button:focus, button:active {
                 },
                 body: JSON.stringify({ role: "Creator" }),
             })
-            .then(response => response.json())
-            .then(data => {
-                if(data.message === "User updated successfully!") {
-                    localStorage.setItem('token', token);
-                    alert("Role updated successfully!");
-                    window.location.href = "/dashboard";
-                } else {
-                    alert(`Role update failed!: ${data.message}`);
-                }
-            })
-            .catch(error => {
-                alert(`Role update failed!: ${error.message}`);
-                console.error(error);
-            });
+            const data = await response.json();
+            if(data.message === "Role updated successfully") {
+                localStorage.setItem('token', token);
+                alert("Role updated successfully!");
+                window.location.href = "/dashboard";
+            } else {
+                alert(`Role update failed!`);
+            }
         });
     </script>
 </body>

@@ -40,7 +40,7 @@ const updateUserById = async (req, res) => {
             user.password = hashPassword(req.body.password);
             await user.save();
         }
-        res.status(200).json({ message: 'User updated successfully', data: user });
+        res.status(200).json({ message: "Role updated successfully"});
     } catch (error) {
         res.status(500).json({ 
             message: "Failed to update user",
