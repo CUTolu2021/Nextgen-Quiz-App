@@ -123,5 +123,14 @@ module.exports = {
     QuizAttempt: model('QuizAttempt', quizAttemptSchema),
     QuizResponse: model('QuizResponse', quizResponseSchema)
   };
+
+
+
+  
+  questionId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Question',
+    required: true
+  }
   
  // The following code creates a quiz attempt, this model tracks each user's quiz attempts and stores the final score.
