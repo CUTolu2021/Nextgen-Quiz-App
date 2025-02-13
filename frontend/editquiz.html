@@ -1,0 +1,166 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        let questionCount = 1;
+
+        function goBack() {
+            window.location.href = 'quiz_page.html'; // Redirect to the quiz page
+        }
+
+        function deleteQuestion(element) {
+            element.closest('.question-container').remove();
+            updateQuestionNumbers();
+        }
+
+        function addImage() {
+            document.getElementById('imageInput').click();
+        }
+
+        function saveUpdates() {
+            alert('Your updates have been saved!');
+        }
+
+        function addQuestion() {
+            questionCount++;
+            const questionContainer = document.createElement('div');
+            questionContainer.classList.add('border', 'rounded-lg', 'p-4', 'mb-4', 'question-container');
+            questionContainer.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold">Question ${questionCount}</h2>
+                    <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuestion(this)"></i>
+                </div>
+                <div class="mb-4">
+                    <input type="text" class="w-full border rounded p-2" value="Sample question ${questionCount}?">
+                </div>
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question${questionCount}" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Option 1">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question${questionCount}" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Option 2">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question${questionCount}" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Option 3">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question${questionCount}" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Option 4">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2">Explanation</label>
+                    <input type="text" class="w-full border rounded p-2" value="Explanation for question ${questionCount}">
+                </div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-lightbulb text-gray-500 mr-2"></i>
+                    <input type="number" class="w-16 border rounded p-2 mr-4" value="10">
+                    <button class="text-purple-500 flex items-center" onclick="addImage()">
+                        <i class="fas fa-image mr-2"></i>
+                        Add image
+                    </button>
+                    <input type="file" id="imageInput" class="hidden">
+                </div>
+            `;
+            document.getElementById('questionsContainer').appendChild(questionContainer);
+        }
+
+        function updateQuestionNumbers() {
+            const questionContainers = document.querySelectorAll('.question-container');
+            questionCount = questionContainers.length;
+            questionContainers.forEach((container, index) => {
+                container.querySelector('h2').textContent = `Question ${index + 1}`;
+                const radioButtons = container.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(radio => {
+                    radio.name = `question${index + 1}`;
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+  <div class="bg-purple-100 min-h-screen">
+    <div class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer" onclick="goBack()">
+        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+        <span class="text-gray-600">Back</span>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-2xl font-bold mb-6">Edit Quiz</h1>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Quiz Title</label>
+            <input type="text" class="w-full border rounded p-2" value="Current Affairs Quiz">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Quiz Time</label>
+            <div class="flex items-center">
+                <i class="fas fa-hourglass-half text-gray-500 mr-2"></i>
+                <input type="number" class="w-full border rounded p-2" value="30">
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Quiz Description</label>
+            <textarea class="w-full border rounded p-2">Current affairs quiz: How well do you know what's happening?</textarea>
+        </div>
+        <div id="questionsContainer">
+            <div class="border rounded-lg p-4 mb-4 question-container">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold">Question 1</h2>
+                    <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuestion(this)"></i>
+                </div>
+                <div class="mb-4">
+                    <input type="text" class="w-full border rounded p-2" value="What is the capital of France?">
+                </div>
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question1" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="London">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question1" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Berlin">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question1" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Paris">
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input type="radio" name="question1" class="mr-2">
+                        <input type="text" class="w-full border rounded p-2" value="Madrid">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2">Explanation</label>
+                    <input type="text" class="w-full border rounded p-2" value="Explanation: Paris became the capital of France in 987">
+                </div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-lightbulb text-gray-500 mr-2"></i>
+                    <input type="number" class="w-16 border rounded p-2 mr-4" value="10">
+                    <button class="text-purple-500 flex items-center" onclick="addImage()">
+                        <i class="fas fa-image mr-2"></i>
+                        Add image
+                    </button>
+                    <input type="file" id="imageInput" class="hidden">
+                </div>
+            </div>
+        </div>
+        <button class="bg-purple-500 text-white rounded-lg px-4 py-2 mb-4 flex items-center" onclick="addQuestion()">
+            <i class="fas fa-plus mr-2"></i>
+            Add Question
+        </button>
+    </div>
+    
+    <div class="max-w-4xl mx-auto mt-4 flex justify-end space-x-4">
+        <button class="border border-purple-500 text-purple-500 rounded-lg px-4 py-2" onclick="saveUpdates()">Save Updates</button>
+        <button class="bg-purple-500 text-white rounded-lg px-4 py-2 flex items-center">
+            <i class="fas fa-share mr-2"></i>
+            Publish Updates
+        </button>
+    </div>
+  </div>
+</body>
+</html>
