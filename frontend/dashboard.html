@@ -220,7 +220,7 @@
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        if (!data.user) return window.location.replace("signin.html");
+        if (!data.user || data.user.role !== "Creator") return window.location.replace("signin.html");
 
         usernameElement.innerText = data.user.username;
         initialElement.innerText = data.user.username[0].toUpperCase();
@@ -249,7 +249,7 @@
 
     async function checkCreatedQuizzes(userId) {
       try {
-        const res = await fetch(`http://localhost:8000/quizzes/${userId}`, {
+        const res = await fetch(`http://localhost:8000/quizzes/`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -267,6 +267,7 @@
         return false;
       }
     }
+
 
     function renderQuizzes(quizzes) {
       quizzesList.innerHTML = "";

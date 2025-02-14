@@ -101,7 +101,11 @@
           .then((data) => {
             const token = data.token;
             localStorage.setItem("token", token);
-            window.location.href = "dashboard.html";
+            if (data.role === "Participant") {
+              window.location.href = "participantdashboard.html";
+            } else if (data.role === "Creator") {
+              window.location.href = "dashboard.html";
+            }
           })
           .catch((err) => {
             messageDiv.innerHTML = '<i class="material-symbols-outlined">&#x26A0;</i> ' + err.message;

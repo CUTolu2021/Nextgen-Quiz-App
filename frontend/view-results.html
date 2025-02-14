@@ -15,135 +15,139 @@
             <div class="flex justify-center items-center mb-4">
                 <i class="fas fa-hourglass-half text-3xl text-red-500"></i>
             </div>
-            <h1 class="text-2xl font-bold mb-2">Good Job! 👏</h1>
+            <h1 class="text-2xl font-bold mb-2">Good Job! <span class="text-yellow-500"> </span></h1>
             <p class="text-gray-600 mb-6">You're on the right track! A bit more practice and you'll be at the top!</p>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="bg-purple-200 p-4 rounded-lg">
                     <p class="text-gray-600">Score</p>
-                    <p class="text-2xl font-bold">75%</p>
+                    <p class="text-2xl font-bold" id="score"></p>
                 </div>
                 <div class="bg-purple-200 p-4 rounded-lg">
                     <p class="text-gray-600">Time</p>
-                    <p class="text-2xl font-bold">10:50</p>
+                    <p class="text-2xl font-bold" id="time"></p>
                 </div>
                 <div class="bg-purple-200 p-4 rounded-lg">
                     <p class="text-gray-600">Correct</p>
-                    <p class="text-2xl font-bold">7</p>
+                    <p class="text-2xl font-bold" id="correct"></p>
                 </div>
                 <div class="bg-purple-200 p-4 rounded-lg">
                     <p class="text-gray-600">Wrong</p>
-                    <p class="text-2xl font-bold text-red-500">3</p>
+                    <p class="text-2xl font-bold text-red-500" id="wrong"></p>
                 </div>
             </div>
             <div class="flex justify-center space-x-4 mb-6">
-                <button id="view-leaderboard" class="bg-purple-600 text-white px-4 py-2 rounded-lg">View Leaderboard</button>
-                <button id="share-results" class="border border-purple-600 text-purple-600 px-4 py-2 rounded-lg flex items-center">
-                    <i class="fas fa-share-alt mr-2"></i> Share Results
-                </button>
+                <button id="view-leaderboard" class="bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="redirectToLeaderboard()">View Leaderboard</button>
             </div>
         </div>
         <div>
             <h2 class="text-xl font-bold mb-4">Review Answers</h2>
-            <div class="mb-4">
-                <div class="bg-white border border-gray-300 rounded-lg p-4">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleAnswer(this)">
-                        <p class="font-semibold">What is the capital of France?</p>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="mt-2 hidden">
-                        <p>Your answer: <span class="text-red-500">London</span></p>
-                        <p>Correct answer: <span class="text-green-500">Paris</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4">
-                <div class="bg-white border border-gray-300 rounded-lg p-4">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleAnswer(this)">
-                        <p class="font-semibold">What is the capital of France?</p>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="mt-2 hidden">
-                        <p>Your answer: <span class="text-green-500">Paris</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4">
-                <div class="bg-white border border-gray-300 rounded-lg p-4">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleAnswer(this)">
-                        <p class="font-semibold">What is the capital of France?</p>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="mt-2 hidden">
-                        <p>Your answer: <span class="text-red-500">London</span></p>
-                        <p>Correct answer: <span class="text-green-500">Paris</span></p>
-                    </div>
-                </div>
-            </div>
+            <div id="answers-container"></div>
         </div>
     </div>
 
-    <div id="leaderboard" class="hidden w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Leaderboard</h2>
-        <ul>
-            <li class="mb-2">1. Alice - 95%</li>
-            <li class="mb-2">2. Bob - 90%</li>
-            <li class="mb-2">3. Charlie - 85%</li>
-            <li class="mb-2">4. David - 80%</li>
-            <li class="mb-2">5. Eve - 75%</li>
-            <li class="mb-2">6. Frank - 70%</li>
-            <li class="mb-2">7. Grace - 65%</li>
-            <li class="mb-2">8. Heidi - 60%</li>
-            <li class="mb-2">9. Ivan - 55%</li>
-            <li class="mb-2">10. Judy - 50%</li>
-            <li class="mb-2">11. Mallory - 45%</li>
-            <li class="mb-2">12. Niaj - 40%</li>
-            <li class="mb-2">13. Olivia - 35%</li>
-            <li class="mb-2">14. Peggy - 30%</li>
-            <li class="mb-2">15. Trent - 25%</li>
-        </ul>
-        <button onclick="goBack()" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg">Back</button>
-    </div>
-
-    <div id="share-page" class="hidden w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Invite Friends</h2>
-        <ul>
-            <li class="mb-2">John</li>
-            <li class="mb-2">Jane</li>
-            <li class="mb-2">Doe</li>
-            <li class="mb-2">Alice</li>
-            <li class="mb-2">Bob</li>
-            <li class="mb-2">Charlie</li>
-            <li class="mb-2">David</li>
-            <li class="mb-2">Eve</li>
-            <li class="mb-2">Frank</li>
-            <li class="mb-2">Grace</li>
-            <li class="mb-2">Heidi</li>
-            <li class="mb-2">Ivan</li>
-            <li class="mb-2">Judy</li>
-            <li class="mb-2">Mallory</li>
-            <li class="mb-2">Niaj</li>
-            <li class="mb-2">Olivia</li>
-            <li class="mb-2">Peggy</li>
-            <li class="mb-2">Trent</li>
-        </ul>
-        <button onclick="goBack()" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg">Back</button>
-    </div>
+    
 
     <script>
+        const token = localStorage.getItem('token');
+        const quizId = localStorage.getItem('quizId');
+        const userId = localStorage.getItem('userId');
+        if (!token || !quizId || !userId) {
+            window.location.href = 'participantdashboard.html';
+        }
+
+        
+        async function fetchAnswers() {
+            const response = await fetch(`http://localhost:8000/quizzes/${quizId}/results`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const answers = await response.json();
+            renderAnswers(answers);
+        }
+
+        function renderAnswers(answers) {
+            const container = document.getElementById('answers-container');
+            container.innerHTML = ''; // Clear any existing content
+            answers.forEach(answer => {
+                const answerDiv = document.createElement('div');
+                answerDiv.classList.add('mb-4');
+
+                answerDiv.innerHTML = `
+                    <div class="bg-white border border-gray-300 rounded-lg p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAnswer(this)">
+                            <p class="font-semibold">${answer.question}</p>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="mt-2 hidden">
+                            <p>Your answer: <span class="${answer.isCorrect ? 'text-green-500' : 'text-red-500'}">${answer.selectedAnswer}</span></p>
+                            ${answer.correctAnswer ? `<p>Correct answer: <span class="text-green-500">${answer.correctAnswer}</span></p>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(answerDiv);
+            });
+        }
+
+        function toggleAnswer(element) {
+            const details = element.nextElementSibling;
+            details.classList.toggle('hidden');
+        }
+
+        // Fetch answers when the page loads
+        document.addEventListener('DOMContentLoaded', fetchAnswers);
+
+
+        async function redirectToLeaderboard() {
+            const response = await fetch(`http://localhost:8000/info/${quizId}/leaderboard`, 
+            {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                const leaderboardData = await response.json();
+                const userRank = leaderboardData.findIndex(leaderboardEntry => leaderboardEntry.userId === userId) + 1; // assuming the response contains an array of objects with a 'userId' field for each user
+                if (userRank <= 10) {
+                    window.location.href = 'quizleaderboard.html';
+                } else {
+                    window.location.href = 'quizleaderboard1.html';
+                }
+            } else {
+                console.error("Failed to fetch leaderboard data");
+            }
+        }
+        async function updateAttemptInfo() {
+            const response = await fetch(`http://localhost:8000/info/${quizId}/quizattempts`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            } 
+            ); 
+            const data = await response.json();
+            console.log(data);
+            document.getElementById('score').innerText = data[0].score;
+            console.log(data[0].score);
+            const minutes = Math.floor(data[0].timeUsed);
+            const seconds = Math.floor((data[0].timeUsed - minutes) * 60);
+            document.getElementById('time').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('correct').innerText = data[0].correct;
+            document.getElementById('wrong').innerText = data[0].wrong;
+         }
+        updateAttemptInfo();
+
         function toggleAnswer(element) {
             const answer = element.nextElementSibling;
             answer.classList.toggle('hidden');
         }
 
-        document.getElementById('view-leaderboard').addEventListener('click', function() {
-            document.getElementById('main-content').classList.add('hidden');
-            document.getElementById('leaderboard').classList.remove('hidden');
-        });
-
-        document.getElementById('share-results').addEventListener('click', function() {
-            document.getElementById('main-content').classList.add('hidden');
-            document.getElementById('share-page').classList.remove('hidden');
-        });
 
         function goBack() {
             document.getElementById('leaderboard').classList.add('hidden');

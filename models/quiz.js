@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const QuestionSchema = require('./question');
+const question = require('./question');
 
 const quizSchema = new Schema({
     title: {
@@ -69,6 +70,14 @@ const quizAttemptSchema = new Schema({
         type: Number,
         default: 0
     },
+    correct: {
+        type: Number,
+        default: 0
+    },
+    wrong: {
+        type: Number,
+        default: 0
+    },
     isCompleted: {
         type: Boolean,
         default: false
@@ -92,6 +101,10 @@ const quizResponseSchema = new Schema({
         ref: 'Question',
         required: true
     },
+    question: {
+        type: String,
+        required: true
+    },
     quizId: {
         type: Schema.Types.ObjectId,
         ref: 'Quiz',
@@ -105,6 +118,10 @@ const quizResponseSchema = new Schema({
         type: String,
         required: true
     },
+    isCorrect: {
+        type: Boolean,
+        required: true
+    }
 })
 module.exports = {
     Quiz: model('Quiz', quizSchema),

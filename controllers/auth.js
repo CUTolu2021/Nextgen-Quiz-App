@@ -151,6 +151,7 @@ const login = async (req, res) => {
         console.log("token just created",jwt.verify(token, process.env.JWT_KEY))
         return res.status(200).json({
             message: "Authentication successful",
+            role: user.role,
             token,
         });
     } catch (err) {
