@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        function redirectToPage(page) {
+            window.location.href = page; // Replace with your target page URL
+        }
+    </script>
+</head>
+<body class="bg-purple-100 flex items-center justify-center min-h-screen">
+    <div class="text-center">
+        <div class="flex items-center justify-start mb-8" style="width: 100%; margin-left: 0;">
+            <div class="bg-purple-600 text-white p-1.5 mb-2" style="border-radius: 0; margin-top: 10px;">
+                <i class="fas fa-question"></i>
+            </div>
+            <h1 class="font-bold text-purple-600 ml-2" style="font-size: 20px;">QUIZZY</h1>
+        </div>
+        <h2 class="font-bold mb-2" style="font-size: 20px;">The fun way to learn and challenge yourself!</h2>
+        <p class="text-gray-600 mb-8">Create, share, and participate in engaging quizzes</p>
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow p-2 flex flex-col items-center justify-between">
+                <div class="bg-purple-100 text-purple-600 rounded-full p-1.5 mb-4">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-semibold" style="font-size: 18px;">Test Your Knowledge</h3>
+                    <p class="text-gray-600">Take quizzes on various topics and challenge yourself</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-2 flex flex-col items-center justify-between">
+                <div class="bg-purple-100 text-purple-600 rounded-full p-1.5 mb-4">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-semibold" style="font-size: 18px;">Create & Share</h3>
+                    <p class="text-gray-600">Make your own quizzes and share them with friends</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-2 flex flex-col items-center justify-between">
+                <div class="bg-purple-100 text-purple-600 rounded-full p-1.5 mb-4">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-semibold" style="font-size: 18px;">Compete & Win</h3>
+                    <p class="text-gray-600">Join competitions and climb the leaderboard</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8">
+            <button onclick="redirectToPage('signup.html')" class="bg-purple-600 text-white font-semibold py-2 px-4 rounded w-full mb-4" style="border-radius: 10px;">Get Started</button>
+            <button onclick="redirectToPage('signin.html')" class="border border-purple-600 text-purple-600 font-semibold py-2 px-4 w-full" style="border-radius: 10px;">I already have an account</button>
+        </div>
+    </div>
+</body>
+</html>
