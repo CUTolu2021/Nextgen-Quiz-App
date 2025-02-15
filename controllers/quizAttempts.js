@@ -1,8 +1,6 @@
 const {QuizAttempt, Quiz, QuizResponse} = require('../models/quiz');
-const User = require('../models/user');
-const Question = require('../models/question');
 const {QuizLeaderboard,Leaderboard} = require('../models/leaderboard');
-const { get } = require('mongoose');
+const { generateToken } = require('./auth');
 
 const startQuiz = async (req, res) => {
     const { quizId } = req.params;
@@ -23,6 +21,7 @@ const startQuiz = async (req, res) => {
         await attempt.save();
         res.status(200).json({ message: 'Quiz started', attemptId: attempt._id });
     } catch (error) {
+        console.error('Error starting quiz:', error.message);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -53,8 +52,9 @@ const endQuiz = async (req, res) => {
         attempt.correct = correct;
         attempt.wrong = wrong;
         await attempt.save();
-
-        await updateLeaderboard(userId, quizId, score);
+        if(userId !== null){
+            await updateLeaderboard(userId, quizId, score);
+        }
 
         res.status(200).json({ message: 'Quiz ended', score: attempt.score });
     } catch (error) {
@@ -81,24 +81,15 @@ const updateLeaderboard = async (userId, quizId, score) => {
             await newEntry.save();
         }
 
-        // Recalculate rankings
-        await recalculateRankings();
-    } catch (error) {
-        console.error('Error updating leaderboard:', error.message);
-    }
-};
-
-// Function to recalculate rankings
-const recalculateRankings = async () => {
-    try {
-        const leaderboardEntries = await QuizLeaderboard.find().sort({ score: -1, createdAt: 1 });
+        // Recalculate rankings for this specific quiz
+        const leaderboardEntries = await QuizLeaderboard.find({ quizId }).sort({ score: -1, createdAt: 1 });
 
         for (let i = 0; i < leaderboardEntries.length; i++) {
             leaderboardEntries[i].rank = i + 1;
             await leaderboardEntries[i].save();
         }
     } catch (error) {
-        console.error('Error recalculating rankings:', error.message);
+        console.error('Error updating leaderboard:', error.message);
     }
 };
 
@@ -158,6 +149,15 @@ const getQuizAttemptByQuizId = async (req, res) => {
     try {
         const attempts = await QuizAttempt.find({ quizId, userId });
         res.status(200).json(attempts);
+
+        // Remove user from database if they don't have an email 20 minutes later
+        if(req.user.email === null){
+            setTimeout(async () => {
+                await QuizLeaderboard.deleteMany({ userId });
+                await QuizResponse.deleteMany({ userId });
+                await QuizAttempt.deleteMany({ userId });
+            }, 20 * 60 * 1000);
+        }
     } catch (error) {
         console.error('Error fetching quiz attempts:', error.message);
         res.status(500).json({ message: 'Internal server error' });
@@ -237,5 +237,16 @@ const submitAnswer = async (req, res) => {
     }
 };
 
+const allowUnregisteredUsersToTakeQuiz = async (req, res) => {
+    const tempUser = {
+        userId: null,
+        username: `Unregistered_User_${Date.now()}`,
+        email: null,
+        role: "Participant",
+    };
+    const token = generateToken(tempUser, "30m");
+    res.status(200).json({ token });
+}
 
-module.exports = { startQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };
+
+module.exports = { startQuiz,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };

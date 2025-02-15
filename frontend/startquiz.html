@@ -223,7 +223,32 @@ if(!quizId) {
     window.location.replace("participantdashboard.html");
 }
     console.log(quizId);
-    const token = localStorage.getItem("token");
+    let token = localStorage.getItem("token");
+    if (!token) {
+        fetch("http://localhost:8000/auth/allow-unregistered-users-to-take-quiz", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("status", "unregistered");
+            window.location.reload();
+            console.log(data.token);
+            setTimeout(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("status");
+                window.location.replace("signin.html");
+            }, 1000 * 60 * 30); // delete token after 30 minutes
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            window.location.replace("signin.html");
+        });
+    }
+    token = localStorage.getItem("token");
     localStorage.setItem("quizId", quizId);
     
     let correct = 0;
@@ -423,7 +448,6 @@ if(!quizId) {
         questionContainer.innerHTML = "";
         questionContainer.style.display = "none";
         resultDisplay.style.display = "block";
-        alert(`${timeUsed} and ${timeLimit.innerText} now ${((Number(timeLimit.innerText)*60) - timeLeft)/60}`);
         resultDisplay.innerHTML = `<h2>Quiz Finished!</h2><p>Your Score: ${score} / ${questions.length}</p>`;
 
     

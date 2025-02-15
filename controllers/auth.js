@@ -3,14 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const { sendEmail } = require('../utils/emailService');
-const e = require('cors');
 
 // Generate JWT token
 const generateToken = (user, expiresIn = "10m") => {
     return jwt.sign(
         {
             username: user.username,
-            userId: user._id,
+            userId: user._id || user.userId,
             role: user.role,
             email: user.email,
             emailVerificationToken: user.emailVerificationToken,
@@ -289,5 +288,6 @@ module.exports = {
     resetPassword,
     getProfile,
     verifyEmail,
-    verifyOTP
+    verifyOTP,
+    generateToken
 };

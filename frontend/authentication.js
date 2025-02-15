@@ -21,27 +21,6 @@ function checkAuth() {
     }
 }
 
-
-function updateLastActiveTime() {
-    localStorage.setItem("lastActive", Date.now());
-}
-
-function checkInactivity() {
-    const lastActive = localStorage.getItem("lastActive");
-
-    if (!lastActive || Date.now() - lastActive > maxInactiveTime) {
-        alert("You have been logged out due to inactivity.");
-        localStorage.clear();
-        window.location.href = "login.html";
-    } else {
-        updateLastActiveTime(); // Update last active time on every check
-    }
-}
-
-// Track user activity
-document.addEventListener("mousemove", updateLastActiveTime);
-document.addEventListener("keydown", updateLastActiveTime);
-
 // Run both checks on page load
 checkAuth();
 checkInactivity();

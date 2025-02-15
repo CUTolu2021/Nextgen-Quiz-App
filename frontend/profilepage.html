@@ -1,27 +1,9 @@
 <html>
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="authentication.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script>
-        function showPage(pageId) {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => page.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-        }
-
-        function goBack() {
-            const currentPage = document.querySelector('.page:not(.hidden)');
-            if (currentPage.id !== 'dashboard') {
-                showPage('dashboard');
-            }
-        }
-
-        function logOut() {
-            alert("You have been logged out.");
-            // Redirect to login page or perform other logout actions
-            window.location.href = "login.html"; // Replace with your login page URL
-        }
-    </script>
+    
 </head>
 <body class="bg-purple-100 min-h-screen flex flex-col items-center">
     <div class="w-full max-w-2xl mt-4">
@@ -36,7 +18,7 @@
                         <i class="fas fa-user text-purple-500 text-3xl"></i>
                     </div>
                     <div class="ml-4">
-                        <h2 class="text-xl font-semibold">Uchechukwu</h2>
+                        <h2 class="text-xl font-semibold" id="username">Uchechukwu</h2>
                         <p class="text-gray-500">Quiz Participant</p>
                     </div>
                 </div>
@@ -47,14 +29,14 @@
                                 <i class="fas fa-trophy mr-2"></i>
                                 <span>Leaderboard Rank</span>
                             </div>
-                            <span class="text-xl font-semibold">#5</span>
+                            <span class="text-xl font-semibold" id="leaderboardRank">#5</span>
                         </div>
                         <div class="flex flex-col items-center text-purple-500">
                             <div class="flex items-center">
                                 <span>Total Points</span>
                                 <i class="fas fa-share-alt ml-2"></i>
                             </div>
-                            <span class="text-xl font-semibold">883</span>
+                            <span class="text-xl font-semibold" id="totalPoints">883</span>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -63,14 +45,14 @@
                                 <i class="fas fa-brain mr-2"></i>
                                 <span>Quizzes Taken</span>
                             </div>
-                            <p class="text-xl font-semibold">5</p>
+                            <p class="text-xl font-semibold" id="quizNumber">5</p>
                         </div>
                         <div class="bg-gray-100 rounded-lg p-4 text-left flex flex-col justify-start">
                             <div class="flex items-center text-purple-500 mb-2">
                                 <i class="fas fa-hourglass-half mr-2"></i>
                                 <span>Avg. Finish Time</span>
                             </div>
-                            <p class="text-xl font-semibold">24m 13s</p>
+                            <p class="text-xl font-semibold" id="avgFinishTime">24m 13s</p>
                         </div>
                     </div>
                 </div>
@@ -116,10 +98,10 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                <button class="text-red-500 font-semibold flex items-center justify-center" onclick="logOut()">
+            <div class="bg-white rounded-lg shadow-md p-4 flex items-center justify-center">
+                <button class="text-red-500 font-semibold flex items-center" onclick="logOut()">
                     <i class="fas fa-sign-out-alt mr-2"></i>
-                    Log Out
+                    <span>Log Out</span>
                 </button>
             </div>
         </div>
@@ -220,4 +202,33 @@
         </div>
     </div>
 </body>
+<script>
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const username = localStorage.getItem("username");
+    const numberQuizzes = localStorage.getItem("numberQuizzes");
+    console.log(token, userId, username, numberQuizzes);    
+
+    document.getElementById("username").textContent = username;
+    document.getElementById("quizNumber").innerText = numberQuizzes;
+    function showPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.add('hidden'));
+        document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function goBack() {
+        const currentPage = document.querySelector('.page:not(.hidden)');
+        if (currentPage.id !== 'dashboard') {
+            showPage('dashboard');
+        }
+    }
+
+    function logOut() {
+        localStorage.clear();
+        alert("You have been logged out.");
+        // Redirect to login page or perform other logout actions
+        window.location.href = "signin.html"; // Replace with your login page URL
+    }
+</script>
 </html>

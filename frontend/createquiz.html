@@ -173,7 +173,9 @@
   </head>
   <body>
     <div class="header">
-      <a href="dashboard.html"> <i class="fas fa-arrow-left"></i> Back to Dashboard </a>
+      <div class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer" >
+      <a href="dashboard.html"> <i class="fas fa-arrow-left text-gray-600 mr-2"></i><span class="text-gray-600">Back</span> </a>
+    </div>
     </div>
     <div class="container" id="quizContainer">
       <div class="top-icons">
@@ -186,12 +188,13 @@
           <p>Preview</p>
         </div>
       </div>
-      <h1>Create New Quiz</h1>
-      <div class="input-group">
+      <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
+      <h1 class="text-2xl font-bold mb-6">Create New Quiz</h1>
+      <div class="input-group mb-4">
         <label for="quizTitle">Quiz Title</label>
         <input type="text" id="quizTitle" placeholder="Enter quiz title" />
       </div>
-      <div class="input-group">
+      <div class="input-group mb-4">
         <label for="quizTime">Quiz Time (minutes)</label>
         <input type="number" id="quizTime" value="15" min="0.5"/>
       </div>
@@ -203,8 +206,9 @@
         ></textarea>
       </div>
       <button class="button" id="addQuestionButton">
-        <i class="fas fa-plus"></i> Add Question
+        <i class="fas fa-plus mr-2"></i> Add Question
       </button>
+      </div>
       <div class="questions-section" id="questionsSection">
         <h2>Questions</h2>
         <div id="questionsContainer"></div>

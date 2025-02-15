@@ -328,7 +328,8 @@ const getQuizzes = async (req, res) => {
         }
         res.json({
             message: `Total number of quizzes is ${total}. You are on page ${page}, a page is limited to ${limit} items, There are ${Math.ceil(total / limit)} pages in total.`,
-            data: quizzes
+            data: quizzes,
+            total
         });
     } catch (error) {
         console.error(error);

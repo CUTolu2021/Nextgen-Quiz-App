@@ -169,11 +169,12 @@
             <a href="view-results.html" class="back-button">&leftarrow; Back</a>
             <div class="congrats">
                 <h2>Congratulations on Your Perfect Score</h2>
-                <p>You ranked 4th in this quiz! Share your achievements with friends</p>
+                <p>You ranked <span id="user-rank"></span> in this quiz! Share your achievements with friends</p>
                 <button class="share-button">
                     <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="share" class="share-image">Share with Friends
                 </button>
             </div>
+            
         </div>
         <div class="top-performers">
             <h3>
@@ -189,70 +190,57 @@
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Gold Medal" class="medal-icon"></td>
-                        <td>Eniola</td>
-                        <td class="score">100</td>
-                        <td class="time">10:50</td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Silver Medal" class="medal-icon"></td>
-                        <td>Dave</td>
-                        <td class="score">98</td>
-                        <td class="time">09:20</td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Gold Medal" class="medal-icon"></td>
-                        <td>Rebecca</td>
-                        <td class="score">90</td>
-                        <td class="time">11:15</td>
-                    </tr>
-                    <tr>
-                        <td>#4</td>
-                        <td>Uchechukwu</td>
-                        <td class="score">89</td>
-                        <td class="time">10:50</td>
-                    </tr>
-                    <tr>
-                        <td>#5</td>
-                        <td>Deborah</td>
-                        <td class="score">86</td>
-                        <td class="time">12:00</td>
-                    </tr>
-                    <tr>
-                        <td>#6</td>
-                        <td>Dennis</td>
-                        <td class="score">83</td>
-                        <td class="time">10:50</td>
-                    </tr>
-                    <tr>
-                        <td>#7</td>
-                        <td>Favour1</td>
-                        <td class="score">77</td>
-                        <td class="time">09:56</td>
-                    </tr>
-                    <tr>
-                        <td>#8</td>
-                        <td>Praise</td>
-                        <td class="score">72</td>
-                        <td class="time">10:23</td>
-                    </tr>
-                    <tr>
-                        <td>#9</td>
-                        <td>Emmanuel</td>
-                        <td class="score">58</td>
-                        <td class="time">12:45</td>
-                    </tr>
-                    <tr>
-                        <td>#10</td>
-                        <td>Milcah</td>
-                        <td class="score">54</td>
-                        <td class="time">11:36</td>
-                    </tr>
+                <tbody id="leaderboard-tbody">
+                    <!-- Leaderboard data will be inserted here -->
                 </tbody>
             </table>
         </div>
+        <script>
+            const quizId = localStorage.getItem('quizId');
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+            fetch(`https://localhost:8000/quizzes/${quizId}/leaderboard`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const user = data.find(item => item.userId === userId);
+                    if (user) {
+                        document.getElementById('user-rank').innerHTML = `#${data.indexOf(user) + 1}`;
+                    } else {
+                        document.getElementById('user-rank').innerHTML = 'Not Found';
+                    }
+
+                    const tbody = document.getElementById('leaderboard-tbody');
+                    data.forEach((item, index) => {
+                        const tr = document.createElement('tr');
+                        const rankTd = document.createElement('td');
+                        const nameTd = document.createElement('td');
+                        const scoreTd = document.createElement('td');
+                        const timeTd = document.createElement('td');
+
+                        rankTd.innerHTML = index < 3 ? 
+                            `<img src="${item.medalIcon}" alt="${item.rank} Medal" class="medal-icon">` : 
+                            `#${index + 1}`;
+                        nameTd.textContent = item.name;
+                        scoreTd.textContent = item.score;
+                        scoreTd.classList.add('score');
+                        timeTd.textContent = item.time;
+                        timeTd.classList.add('time');
+
+                        tr.appendChild(rankTd);
+                        tr.appendChild(nameTd);
+                        tr.appendChild(scoreTd);
+                        tr.appendChild(timeTd);
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error('Error fetching leaderboard data:', error));
+            
+        </script>
     </div>
 </body>
 </html>

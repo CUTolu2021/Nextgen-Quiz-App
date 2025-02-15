@@ -51,9 +51,11 @@
         const token = localStorage.getItem('token');
         const quizId = localStorage.getItem('quizId');
         const userId = localStorage.getItem('userId');
-        if (!token || !quizId || !userId) {
+        const status = localStorage.getItem('status');
+        if (!token || !quizId) {
             window.location.href = 'participantdashboard.html';
         }
+        
 
         
         async function fetchAnswers() {
@@ -100,6 +102,7 @@
         document.addEventListener('DOMContentLoaded', fetchAnswers);
 
 
+        if(status !== 'unregistered') {
         async function redirectToLeaderboard() {
             const response = await fetch(`http://localhost:8000/info/${quizId}/leaderboard`, 
             {
@@ -120,6 +123,7 @@
             } else {
                 console.error("Failed to fetch leaderboard data");
             }
+        }
         }
         async function updateAttemptInfo() {
             const response = await fetch(`http://localhost:8000/info/${quizId}/quizattempts`,

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quizzy</title>
+    <script src="authentication.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -22,24 +23,31 @@
       <div
         class="container mx-auto px-4 py-4 flex items-center justify-between"
       >
-        <div class="flex items-center">
-          <div class="bg-purple-600 text-white rounded-full p-2">
-            <i class="fas fa-question"></i>
-          </div>
-          <h1 class="text-2xl font-bold text-purple-600 ml-2">QUIZZY</h1>
+      <div class="flex items-center space-x-2">
+        <div
+          class="bg-purple-600 p-2 rounded-md flex justify-center items-center"
+          style="width: 50px; height: 40px"
+        >
+          <i class="fas fa-question text-white"></i>
         </div>
+        <h1 class="text-purple-600 text-xl font-bold">QUIZZY</h1>
+      </div>
         <div class="flex items-center space-x-4">
           <input
             type="text"
             placeholder="Search quizzes..."
-            class="px-4 py-2 rounded-full border border-gray-300"
+            class="px-4 py-2 rounded-full border border-gray-300 cursor-not-allowed"
+            disabled
           />
-          <i class="fas fa-bell text-gray-600"></i>
+          <i class="fas fa-bell text-gray-600"
+          onclick="alert('You have no notifications.');"
+          ></i>
           <div
             class="bg-purple-600 p-2 rounded-full flex items-center justify-center"
             style="width: 40px; height: 40px"
+            onclick="window.location.href='profilepage.html'"
           >
-            <span class="text-white" id="initials">U</span>
+            <span class="text-white cursor-pointer" id="initials">U</span>
           </div>
         </div>
       </div>
@@ -66,7 +74,7 @@
           <h3 id="available-quizzes-tab" class="text-lg cursor-pointer">
             Available Quizzes
           </h3>
-          <h3 id="recent-quizzes-tab" class="text-lg text-gray-400">Recent Quizzes</h3>
+          <h3 id="recent-quizzes-tab" class="text-lg text-gray-400 cursor-pointer">Recent Quizzes</h3>
         </div>
       </section>
       <section class="bg-white rounded-lg shadow-md p-4">
@@ -101,6 +109,7 @@
             if (!data.user || data.user.role !== "Participant") return window.location.replace("signin.html");
             initialsElement.innerText = data.user.username[0].toUpperCase();
             localStorage.setItem("userId", data.user._id);
+            localStorage.setItem("username", data.user.username);
         } catch (err) {
             console.error("Error fetching user data:", err);
         }
@@ -119,6 +128,7 @@
                 headers: { Authorization: `Bearer ${token}` },
             });
             const attemptsData = await resAttempts.json();
+            localStorage.setItem("numberQuizzes", attemptsData.length);
 
             const attemptedQuizIds = new Set(attemptsData.map(attempt => attempt.quizId));
             attemptedQuizzes = attemptsData.map(attempt => {
@@ -127,9 +137,6 @@
             }).filter(Boolean);
 
             unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id));
-
-            console.log("Unattempted Quizzes:", unattemptedQuizzes);
-            console.log("Attempted Quizzes:", attemptedQuizzes);
         } catch (err) {
             console.error("Error fetching quizzes:", err);
         }

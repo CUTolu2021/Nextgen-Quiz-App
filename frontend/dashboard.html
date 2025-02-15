@@ -62,14 +62,17 @@
           ></i>
           <input
             id="search-input"
-            type="text"
+            type="search"
             placeholder="Search quizzes..."
-            class="pl-10 p-2 rounded-md border border-gray-300"
+            class="pl-10 p-2 rounded-md border border-gray-300 opacity-50 cursor-not-allowed"
+            oninput="handleSearch(event)"
+            disabled
           />
         </div>
         <i
           id="notification-icon"
           class="fas fa-bell text-gray-600 cursor-pointer"
+          onclick="alert('You have no notifications.');"
         ></i>
         <i
           id="settings-icon"
@@ -77,10 +80,11 @@
           onclick="toggleSettings()"
         ></i>
         <div
-          class="bg-purple-600 p-2 rounded-full flex items-center justify-center"
+          class="bg-purple-600 p-2 rounded-full flex items-center justify-center cursor-pointer"
           style="width: 40px; height: 40px"
+          onclick="window.location.href='creatorprofilepage.html'"
         >
-          <span class="text-white" id="initials">U</span>
+          <span class="text-white cursor-pointer" id="initials">U</span>
         </div>
       </div>
     </header>
@@ -206,6 +210,7 @@
     const avgScoreElement = document.getElementById("avg-score");
     const quizNumberElement = document.getElementById("quiz-number");
     const totalPlayersElement = document.getElementById("total-players");
+    let quizzes;
 
     if (!token) {
       return window.location.replace("signin.html");
@@ -225,6 +230,7 @@
         usernameElement.innerText = data.user.username;
         initialElement.innerText = data.user.username[0].toUpperCase();
         localStorage.setItem("userId", data.user._id);
+        localStorage.setItem("username", data.user.username);
         updateQuizSections(data.user._id);
       } catch (err) {
         console.error(err);
@@ -249,15 +255,16 @@
 
     async function checkCreatedQuizzes(userId) {
       try {
-        const res = await fetch(`http://localhost:8000/quizzes/`, {
+        const res = await fetch("http://localhost:8000/quizzes", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        console.log(data);
+        quizzes = data.data;
 
         if (data.total > 0) {
           quizNumberElement.innerText = data.total;
+          localStorage.setItem("quizNumber", data.total);
           renderQuizzes(data.data);
           return true;
         }
@@ -303,12 +310,6 @@
       window.location.href = "createQuiz.html";
     });
 
-    uploadQuizBtn.addEventListener("click", handleUploadQuiz);
-
-    searchIcon.addEventListener("click", handleSearch);
-
-    notificationIcon.addEventListener("click", handleNotifications);
-
     settingsIcon.addEventListener("click", () => {
       window.location.href = "settings.html";
     });
@@ -318,56 +319,33 @@
     });
 
     async function handleUploadQuiz() {
-      const quizId = prompt("Enter the Quiz ID:");
-      if (!quizId) return alert("Quiz ID is required.");
-
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = ".csv";
-      fileInput.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return alert("No file selected.");
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-          const response = await fetch(`/upload-questions/${quizId}`, {
-            method: "POST",
-            body: formData,
-          });
-
-          const result = await response.json();
-          if (response.ok) {
-            alert("Questions added successfully");
-          } else {
-            alert(`Failed to upload questions: ${result.message}`);
-          }
-        } catch (error) {
-          console.error("Error uploading questions:", error);
-          alert("An error occurred while uploading questions.");
-        }
-      };
-      fileInput.click();
+     window.location.href = "upload-quiz.html";
     }
 
-    function handleSearch() {
-      const query = searchInput.value.toLowerCase();
-      const filteredQuizzes = quizzes.filter((quiz) =>
-        quiz.title.toLowerCase().includes(query)
-      );
-      renderQuizzes(filteredQuizzes);
+
+
+    function toggleSettings() {
+      window.location.href = "settings.html";
     }
+
+            function handleSearch(event) {
+              const query = event.target.value.toLowerCase();
+              const filteredQuizzes = quizzes.filter((quiz) =>
+                quiz.title.toLowerCase().includes(query)
+              );
+              renderQuizzes(filteredQuizzes);
+            }
 
     function handleNotifications() {
-      const receiveNotifications = confirm(
-        "Do you want to receive notifications?"
-      );
-      alert(
-        receiveNotifications
-          ? "You will receive notifications."
-          : "You will not receive notifications."
-      );
+      alert("You have no notifications.");
+      // const receiveNotifications = confirm(
+      //   "Do you want to receive notifications?"
+      // );
+      // alert(
+      //   receiveNotifications
+      //     ? "You will receive notifications."
+      //     : "You will not receive notifications."
+      // );
     }
   });
 </script>

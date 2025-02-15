@@ -19,7 +19,6 @@ const quizSchema = new Schema({
     creatorId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
     },
     settings: {
         time_limit: {
@@ -51,8 +50,7 @@ const quizSchema = new Schema({
 const quizAttemptSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     quizId: {
         type: Schema.Types.ObjectId,
@@ -94,7 +92,6 @@ const quizResponseSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     },
     questionId: {
         type: Schema.Types.ObjectId,
