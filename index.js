@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
 const quizRouter = require("./routers/quiz");
+const infoRouter = require("./routers/info");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const dotenv = require("dotenv");
@@ -79,6 +80,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/quizzes", verifyJWTAuthToken, quizRouter);
+app.use("/info", verifyJWTAuthToken, infoRouter);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
