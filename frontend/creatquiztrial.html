@@ -4,39 +4,53 @@
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <script>
+   const dummyQuestions = [
+     {
+       question: "What is the capital of France?",
+       options: ["London", "Berlin", "Paris", "Madrid"],
+       explanation: "Explanation: Paris became the capital of France in 987"
+     },
+     {
+       question: "What is the largest planet in our solar system?",
+       options: ["Earth", "Mars", "Jupiter", "Saturn"],
+       explanation: "Explanation: Jupiter is the largest planet in our solar system."
+     },
+     {
+       question: "Who wrote 'To Kill a Mockingbird'?",
+       options: ["Harper Lee", "Mark Twain", "Ernest Hemingway", "F. Scott Fitzgerald"],
+       explanation: "Explanation: 'To Kill a Mockingbird' was written by Harper Lee."
+     },
+     {
+       question: "What is the chemical symbol for water?",
+       options: ["H2O", "O2", "CO2", "NaCl"],
+       explanation: "Explanation: The chemical symbol for water is H2O."
+     }
+   ];
+
    function addQuestion() {
      const questionsContainer = document.getElementById('questionsContainer');
-     const questionCount = questionsContainer.children.length + 1;
+     const questionCount = questionsContainer.children.length;
+     const questionData = dummyQuestions[questionCount % dummyQuestions.length];
      const questionHTML = `
        <div class="border rounded-lg p-4 mb-4 question-container">
          <div class="flex justify-between items-center mb-4">
-           <h2 class="text-lg font-bold">Question ${questionCount}</h2>
+           <h2 class="text-lg font-bold">Question ${questionCount + 1}</h2>
            <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuestion(this)"></i>
          </div>
          <div class="mb-4">
-           <input type="text" class="w-full border rounded p-2" value="What is the capital of France?">
+           <input type="text" class="w-full border rounded p-2" value="${questionData.question}">
          </div>
          <div class="mb-4">
-           <div class="flex items-center mb-2">
-             <input type="radio" name="question${questionCount}" class="mr-2">
-             <input type="text" class="w-full border rounded p-2" value="London">
-           </div>
-           <div class="flex items-center mb-2">
-             <input type="radio" name="question${questionCount}" class="mr-2">
-             <input type="text" class="w-full border rounded p-2" value="Berlin">
-           </div>
-           <div class="flex items-center mb-2">
-             <input type="radio" name="question${questionCount}" class="mr-2">
-             <input type="text" class="w-full border rounded p-2" value="Paris">
-           </div>
-           <div class="flex items-center mb-2">
-             <input type="radio" name="question${questionCount}" class="mr-2">
-             <input type="text" class="w-full border rounded p-2" value="Madrid">
-           </div>
+           ${questionData.options.map((option, index) => `
+             <div class="flex items-center mb-2">
+               <input type="radio" name="question${questionCount + 1}" class="mr-2">
+               <input type="text" class="w-full border rounded p-2" value="${option}">
+             </div>
+           `).join('')}
          </div>
          <div class="mb-4">
            <label class="block text-gray-700 font-bold mb-2">Explanation</label>
-           <input type="text" class="w-full border rounded p-2" value="Explanation: Paris became the capital of France in 987">
+           <input type="text" class="w-full border rounded p-2" value="${questionData.explanation}">
          </div>
          <div class="flex items-center mb-4">
            <i class="fas fa-lightbulb text-gray-500 mr-2"></i>
