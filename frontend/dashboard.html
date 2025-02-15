@@ -104,6 +104,7 @@
             </button>
             <button
               id="upload-quiz-btn"
+              onclick="window.location.href='quizinfo.html'"
               class="bg-white text-purple-600 border border-purple-600 px-4 py-2 rounded-md"
             >
               <i class="fa-regular fa-arrow-up-from-bracket mr-2"></i>Upload
@@ -254,7 +255,7 @@
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        console.log(data);
+        console.log(data.data);
 
         if (data.total > 0) {
           quizNumberElement.innerText = data.total;
@@ -303,7 +304,6 @@
       window.location.href = "createQuiz.html";
     });
 
-    uploadQuizBtn.addEventListener("click", handleUploadQuiz);
 
     searchIcon.addEventListener("click", handleSearch);
 
@@ -317,39 +317,39 @@
       window.location.href = "all-quizzes.html";
     });
 
-    async function handleUploadQuiz() {
-      const quizId = prompt("Enter the Quiz ID:");
-      if (!quizId) return alert("Quiz ID is required.");
+    // async function handleUploadQuiz() {
+    //   const quizId = prompt("Enter the Quiz ID:");
+    //   if (!quizId) return alert("Quiz ID is required.");
 
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = ".csv";
-      fileInput.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return alert("No file selected.");
+    //   const fileInput = document.createElement("input");
+    //   fileInput.type = "file";
+    //   fileInput.accept = ".csv";
+    //   fileInput.onchange = async (event) => {
+    //     const file = event.target.files[0];
+    //     if (!file) return alert("No file selected.");
 
-        const formData = new FormData();
-        formData.append("file", file);
+    //     const formData = new FormData();
+    //     formData.append("file", file);
 
-        try {
-          const response = await fetch(`/upload-questions/${quizId}`, {
-            method: "POST",
-            body: formData,
-          });
+    //     try {
+    //       const response = await fetch(`/upload-questions/${quizId}`, {
+    //         method: "POST",
+    //         body: formData,
+    //       });
 
-          const result = await response.json();
-          if (response.ok) {
-            alert("Questions added successfully");
-          } else {
-            alert(`Failed to upload questions: ${result.message}`);
-          }
-        } catch (error) {
-          console.error("Error uploading questions:", error);
-          alert("An error occurred while uploading questions.");
-        }
-      };
-      fileInput.click();
-    }
+    //       const result = await response.json();
+    //       if (response.ok) {
+    //         alert("Questions added successfully");
+    //       } else {
+    //         alert(`Failed to upload questions: ${result.message}`);
+    //       }
+    //     } catch (error) {
+    //       console.error("Error uploading questions:", error);
+    //       alert("An error occurred while uploading questions.");
+    //     }
+    //   };
+    //   fileInput.click();
+    // }
 
     function handleSearch() {
       const query = searchInput.value.toLowerCase();
