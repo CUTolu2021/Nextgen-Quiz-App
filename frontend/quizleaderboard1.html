@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            color: #555;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        .encouragement {
+            background-color: #e0f2f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .encouragement p {
+            margin: 10px 0;
+            font-weight: lighter;
+        }
+        
+        h2 {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .top-performers h3 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .top-performers h3 img {
+            margin-right: 8px;
+        }
+
+        .top-performers th {
+            font-weight: lighter;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .result {
+            color: #22d628;
+        }
+
+        .time {
+            color: #555;
+        }
+
+        .medal, .crown {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media screen and (max-width: 400px) {
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="back-button">← Back</a>
+        </div>
+        <div class="content">
+            <div class="encouragement">
+                <h2>Keep Going! You're Getting Better!</h2>
+                <p>Don't give up – every attempt brings you closer to the top!</p>
+            </div>
+            <div class="top-performers">
+                <h3>
+                    <img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Crown Icon" class="crown"> 
+                    Top Performers
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Gold Medal" class="medal"></td>
+                            <td>Eniola</td>
+                            <td class="result">100</td>
+                            <td class="time">10:50</td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://cdn-icons-png.flaticon.com/512/1828/1828970.png" alt="Silver Medal" class="medal"></td>
+                            <td>Dave</td>
+                            <td class="result">98</td>
+                            <td class="time">09:20</td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://cdn-icons-png.flaticon.com/512/1828/1828973.png" alt="Bronze Medal" class="medal"></td>
+                            <td>Rebecca</td>
+                            <td class="result">90</td>
+                            <td class="time">11:15</td>
+                        </tr>
+                        <tr>
+                            <td>#4</td>
+                            <td>Blessing</td>
+                            <td class="result">86</td>
+                            <td class="time">10:47</td>
+                        </tr>
+                        <tr>
+                            <td>#5</td>
+                            <td>Dennis</td>
+                            <td class="result">83</td>
+                            <td class="time">10:50</td>
+                        </tr>
+                        <tr>
+                            <td>#6</td>
+                            <td>Deborah</td>
+                            <td class="result">80</td>
+                            <td class="time">12:00</td>
+                        </tr>
+                        <tr>
+                            <td>#7</td>
+                            <td>Favour1</td>
+                            <td class="result">77</td>
+                            <td class="time">09:56</td>
+                        </tr>
+                        <tr>
+                            <td>#8</td>
+                            <td>Praise</td>
+                            <td class="result">72</td>
+                            <td class="time">10:23</td>
+                        </tr>
+                        <tr>
+                            <td>#9</td>
+                            <td>Emmanuel</td>
+                            <td class="result">60</td>
+                            <td class="time">12:45</td>
+                        </tr>
+                        <tr>
+                            <td>#10</td>
+                            <td>Milcah</td>
+                            <td class="result">54</td>
+                            <td class="time">11:16</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

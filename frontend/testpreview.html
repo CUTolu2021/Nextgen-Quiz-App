@@ -177,3 +177,116 @@
     </div>
 </body>
 </html>
+async function selectAnswer(selected, correct) {
+    const currentQuestionId = questions[currentQuestionIndex]._id;
+
+    // Save user's selected answer
+    userAnswers[currentQuestionId] = selected;
+
+    // Highlight the selected answer
+    document.querySelectorAll(".option-btn").forEach(btn => {
+        btn.classList.remove("selected"); // Remove highlight from previous selection
+        if (btn.innerText.trim() === selected.trim()) {
+            btn.classList.add("selected"); // Highlight new selection
+        }
+    });
+
+    // Send answer to server
+    await fetch(`http://localhost:8000/quizzes/${quizId}/submit_answer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+            questionId: currentQuestionId,
+            selectedAnswer: selected,
+            correctAnswer: correct
+        })
+    });
+
+    if (selected === correct) score++; // Increase score if correct
+
+    // Enable "Next" button after answer selection
+    document.getElementById("next-btn").disabled = false;
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        displayQuestion();
+    } else {
+        finishQuiz(); // If last question, finish the quiz
+    }
+}
+
+function displayQuestion() {
+    if (currentQuestionIndex >= questions.length) {
+        finishQuiz();
+        return;
+    }
+
+    let q = questions[currentQuestionIndex];
+    let savedAnswer = userAnswers[q._id] || null;
+
+    questionContainer.innerHTML = `
+        <div class="question-box">
+            <h2 class="question-text">${q.question}</h2>
+            <div class="options-container">
+                ${q.options.map(option => `
+                    <button class="option-btn ${savedAnswer === option ? 'selected' : ''}" 
+                            onclick="selectAnswer('${option}', '${q.correctAnswers}')">
+                        ${option}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+        <div class="navigation-buttons">
+            <button id="prev-btn" class="nav-btn prev-btn" onclick="prevQuestion()" 
+                    ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                ⬅ Previous
+            </button>
+            <button id="next-btn" class="nav-btn next-btn" onclick="nextQuestion()" disabled>
+                ${currentQuestionIndex === questions.length - 1 ? 'Submit Quiz' : 'Next ➡'}
+            </button>
+        </div>
+    `;
+}
+
+<div class="quiz-container">
+    <header class="quiz-header">
+        <h1>Current Affairs Quiz</h1>
+        <div class="quiz-timer">
+            ⏳ <span id="timer">30:00</span>
+        </div>
+        <button class="submit-btn">Submit Quiz</button>
+    </header>
+
+    <main class="quiz-content">
+        <p class="question-number">Question 10 of 10</p>
+        <p class="question-text">What is the capital of France?</p>
+
+        <form class="options">
+            <label class="option">
+                <input type="radio" name="answer">
+                <span>London</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="answer">
+                <span>Berlin</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="answer">
+                <span>Paris</span>
+            </label>
+            <label class="option">
+                <input type="radio" name="answer">
+                <span>Madrid</span>
+            </label>
+        </form>
+
+        <p class="points">10 Points</p>
+
+        <div class="quiz-buttons">
+            <button class="prev-btn" disabled>◀ Previous</button>
+            <button class="submit-btn">Submit Quiz ▶</button>
+        </div>
+    </main>
+</div>

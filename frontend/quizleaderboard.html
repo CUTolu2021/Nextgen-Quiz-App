@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Leaderboard</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0 10px; /* To prevent horizontal overflow */
+        }
+
+        .leaderboard-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Adjust to fit better on smaller screens */
+            margin: 20px;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        /* Congratulations Box */
+        .congrats {
+            text-align: center;
+            background-color: #efcdef;
+            width: 90%;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .congrats h2 {
+            color: #881cab;
+            margin-bottom: 10px;
+        }
+
+        .congrats p {
+            color: #881cab;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .share-button {
+            background-color: #881cab;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .share-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        /* Top Performers Section */
+        .top-performers h3 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .top-performers h3 .crown {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #c2c0c0;
+        }
+
+        .top-performers th{
+            color: #333;
+            font-weight: lighter;
+        }
+
+        .top-performers td {
+            width: 25%;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .score {
+            color: #22d628;
+        }
+
+        .time{
+            color: #333;
+        }
+
+
+        .medal-icon {
+            width: 20px;
+        }
+
+        .rank-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-size: cover;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            .leaderboard-container {
+                padding: 10px;
+            }
+
+            .congrats {
+                width: 100%;
+                padding: 15px;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+
+            .share-button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .top-performers td {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="leaderboard-container">
+        <div class="header">
+            <a href="view-results.html" class="back-button">&leftarrow; Back</a>
+            <div class="congrats">
+                <h2>Congratulations on Your Perfect Score</h2>
+                <p>You ranked 4th in this quiz! Share your achievements with friends</p>
+                <button class="share-button">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="share" class="share-image">Share with Friends
+                </button>
+            </div>
+        </div>
+        <div class="top-performers">
+            <h3>
+                <img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Crown Icon" class="crown"> 
+                Top Performers
+            </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Gold Medal" class="medal-icon"></td>
+                        <td>Eniola</td>
+                        <td class="score">100</td>
+                        <td class="time">10:50</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Silver Medal" class="medal-icon"></td>
+                        <td>Dave</td>
+                        <td class="score">98</td>
+                        <td class="time">09:20</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="Gold Medal" class="medal-icon"></td>
+                        <td>Rebecca</td>
+                        <td class="score">90</td>
+                        <td class="time">11:15</td>
+                    </tr>
+                    <tr>
+                        <td>#4</td>
+                        <td>Uchechukwu</td>
+                        <td class="score">89</td>
+                        <td class="time">10:50</td>
+                    </tr>
+                    <tr>
+                        <td>#5</td>
+                        <td>Deborah</td>
+                        <td class="score">86</td>
+                        <td class="time">12:00</td>
+                    </tr>
+                    <tr>
+                        <td>#6</td>
+                        <td>Dennis</td>
+                        <td class="score">83</td>
+                        <td class="time">10:50</td>
+                    </tr>
+                    <tr>
+                        <td>#7</td>
+                        <td>Favour1</td>
+                        <td class="score">77</td>
+                        <td class="time">09:56</td>
+                    </tr>
+                    <tr>
+                        <td>#8</td>
+                        <td>Praise</td>
+                        <td class="score">72</td>
+                        <td class="time">10:23</td>
+                    </tr>
+                    <tr>
+                        <td>#9</td>
+                        <td>Emmanuel</td>
+                        <td class="score">58</td>
+                        <td class="time">12:45</td>
+                    </tr>
+                    <tr>
+                        <td>#10</td>
+                        <td>Milcah</td>
+                        <td class="score">54</td>
+                        <td class="time">11:36</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

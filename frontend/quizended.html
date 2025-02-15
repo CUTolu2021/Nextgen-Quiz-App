@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        .icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        p {
+            color: gray;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #7b2cbf;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #5a189a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Quiz Completed Screen -->
+    <div id="quiz-completed" class="container" style="display: none;">
+        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="icon" alt="Success Icon">
+        <h2>Quiz Completed</h2>
+        <p>Your answers have been submitted successfully.</p>
+        <a href="view-results.html" class="button">View Results</a>
+    </div>
+
+    <!-- Time's Up Screen -->
+    <div id="times-up" class="container" style="display: none;">
+        <img src="https://cdn-icons-png.flaticon.com/512/564/564619.png" class="icon" alt="Time Icon">
+        <h2>Time’s Up!</h2>
+        <p>Your answers have been automatically submitted.</p>
+        <a href="view-results.html" class="button">View Results</a>
+    </div>
+
+    <script>
+        // Simulate which screen to show
+        if(window.location.search.includes('finishedInTime=true')){
+            document.getElementById("times-up").style.display = "block";
+        }else{
+            document.getElementById("quiz-completed").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

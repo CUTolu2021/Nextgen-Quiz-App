@@ -289,7 +289,12 @@ const updateQuestionImage = async (req, res) => {
 
 // Get quizzes with pagination
 const getQuizzes = async (req, res) => {
+    const {userId} = req.user;
+    const {role} = req.user;
     let { page, limit } = req.query;
+    let total = 0;
+    let quizzes = [];
+
 
     // Validate query parameters
     page = parseInt(page) || 1;
@@ -302,13 +307,25 @@ const getQuizzes = async (req, res) => {
     const skip = (page - 1) * limit;
 
     try {
-        const quizzes = await Quiz.find({ active_status: 'active' })
+        if (role === 'Creator') {
+            quizzes = await Quiz.find({ active_status: 'active', creatorId: userId })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
+
+                total = await Quiz.countDocuments({ active_status: 'active', creatorId: userId });
+        }
+        else if (role === 'Participant') {
+        quizzes = await Quiz.find({ active_status: 'active' })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        const total = await Quiz.countDocuments({ active_status: 'active' });
-
+        total = await Quiz.countDocuments({ active_status: 'active' });
+        }
+        else {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
         res.json({
             message: `Total number of quizzes is ${total}. You are on page ${page}, a page is limited to ${limit} items, There are ${Math.ceil(total / limit)} pages in total.`,
             data: quizzes
@@ -320,7 +337,7 @@ const getQuizzes = async (req, res) => {
 };
 
 const getQuizzesByUserId = async (req, res) => {
-    const {userId} = req.params;
+    const {userId} = req.user;
     let { page, limit } = req.query;
 
     // Validate query parameters
@@ -363,7 +380,7 @@ const getQuestionByQuizId = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
         for (const question of quiz.questions) {
-            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl'));
+            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl point'));
         }
         res.json({
             message: 'Questions fetched successfully',
