@@ -55,8 +55,12 @@ app.get("/signup", (req, res) => {
     res.sendFile(__dirname + '/frontend/signup.html');
 });
 
-app.get("/dashboard", (req, res) => {
+app.get("/creator-dashboard", (req, res) => {
     res.sendFile(__dirname + '/frontend/dashboard.html');
+});
+
+app.get("/participant-dashboard", (req, res) => {
+    res.sendFile(__dirname + '/frontend/participantdashboard.html');
 });
 
 app.get("/forgotpassword", (req, res) => {
@@ -91,6 +95,53 @@ app.get("/password-confirmation", (req, res) => {
     res.sendFile(__dirname + '/frontend/passwordResetConfirm.html');
 })
 
+app.get("/preview", (req, res) => {
+    res.sendFile(__dirname + '/frontend/preview.html');
+})
+
+app.get("/startquiz", (req, res) => {
+    res.sendFile(__dirname + '/frontend/startquiz.html');
+})
+
+app.get("/creator-profile", (req, res) => {
+    res.sendFile(__dirname + '/frontend/creatorprofilepage.html');
+})
+
+app.get("/participant-profile", (req, res) => {
+    res.sendFile(__dirname + '/frontend/participantprofilepage.html');
+})
+
+app.get("/create-quiz", (req, res) => {
+    res.sendFile(__dirname + '/frontend/createquiz.html');
+})
+
+app.get("/saved-drafts", (req, res) => {
+    res.sendFile(__dirname + '/frontend/savedraft.html');
+})
+
+app.get("/settings", (req, res) => {
+    res.sendFile(__dirname + '/frontend/settings.html');
+})
+
+app.get("/invite-users", (req, res) => {
+    res.sendFile(__dirname + '/frontend/inviteusers.html');
+})
+
+app.get("/quiz-published", (req, res) => {
+    res.sendFile(__dirname + '/frontend/quizpublished.html');
+})
+
+app.get("/quiz-info", (req, res) => {
+    res.sendFile(__dirname + '/frontend/quizinfo.html');
+})
+
+app.get("/all-quizzes", (req, res) => {
+    res.sendFile(__dirname + '/frontend/allquizzes.html');
+})
+
+app.get("/upload-quiz", (req, res) => {
+    res.sendFile(__dirname + '/frontend/uploadcsvfile.html');
+})
 
 
 

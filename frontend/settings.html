@@ -164,8 +164,12 @@
     </style>
 </head>
 <body>
+    <script>
+        const role = localStorage.getItem("role");
+        const backLink = role === "Creator" ? "/creator-dashboard" : "/participant-dashboard";
+    </script>
     <div class="header">
-        <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Settings</a>
+        <a href="<%= backLink %>"><i class="fas fa-arrow-left"></i> Settings</a>
     </div>
 
     <div class="container">

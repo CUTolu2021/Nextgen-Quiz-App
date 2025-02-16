@@ -85,7 +85,7 @@
         messageDiv.textContent = "";
         messageDiv.className = "";
 
-        await fetch("http://localhost:8000/auth/login", {
+        await fetch("https://nextgen-quiz-app.vercel.app/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }), // Assuming username is the email
@@ -102,9 +102,9 @@
             const token = data.token;
             localStorage.setItem("token", token);
             if (data.role === "Participant") {
-              window.location.href = "participantdashboard.html";
+              window.location.href = "/participant-dashboard";
             } else if (data.role === "Creator") {
-              window.location.href = "dashboard.html";
+              window.location.href = "/creator-dashboard";
             }
           })
           .catch((err) => {
@@ -127,7 +127,7 @@
       <p class="text-center text-gray-500 mb-6">Welcome back!</p>
       <button
         class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 mb-4"
-        onclick="window.location.href='coming-soon-signin.html'"
+        onclick="window.location.href='/coming-soon-signin'"
       >
         <img
           alt="Google logo with a colorful G"
@@ -174,7 +174,7 @@
           </div>
           <div class="flex justify-between items-center mt-2">
             <div id="message" class="login-error"></div>
-            <a class="text-purple-600" href="forgotpassword.html">Forgot Password</a>
+            <a class="text-purple-600" href="/forgotpassword">Forgot Password</a>
           </div>
         </div>
         <button
@@ -186,7 +186,7 @@
       </form>
       <div class="text-left mt-4">
         <span class="text-black-500">Don’t have an account?</span>
-        <a class="text-purple-600 font-bold" href="signup.html">Sign Up</a>
+        <a class="text-purple-600 font-bold" href="/signup">Sign Up</a>
       </div>
     </div>
   </body>

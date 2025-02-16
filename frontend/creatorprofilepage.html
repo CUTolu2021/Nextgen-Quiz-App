@@ -40,7 +40,7 @@
   </head>
   <body class="bg-purple-100 flex items-center justify-center min-h-screen">
     <div class="header">
-      <a href="dashboard.html"
+      <a href="/creator-dashboard"
         ><i class="fas fa-arrow-left text-gray-600 mr-2"></i> Back</a
       >
     </div>
@@ -183,27 +183,27 @@
     function logOut() {
         localStorage.clear();
         alert("You have been logged out.");
-      window.location.href = "signin.html";
+      window.location.href = "/signin";
     }
 
     function createQuiz() {
-      window.location.href = "create-quiz.html";
+      window.location.href = "/create-quiz";
     }
 
     function viewSavedDrafts() {
-      window.location.href = "saved-drafts.html";
+      window.location.href = "/saved-drafts";
     }
 
     function inviteUsers() {
-      window.location.href = "invite-users.html";
+      window.location.href = "/invite-users";
     }
 
     function viewSettings() {
-      window.location.href = "settings.html";
+      window.location.href = "/settings";
     }
 
     function goBack() {
-      window.location.href = "dashboard.html";
+      window.location.href = "/creator-dashboard";
     }
   </script>
 </html>

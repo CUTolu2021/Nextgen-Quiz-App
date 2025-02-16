@@ -45,7 +45,7 @@
           <div
             class="bg-purple-600 p-2 rounded-full flex items-center justify-center"
             style="width: 40px; height: 40px"
-            onclick="window.location.href='profilepage.html'"
+            onclick="window.location.href='/participant-profile'"
           >
             <span class="text-white cursor-pointer" id="initials">U</span>
           </div>
@@ -85,7 +85,7 @@
     <script>
     document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
-    if (!token) return window.location.replace("signin.html");
+    if (!token) return window.location.replace("/signin");
 
     const initialsElement = document.getElementById("initials");
     const recentQuizzesTab = document.getElementById("recent-quizzes-tab");
@@ -101,15 +101,16 @@
 
     async function fetchUserData() {
         try {
-            const res = await fetch("http://localhost:8000/auth/me", {
+            const res = await fetch("https://nextgen-quiz-app.vercel.app/auth/me", {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
-            if (!data.user || data.user.role !== "Participant") return window.location.replace("signin.html");
+            if (!data.user || data.user.role !== "Participant") return window.location.replace("/signin");
             initialsElement.innerText = data.user.username[0].toUpperCase();
             localStorage.setItem("userId", data.user._id);
             localStorage.setItem("username", data.user.username);
+            localStorage.setItem("role", data.user.role);
         } catch (err) {
             console.error("Error fetching user data:", err);
         }
@@ -117,13 +118,13 @@
 
     async function fetchQuizData() {
         try {
-            const resQuizzes = await fetch("http://localhost:8000/quizzes", {
+            const resQuizzes = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });
             const quizzesData = await resQuizzes.json();
 
-            const resAttempts = await fetch("http://localhost:8000/info/quizattempts", {
+            const resAttempts = await fetch("https://nextgen-quiz-app.vercel.app/info/quizattempts", {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -163,7 +164,7 @@
         document.querySelectorAll("[data-quiz-id]").forEach(button => {
             button.addEventListener("click", function () {
                 const quizId = this.dataset.quizId;
-                window.location.href = `startquiz.html?quizId=${quizId}`;
+                window.location.href = `/start-quiz?quizId=${quizId}`;
             });
         });
     }
@@ -196,11 +197,11 @@
 
         const leaderboardList = document.getElementById("leaderboard-list");
         const getLeaderboards = async () => {
-          const response = await fetch("http://localhost:8000/info/leaderboard", {
+          const response = await fetch("https://nextgen-quiz-app.vercel.app/info/leaderboard", {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
           });
-          const response2 = await fetch("http://localhost:8000/user", {
+          const response2 = await fetch("https://nextgen-quiz-app.vercel.app/user", {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
           });

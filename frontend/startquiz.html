@@ -220,12 +220,12 @@
 
 const quizId = new URLSearchParams(window.location.search).get("quizId");
 if(!quizId) {
-    window.location.replace("participantdashboard.html");
+    window.location.replace("/participant-dashboard");
 }
     console.log(quizId);
     let token = localStorage.getItem("token");
     if (!token) {
-        fetch("http://localhost:8000/auth/allow-unregistered-users-to-take-quiz", {
+        fetch("https://nextgen-quiz-app.vercel.app/auth/allow-unregistered-users-to-take-quiz", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -240,12 +240,13 @@ if(!quizId) {
             setTimeout(() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("status");
-                window.location.replace("signin.html");
+                localStorage.clear();
+                window.location.replace("/signin");
             }, 1000 * 60 * 30); // delete token after 30 minutes
         })
         .catch(error => {
             console.error("Error:", error);
-            window.location.replace("signin.html");
+            window.location.replace("/signin");
         });
     }
     token = localStorage.getItem("token");
@@ -271,7 +272,7 @@ if(!quizId) {
     
     async function getQuestions() {
         try {
-            const response = await fetch(`http://localhost:8000/quizzes/${quizId}/questions`, {
+            const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -288,7 +289,7 @@ if(!quizId) {
     
     async function getQuizDetails() {
         try {
-            const response = await fetch(`http://localhost:8000/quizzes/${quizId}`, {
+            const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -314,7 +315,7 @@ if(!quizId) {
         questionContainer.style.display = "block";
     
         try {
-            const response = await fetch(`http://localhost:8000/quizzes/${quizId}/start_quiz`, {
+            const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/start_quiz`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -400,7 +401,7 @@ if(!quizId) {
         });
     
         try {
-            await fetch(`http://localhost:8000/quizzes/${quizId}/submit_answer`, {
+            await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/submit_answer`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -452,7 +453,7 @@ if(!quizId) {
 
     
         try {
-            await fetch(`http://localhost:8000/quizzes/${quizId}/end_quiz`, {
+            await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/end_quiz`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

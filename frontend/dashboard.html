@@ -82,7 +82,7 @@
         <div
           class="bg-purple-600 p-2 rounded-full flex items-center justify-center cursor-pointer"
           style="width: 40px; height: 40px"
-          onclick="window.location.href='creatorprofilepage.html'"
+          onclick="window.location.href='/creator-profile'"
         >
           <span class="text-white cursor-pointer" id="initials">U</span>
         </div>
@@ -108,7 +108,7 @@
             </button>
             <button
               id="upload-quiz-btn"
-              onclick="window.location.href='quizinfo.html'"
+              onclick="window.location.href='/quiz-info'"
               class="bg-white text-purple-600 border border-purple-600 px-4 py-2 rounded-md"
             >
               <i class="fa-regular fa-arrow-up-from-bracket mr-2"></i>Upload
@@ -214,24 +214,26 @@
     let quizzes;
 
     if (!token) {
-      return window.location.replace("signin.html");
+      return window.location.replace("/signin");
     }
 
     fetchUserData();
 
     async function fetchUserData() {
       try {
-        const res = await fetch("http://localhost:8000/auth/me", {
+        const res = await fetch("https://nextgen-quiz-app.vercel.app/auth/me", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        if (!data.user || data.user.role !== "Creator") return window.location.replace("signin.html");
+        if (!data.user || data.user.role !== "Creator") return window.location.replace("/signin");
 
         usernameElement.innerText = data.user.username;
         initialElement.innerText = data.user.username[0].toUpperCase();
         localStorage.setItem("userId", data.user._id);
         localStorage.setItem("username", data.user.username);
+        localStorage.setItem("role", data.user.role);
+
         updateQuizSections(data.user._id);
       } catch (err) {
         console.error(err);
@@ -256,7 +258,7 @@
 
     async function checkCreatedQuizzes(userId) {
       try {
-        const res = await fetch("http://localhost:8000/quizzes", {
+        const res = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -308,25 +310,25 @@
     const viewAllLink = document.getElementById("view-all-link");
 
     createQuizBtn.addEventListener("click", () => {
-      window.location.href = "createQuiz.html";
+      window.location.href = "/create-quiz";
     });
 
     settingsIcon.addEventListener("click", () => {
-      window.location.href = "settings.html";
+      window.location.href = "/settings";
     });
 
     viewAllLink.addEventListener("click", () => {
-      window.location.href = "all-quizzes.html";
+      window.location.href = "/all-quizzes";
     });
 
     async function handleUploadQuiz() {
-     window.location.href = "upload-quiz.html";
+     window.location.href = "/upload-quiz";
     }
 
 
 
     function toggleSettings() {
-      window.location.href = "settings.html";
+      window.location.href = "/settings";
     }
 
             function handleSearch(event) {

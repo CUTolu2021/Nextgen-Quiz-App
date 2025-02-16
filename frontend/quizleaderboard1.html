@@ -145,7 +145,7 @@
             <script>
                 const quizId = localStorage.getItem('quizId');
                 const token = localStorage.getItem('token');
-                fetch(`https://localhost:8000/quizzes/${quizId}/leaderboard`,
+                fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/leaderboard`,
                     {
                         method: 'GET',
                         headers: {

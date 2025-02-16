@@ -17,10 +17,9 @@ function checkAuth() {
     if (!token || isTokenExpired(token)) {
         alert("Your session has expired. Please log in again.");
         localStorage.clear();
-        window.location.href = "signin.html"; // Redirect to login page
+        window.location.href = "/signin"; // Redirect to login page
     }
 }
 
 // Run both checks on page load
 checkAuth();
-checkInactivity();

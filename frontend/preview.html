@@ -186,7 +186,7 @@
 </head>
 <body>
   <div class="header">
-    <a href="createQuiz.html"> <i class="fas fa-arrow-left"></i> Back </a>
+    <a href="create-quiz"> <i class="fas fa-arrow-left"></i> Back </a>
   </div>
 
   <div class="container">
@@ -255,12 +255,12 @@
 
     document.querySelector(".draft-btn").addEventListener("click", () => {
       const quizId = localStorage.getItem("quizId");
-      window.location.href = `createquiz.html`;
+      window.location.href = `/create-quiz`;
     });
 
     document.querySelector(".publish").addEventListener("click", () => {
       const quizId = localStorage.getItem("quizId");
-      window.location.href = `createquiz.html`;
+      window.location.href = `/create-quiz`;
     });
   </script>
 </body>

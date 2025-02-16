@@ -166,7 +166,7 @@
 <body>
     <div class="leaderboard-container">
         <div class="header">
-            <a href="view-results.html" class="back-button">&leftarrow; Back</a>
+            <a href="/view-results" class="back-button">&leftarrow; Back</a>
             <div class="congrats">
                 <h2>Congratulations on Your Perfect Score</h2>
                 <p>You ranked <span id="user-rank"></span> in this quiz! Share your achievements with friends</p>
@@ -199,7 +199,7 @@
             const quizId = localStorage.getItem('quizId');
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('token');
-            fetch(`https://localhost:8000/quizzes/${quizId}/leaderboard`, {
+            fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/leaderboard`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`

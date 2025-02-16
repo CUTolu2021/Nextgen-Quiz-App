@@ -174,7 +174,7 @@
   <body>
     <div class="header">
       <div class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer" >
-      <a href="dashboard.html"> <i class="fas fa-arrow-left text-gray-600 mr-2"></i><span class="text-gray-600">Back</span> </a>
+      <a href="/creator-dashboard"> <i class="fas fa-arrow-left text-gray-600 mr-2"></i><span class="text-gray-600">Back</span> </a>
     </div>
     </div>
     <div class="container" id="quizContainer">
@@ -358,7 +358,7 @@
           });
 
           localStorage.setItem("questions", JSON.stringify(questionsData));
-          window.location.href = "preview.html";
+          window.location.href = "/preview";
         });
 
       let questionList = []; // Temporary storage for questions
@@ -418,7 +418,7 @@
         });
 
         // Update the total points in the settings
-        fetch(`http://localhost:8000/quizzes/${quizId}`, {
+        fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -437,7 +437,7 @@
         const quizData = collectQuizData();
 
         try {
-          const response = await fetch("http://localhost:8000/quizzes", {
+          const response = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -465,7 +465,7 @@
         quizData.status = "Draft";
 
         try {
-          const response = await fetch("http://localhost:8000/quizzes", {
+          const response = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -505,7 +505,7 @@
 
         try {
           const response = await fetch(
-            `http://localhost:8000/quizzes/${quizId}/add-questions`,
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/add-questions`,
             {
               method: "POST",
               headers: {
@@ -540,7 +540,7 @@
             localStorage.removeItem("quizDescription");
             localStorage.removeItem("quizTime");
             localStorage.removeItem("questions");
-            window.location.href = "quizpublished.html";
+            window.location.href = "/quiz-published";
           }
         });
 
@@ -555,7 +555,7 @@
             localStorage.removeItem("quizDescription");
             localStorage.removeItem("quizTime");
             localStorage.removeItem("questions");
-            window.location.href = "savedraft.html";
+            window.location.href = "/quiz-drafted";
           }
         });
     </script>
