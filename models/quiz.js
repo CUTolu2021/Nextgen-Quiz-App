@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const QuestionSchema = require('./question');
+const question = require('./question');
 
 const quizSchema = new Schema({
     title: {
@@ -18,7 +19,6 @@ const quizSchema = new Schema({
     creatorId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
     },
     settings: {
         time_limit: {
@@ -43,19 +43,14 @@ const quizSchema = new Schema({
 }, {
     timestamps: true,
 });
+ 
 
-
+ 
 //Defining the schema for quiz attempt
 const quizAttemptSchema = new Schema({
-    // attemptId: {
-    //     type: String,
-    //     required: true,
-    //     unique: true
-    // },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     quizId: {
         type: Schema.Types.ObjectId,
@@ -73,13 +68,21 @@ const quizAttemptSchema = new Schema({
         type: Number,
         default: 0
     },
-    currentQuestion: {
+    correct: {
         type: Number,
-        required: true
+        default: 0
+    },
+    wrong: {
+        type: Number,
+        default: 0
     },
     isCompleted: {
         type: Boolean,
         default: false
+    },
+    timeUsed: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true
@@ -89,11 +92,14 @@ const quizResponseSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     },
     questionId: {
         type: Schema.Types.ObjectId,
         ref: 'Question',
+        required: true
+    },
+    question: {
+        type: String,
         required: true
     },
     quizId: {
@@ -102,6 +108,10 @@ const quizResponseSchema = new Schema({
         required: true
     },
     selectedAnswer: {
+        type: String,
+        required: true
+    },
+    correctAnswer: {
         type: String,
         required: true
     },

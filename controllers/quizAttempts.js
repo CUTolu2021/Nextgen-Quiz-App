@@ -1,6 +1,6 @@
 const {QuizAttempt, Quiz, QuizResponse} = require('../models/quiz');
-const User = require('../models/user');
-const Question = require('../models/question');
+const {QuizLeaderboard,Leaderboard} = require('../models/leaderboard');
+const { generateToken } = require('./auth');
 
 const startQuiz = async (req, res) => {
     const { quizId } = req.params;
@@ -12,22 +12,22 @@ const startQuiz = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = new quizAttemptSchema({
+        const attempt = new QuizAttempt({
             userId,
             quizId,
             startTime: new Date(),
-            score: 0,
-            currentQuestion: 1,
         });
 
         await attempt.save();
         res.status(200).json({ message: 'Quiz started', attemptId: attempt._id });
     } catch (error) {
+        console.error('Error starting quiz:', error.message);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 const endQuiz = async (req, res) => {
     const { quizId } = req.params;
+    const { score,correct,wrong,timeUsed } = req.body;
     const userId = req.user.userId; // Assuming user ID is available in req.user
 
     try {
@@ -36,35 +36,150 @@ const endQuiz = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = await quizAttemptSchema.findOne({ userId, quizId });
+        const attempt = await QuizAttempt.findOne({ userId, quizId });
         if (!attempt) {
             return res.status(404).json({ message: 'Attempt not found' });
         }
-
-        // Check if the time limit has been exceeded
-        const currentTime = new Date();
-        const elapsedTime = (currentTime - attempt.startTime) / 1000; // Convert to seconds
-        if (elapsedTime > quiz.time_limit) {
-            attempt.isCompleted = true; 
-            attempt.endTime = currentTime; // Set end time
-            await attempt.save();
-            return res.status(200).json({ message: 'Quiz ended due to time limit', score: participation.score });
+        if(attempt.score !== 0){
+            return res.status(200).json({ message: `Quiz already attempted, you scored ${score} in this quiz compared to your previous score ${attempt.score} <br> You used ${timeUsed} min compared to your previous ${attempt.timeUsed} min`});
         }
 
         // Update the end time and status
-            attempt.isCompleted = true; 
-            attempt.endTime = currentTime; // Set end time
-        await participation.save();
+        attempt.isCompleted = true; 
+        attempt.endTime = new Date(); // Set end time
+        attempt.timeUsed = timeUsed;
+        attempt.score = score;
+        attempt.correct = correct;
+        attempt.wrong = wrong;
+        await attempt.save();
+        if(userId !== null){
+            await updateLeaderboard(userId, quizId, score);
+        }
 
-        res.status(200).json({ message: 'Quiz ended', score: participation.score });
+        res.status(200).json({ message: 'Quiz ended', score: attempt.score });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+const updateLeaderboard = async (userId, quizId, score) => {
+    try {
+        const existingEntry = await QuizLeaderboard.findOne({ userId, quizId });
+
+        if (existingEntry) {
+            // Update the existing entry with the new score
+            existingEntry.score = score;
+            await existingEntry.save();
+        } else {
+            // Create a new entry if it doesn't exist
+            const newEntry = new QuizLeaderboard({
+                userId,
+                quizId,
+                score,
+                createdAt: new Date()
+            });
+            await newEntry.save();
+        }
+
+        // Recalculate rankings for this specific quiz
+        const leaderboardEntries = await QuizLeaderboard.find({ quizId }).sort({ score: -1, createdAt: 1 });
+
+        for (let i = 0; i < leaderboardEntries.length; i++) {
+            leaderboardEntries[i].rank = i + 1;
+            await leaderboardEntries[i].save();
+        }
+    } catch (error) {
+        console.error('Error updating leaderboard:', error.message);
+    }
+};
+
+const getQuizAttemptByUserId = async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        const attempts = await QuizAttempt.find({ userId });
+        res.status(200).json(attempts);
+    } catch (error) {
+        console.error('Error fetching quiz attempts:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getLeaderboard = async (req, res) => {
+    try {
+        const attempts = await Leaderboard.find();
+        console.log(attempts);
+        const leaderboardEntries = {};
+        attempts.forEach(attempt => {
+            const userId = attempt.userId.toString();
+            if (!leaderboardEntries[userId]) {
+                leaderboardEntries[userId] = {
+                    userId,
+                    score: 0,
+                };
+            }
+            leaderboardEntries[userId].score += attempt.score;
+        });
+
+        const sortedLeaderboard = Object.values(leaderboardEntries).sort((a, b) => b.score - a.score);
+        sortedLeaderboard.forEach((entry, index) => {
+            entry.rank = index + 1;
+        });
+
+        res.status(200).json(sortedLeaderboard);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getLeaderboardByQuizId = async (req, res) => {
+    const { quizId } = req.params;
+    try {
+        const leaderboardEntries = await QuizLeaderboard.find({ quizId }).sort({ score: -1, createdAt: 1 });
+        res.status(200).json(leaderboardEntries);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getQuizAttemptByQuizId = async (req, res) => {
+    const { quizId } = req.params;
+    const { userId } = req.user;
+    try {
+        const attempts = await QuizAttempt.find({ quizId, userId });
+        res.status(200).json(attempts);
+
+        // Remove user from database if they don't have an email 20 minutes later
+        if(req.user.email === null){
+            setTimeout(async () => {
+                await QuizLeaderboard.deleteMany({ userId });
+                await QuizResponse.deleteMany({ userId });
+                await QuizAttempt.deleteMany({ userId });
+            }, 20 * 60 * 1000);
+        }
+    } catch (error) {
+        console.error('Error fetching quiz attempts:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getQuizResults = async (req, res) => {
+    const { quizId } = req.params;
+    const { userId } = req.user;
+    try {
+        const attempts = await QuizResponse.find({ quizId, userId });
+        res.status(200).json(attempts);
+    } catch (error) {
+        console.error('Error fetching quiz attempts:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 const submitAnswer = async (req, res) => {
     const { quizId } = req.params;
-    const { questionId, selectedAnswer } = req.body;
-    const userId = req.user.id; // Assuming user ID is available in req.user
+    const { questionId, question,selectedAnswer, correctAnswer } = req.body;
+    const userId = req.user.userId; // Assuming user ID is available in req.user
 
     try {
         const quiz = await Quiz.findById(quizId);
@@ -72,48 +187,66 @@ const submitAnswer = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        const attempt = await quizAttemptSchema.findOne({ userId, quizId });
+        const attempt = await QuizAttempt.findOne({ userId, quizId });
         if (!attempt) {
             return res.status(404).json({ message: 'Attempt not found' });
         }
 
         // Check if the time limit has been exceeded
         const currentTime = new Date();
-        const elapsedTime = (currentTime - attempt.startTime) / 1000; // Convert to seconds
+        const elapsedTime = (currentTime - attempt.startTime) / 60000; // Convert to minutes
         if (elapsedTime > quiz.time_limit) {
             attempt.isCompleted = true; 
             attempt.endTime = currentTime; // Set end time
             await attempt.save();
-            return res.status(200).json({ message: 'Quiz ended due to time limit', score: participation.score });
+            return res.status(200).json({ message: 'Quiz ended due to time limit', score: attempt.score });
         }
 
-        // Find the question to validate the answer
-        const question = await Question.findById(questionId);
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
+        // Find existing response to update
+        let response = await QuizResponse.findOne({ userId, quizId, questionId });
+
+        if (response) {
+            // If the user has already answered this question, update the answer
+            response.selectedAnswer = selectedAnswer;
+            response.correctAnswer = correctAnswer;
+            response.question = question;
+
+        } else {
+            // If no previous answer exists, create a new one
+            response = new QuizResponse({
+                userId,
+                quizId,
+                questionId,
+                selectedAnswer,
+                correctAnswer,
+                question
+            });
         }
-
-        const isCorrect = selectedAnswer === question.correctAnswer;
-
-        const response = new Response({
-            userId,
-            quizId,
-            questionId,
-            selectedAnswer,
-            isCorrect
-        });
+        if(selectedAnswer === correctAnswer){
+            response.isCorrect = true;
+        }else{
+            response.isCorrect = false;
+        }
 
         await response.save();
 
-        // Update the user's score
-        if (isCorrect) {
-            participation.score += question.points; // Add points if correct
-        }
+        res.status(200).json({ message: 'Answer saved/updated successfully' });
 
-        await participation.save();
-
-        res.status(200).json({ message: 'Answer submitted', isCorrect });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+const allowUnregisteredUsersToTakeQuiz = async (req, res) => {
+    const tempUser = {
+        userId: null,
+        username: `Unregistered_User_${Date.now()}`,
+        email: null,
+        role: "Participant",
+    };
+    const token = generateToken(tempUser, "30m");
+    res.status(200).json({ token });
+}
+
+
+module.exports = { startQuiz,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };

@@ -1,0 +1,136 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-purple-100">
+    <div class="w-full bg-white px-4 py-2 shadow-sm">
+        <div class="flex justify-start items-center">
+            <button onclick="window.location.href='upload_quiz.html'" class="flex items-center">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+                <span class="ml-2 text-gray-600">Back</span>
+            </button>
+        </div>
+    </div>
+    <div class="max-w-4xl mx-auto p-4 mt-4">
+        <div class="bg-white p-8 rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold mb-4">Preview Quiz</h1>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold">Quiz Title</h2>
+                <p>Current Affairs Quiz</p>
+            </div>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold">Quiz Time</h2>
+                <p><i class="fas fa-hourglass-half"></i> 30mins</p>
+            </div>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold">Quiz Description</h2>
+                <p>Current affairs quiz: How well do you know what's happening?</p>
+            </div>
+            <div class="space-y-8">
+                <!-- Question 1 -->
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-gray-600">Question 1 of 3</h3>
+                        <span class="text-purple-600 font-semibold">10 Points</span>
+                    </div>
+                    <p class="font-semibold mb-2">What is the capital of France?</p>
+                    <div class="space-y-2 mb-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="question1" class="mr-2">
+                            <span>London</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question1" class="mr-2">
+                            <span>Berlin</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question1" class="mr-2">
+                            <span>Paris</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question1" class="mr-2">
+                            <span>Madrid</span>
+                        </label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" class="w-full border rounded-lg p-2" placeholder="Option 3">
+                    </div>
+                    <p class="text-gray-600">Explanation: Paris became the capital of France in 987</p>
+                </div>
+                <!-- Question 2 -->
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-gray-600">Question 2 of 3</h3>
+                        <span class="text-purple-600 font-semibold">10 Points</span>
+                    </div>
+                    <p class="font-semibold mb-2">What is the capital of France?</p>
+                    <div class="space-y-2 mb-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="question2" class="mr-2">
+                            <span>London</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question2" class="mr-2">
+                            <span>Berlin</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question2" class="mr-2">
+                            <span>Paris</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question2" class="mr-2">
+                            <span>Madrid</span>
+                        </label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" class="w-full border rounded-lg p-2" placeholder="Option 3">
+                    </div>
+                    <p class="text-gray-600">Explanation: Paris became the capital of France in 987</p>
+                </div>
+                <!-- Question 3 -->
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-gray-600">Question 3 of 3</h3>
+                        <span class="text-purple-600 font-semibold">10 Points</span>
+                    </div>
+                    <p class="font-semibold mb-2">What is the capital of France?</p>
+                    <div class="space-y-2 mb-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="question3" class="mr-2">
+                            <span>London</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question3" class="mr-2">
+                            <span>Berlin</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question3" class="mr-2">
+                            <span>Paris</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="question3" class="mr-2">
+                            <span>Madrid</span>
+                        </label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" class="w-full border rounded-lg p-2" placeholder="Option 3">
+                    </div>
+                    <p class="text-gray-600">Explanation: Paris became the capital of France in 987</p>
+                </div>
+            </div>
+            <div class="flex justify-end mt-8 space-x-4">
+                <button onclick="saveDraft()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">Save Draft</button>
+                <button onclick="window.location.href='publish_quiz.html'" class="bg-purple-600 text-white px-4 py-2 rounded-lg">Publish Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function saveDraft() {
+            alert('Your work has been saved as a draft.');
+            // Here you can add the logic to save the draft, e.g., sending data to the server
+        }
+    </script>
+</body>
+</html>

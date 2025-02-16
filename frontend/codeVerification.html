@@ -10,15 +10,29 @@
             border-color: #7c3aed;
             box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
         }
+        .logo-box {
+    width: 32px;  /* Fixed width */
+    height: 32px; /* Fixed height */
+    background-color: #9333ea; /* Purple */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.logo-icon {
+    color: white;
+    font-size: 14px;
+}
     </style>
 </head>
 <body class="bg-purple-100 flex items-center justify-center min-h-screen">
-    <div class="absolute top-10 left-10 flex items-center space-x-2">
-        <div class="bg-purple-600 p-2 rounded">
-            <i class="fas fa-question text-white"></i>
+    <header class="absolute top-4 left-4 flex items-center">
+        <div class="logo-box">
+            <i class="fas fa-question logo-icon"></i>
         </div>
-        <span class="text-purple-600 font-bold text-xl">QUIZZY</span>
-    </div>
+        <span class="ml-2 text-purple-700 font-bold text-xl">QUIZZY</span>
+    </header>
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold mb-2">Enter Verification Code</h2>
         <p class="text-gray-600 mb-6">We've sent a code to you</p>

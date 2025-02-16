@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Affairs Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 min-h-screen flex items-center justify-center">
+    <div class="max-w-7xl mx-auto p-8">
+        <div class="bg-pink-100 p-6 rounded-t-lg flex justify-between items-center shadow-lg">
+            <h1 class="text-3xl font-bold text-gray-800">Current Affairs Quiz</h1>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-hourglass-half text-red-500"></i>
+                <span class="text-red-500">00:00</span>
+                <button id="submitQuiz" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-300">Submit Quiz</button>
+            </div>
+        </div>
+        <div class="bg-white p-10 rounded-b-lg shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-gray-400">Question 1 of 10</span>
+                <span class="text-purple-600 font-bold">10 Points</span>
+            </div>
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">What is the capital of France?</h2>
+            <form id="quizForm">
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="answer" value="London" class="form-radio h-5 w-5 text-gray-600">
+                        <span class="text-gray-700">London</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="answer" value="Berlin" class="form-radio h-5 w-5 text-gray-600">
+                        <span class="text-gray-700">Berlin</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="answer" value="Paris" class="form-radio h-5 w-5 text-gray-600">
+                        <span class="text-gray-700">Paris</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="answer" value="Madrid" class="form-radio h-5 w-5 text-gray-600">
+                        <span class="text-gray-700">Madrid</span>
+                    </label>
+                </div>
+            </form>
+            <div class="flex justify-between items-center mt-8">
+                <button class="bg-gray-200 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button id="nextQuestion" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitQuiz').addEventListener('click', function() {
+            alert('Quiz Submitted!');
+        });
+
+        document.getElementById('nextQuestion').addEventListener('click', function() {
+            alert('Next Question!');
+        });
+    </script>
+</body>
+</html>

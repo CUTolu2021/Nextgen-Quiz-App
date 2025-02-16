@@ -9,7 +9,7 @@ const generateToken = (user, expiresIn = "10m") => {
     return jwt.sign(
         {
             username: user.username,
-            userId: user._id,
+            userId: user._id || user.userId,
             role: user.role,
             email: user.email,
             emailVerificationToken: user.emailVerificationToken,
@@ -53,9 +53,13 @@ const signup = async (req, res) => {
             if (!existingUser.active_status) {
                 return res.status(401).json({ message: "Account is inactive, please contact admin" });
             }
-            if (existingUser.emailVerified) {
+            if (existingUser.emailVerified && username === existingUser.username) {
                 return res.status(200).json({ message: "User already exists, please login" });
-            } else {
+            }
+            if(existingUser.emailVerified && username !== existingUser.username) {
+                return res.status(200).json({ message: "Email already exists" });
+            }
+             else {
                 const token = generateToken(existingUser, "10m");
                 
                 const verificationLink = `${req.protocol}://${req.get('host')}/verify-email?token=${token}`;//`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
@@ -82,8 +86,7 @@ const signup = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "An error occured please try again.",
-            error: err.message,
+            message: err.message,
         });
     }
 };
@@ -126,7 +129,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email }, "password email emailVerified active_status");
+        const user = await User.findOne({ email });
         console.log("User found:", user);
         if (!user) {
             return res.status(401).json({ message: "User not found" });
@@ -147,6 +150,7 @@ const login = async (req, res) => {
         console.log("token just created",jwt.verify(token, process.env.JWT_KEY))
         return res.status(200).json({
             message: "Authentication successful",
+            role: user.role,
             token,
         });
     } catch (err) {
@@ -284,5 +288,6 @@ module.exports = {
     resetPassword,
     getProfile,
     verifyEmail,
-    verifyOTP
+    verifyOTP,
+    generateToken
 };

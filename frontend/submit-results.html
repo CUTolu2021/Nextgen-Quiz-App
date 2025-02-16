@@ -1,0 +1,49 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-purple-100 flex items-center justify-center min-h-screen">
+    <div id="quiz-completed" class="bg-white rounded-lg shadow-lg p-8 text-center max-w-md mx-auto">
+        <div class="flex justify-center mb-4">
+            <div class="bg-green-100 rounded-full p-4">
+                <i class="fas fa-check text-green-500 text-3xl"></i>
+            </div>
+        </div>
+        <h1 class="text-2xl font-semibold mb-2">Quiz Completed</h1>
+        <p class="text-gray-600 mb-6">Your answers have been submitted successfully.</p>
+        <button onclick="showResults()" class="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700">View Results</button>
+    </div>
+
+    <div id="results" class="hidden bg-white rounded-lg shadow-lg p-8 text-center max-w-md mx-auto">
+        <h1 class="text-2xl font-semibold mb-2">Your Results</h1>
+        <p class="text-gray-600 mb-6">Here are your quiz results:</p>
+        <ul class="text-left list-disc list-inside">
+            <li>Question 1: Correct</li>
+            <li>Question 2: Incorrect</li>
+            <li>Question 3: Correct</li>
+            <li>Question 4: Correct</li>
+            <li>Question 5: Incorrect</li>
+        </ul>
+        <button onclick="goBack()" class="mt-6 bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700">Go Back</button>
+    </div>
+
+    <script>
+        function showResults() {
+            document.getElementById('quiz-completed').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function goBack() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('quiz-completed').classList.remove('hidden');
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</body>
+</html>

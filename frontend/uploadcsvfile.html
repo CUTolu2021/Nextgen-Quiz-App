@@ -1,0 +1,209 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Questions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-purple-100">
+    <div class="bg-white w-full p-4">
+        <a href="upload-fill-in-quiz.html" class="text-gray-500 flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i> Back
+        </a>
+    </div>
+    <div class="flex justify-center items-center min-h-screen">
+        <div id="uploadContainer" class="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg">
+            <h1 class="text-2xl font-semibold mb-4">Upload Questions</h1>
+            <div id="dropZone" class="border-2 border-dotted border-purple-300 rounded-lg p-8 text-center bg-purple-50">
+                <i class="fas fa-upload text-purple-500 text-3xl mb-4"></i>
+                <p class="text-gray-500 mb-2">Drag and drop your CSV file here or <a href="#" class="text-purple-500" id="browseLink">browse</a></p>
+                <p class="text-gray-400">Maximum file size: 20MB</p>
+                <input type="file" id="fileInput" class="hidden" accept=".csv">
+                <p id="errorMessage" class="text-red-500 mt-4 hidden">File must be not more than 20MB</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let uploadAbortController;
+
+        document.getElementById('browseLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const errorMessage = document.getElementById('errorMessage');
+            if (file && file.size > 20 * 1024 * 1024) { // 20MB in bytes
+                errorMessage.classList.remove('hidden');
+                event.target.value = ''; // Clear the input
+            } else {
+                errorMessage.classList.add('hidden');
+                showUploading(file);
+                uploadFile(file);
+            }
+        });
+
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            dropZone.classList.add('bg-purple-100');
+        });
+
+        dropZone.addEventListener('dragleave', function(event) {
+            event.preventDefault();
+            dropZone.classList.remove('bg-purple-100');
+        });
+
+        dropZone.addEventListener('drop', function(event) {
+            event.preventDefault();
+            dropZone.classList.remove('bg-purple-100');
+            const file = event.dataTransfer.files[0];
+            const errorMessage = document.getElementById('errorMessage');
+            if (file && file.size > 20 * 1024 * 1024) { // 20MB in bytes
+                errorMessage.classList.remove('hidden');
+            } else {
+                errorMessage.classList.add('hidden');
+                showUploading(file);
+                uploadFile(file);
+            }
+        });
+
+        function showUploading(file) {
+            const uploadContainer = document.getElementById('uploadContainer');
+            uploadContainer.innerHTML = `
+                <h1 class="text-2xl font-semibold mb-6">Upload Questions</h1>
+                <div class="border-2 border-dashed border-purple-300 rounded-lg p-4 bg-purple-50">
+                    <div class="flex items-center justify-between bg-purple-200 rounded-lg p-4">
+                        <span class="text-purple-700">${file.name}</span>
+                        <button class="text-purple-700" onclick="resetUpload()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="bg-purple-300 h-2 rounded-lg mt-2 relative">
+                        <div id="progressBar" class="bg-purple-700 h-2 rounded-lg absolute top-0 left-0" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <button class="bg-purple-300 text-purple-700 py-2 px-4 rounded-lg">Uploading...</button>
+                </div>
+            `;
+        }
+
+        function resetUpload() {
+            if (uploadAbortController) {
+                uploadAbortController.abort();
+            }
+            const uploadContainer = document.getElementById('uploadContainer');
+            uploadContainer.innerHTML = `
+                <h1 class="text-2xl font-semibold mb-4">Upload Questions</h1>
+                <div id="dropZone" class="border-2 border-dotted border-purple-300 rounded-lg p-8 text-center bg-purple-50">
+                    <i class="fas fa-upload text-purple-500 text-3xl mb-4"></i>
+                    <p class="text-gray-500 mb-2">Drag and drop your CSV file here or <a href="#" class="text-purple-500" id="browseLink">browse</a></p>
+                    <p class="text-gray-400">Maximum file size: 20MB</p>
+                    <input type="file" id="fileInput" class="hidden" accept=".csv">
+                    <p id="errorMessage" class="text-red-500 mt-4 hidden">File must be not more than 20MB</p>
+                </div>
+            `;
+
+            document.getElementById('browseLink').addEventListener('click', function(event) {
+                event.preventDefault();
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const errorMessage = document.getElementById('errorMessage');
+                if (file && file.size > 20 * 1024 * 1024) { // 20MB in bytes
+                    errorMessage.classList.remove('hidden');
+                    event.target.value = ''; // Clear the input
+                } else {
+                    errorMessage.classList.add('hidden');
+                    showUploading(file);
+                    uploadFile(file);
+                }
+            });
+
+            const dropZone = document.getElementById('dropZone');
+
+            dropZone.addEventListener('dragover', function(event) {
+                event.preventDefault();
+                dropZone.classList.add('bg-purple-100');
+            });
+
+            dropZone.addEventListener('dragleave', function(event) {
+                event.preventDefault();
+                dropZone.classList.remove('bg-purple-100');
+            });
+
+            dropZone.addEventListener('drop', function(event) {
+                event.preventDefault();
+                dropZone.classList.remove('bg-purple-100');
+                const file = event.dataTransfer.files[0];
+                const errorMessage = document.getElementById('errorMessage');
+                if (file && file.size > 20 * 1024 * 1024) { // 20MB in bytes
+                    errorMessage.classList.remove('hidden');
+                } else {
+                    errorMessage.classList.add('hidden');
+                    showUploading(file);
+                    uploadFile(file);
+                }
+            });
+        }
+
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            uploadAbortController = new AbortController();
+            const signal = uploadAbortController.signal;
+
+            try {
+                const response = await fetch('/api/upload-csv', {
+                    method: 'POST',
+                    body: formData,
+                    signal,
+                    onUploadProgress: function(progressEvent) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        document.getElementById('progressBar').style.width = percentCompleted + '%';
+                    }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showUploadComplete(file);
+                } else {
+                    alert(`Failed to upload file: ${result.message}`);
+                    resetUpload();
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Upload aborted');
+                } else {
+                    console.error('Error uploading file:', error);
+                    alert('An error occurred while uploading the file.');
+                    resetUpload();
+                }
+            }
+        }
+
+        function showUploadComplete(file) {
+            const uploadContainer = document.getElementById('uploadContainer');
+            uploadContainer.innerHTML = `
+                <h1 class="text-2xl font-semibold mb-4">Upload Questions</h1>
+                <div class="border-2 border-dashed border-purple-300 p-4 rounded-lg mb-4">
+                    <div class="bg-purple-500 text-white p-2 rounded-lg flex justify-between items-center">
+                        <span>${file.name}</span>
+                        <button class="text-white" onclick="resetUpload()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <button class="bg-purple-500 text-white py-2 px-4 rounded-lg w-full">Uploading...</button>
+            `;
+        }
+    </script>
+</body>
+</html>

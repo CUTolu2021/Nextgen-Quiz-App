@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizzy</title>
+    <script src="authentication.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      .highlight {
+        border: 2px solid #030525;
+        box-shadow: 10px 10px 10px rgba(8, 237, 153, 0.5);
+        background-color: rgba(76, 81, 191, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-purple-50">
+    <header class="bg-white shadow-md">
+      <div
+        class="container mx-auto px-4 py-4 flex items-center justify-between"
+      >
+      <div class="flex items-center space-x-2">
+        <div
+          class="bg-purple-600 p-2 rounded-md flex justify-center items-center"
+          style="width: 50px; height: 40px"
+        >
+          <i class="fas fa-question text-white"></i>
+        </div>
+        <h1 class="text-purple-600 text-xl font-bold">QUIZZY</h1>
+      </div>
+        <div class="flex items-center space-x-4">
+          <input
+            type="text"
+            placeholder="Search quizzes..."
+            class="px-4 py-2 rounded-full border border-gray-300 cursor-not-allowed"
+            disabled
+          />
+          <i class="fas fa-bell text-gray-600"
+          onclick="alert('You have no notifications.');"
+          ></i>
+          <div
+            class="bg-purple-600 p-2 rounded-full flex items-center justify-center"
+            style="width: 40px; height: 40px"
+            onclick="window.location.href='profilepage.html'"
+          >
+            <span class="text-white cursor-pointer" id="initials">U</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+      <section
+        id="start-quiz-section"
+        class="bg-purple-600 text-white rounded-lg p-8 mb-8"
+      >
+        <h2 class="text-2xl font-bold mb-2">Ready to Challenge Yourself?</h2>
+        <p class="mb-4">Take a quiz and test your knowledge!</p>
+        <button
+          id="start-quiz-button"
+          class="bg-white text-purple-600 font-bold py-2 px-4 rounded-full flex items-center"
+        >
+          <i class="fas fa-book-open mr-2"></i> Start New Quiz
+        </button>
+      </section>
+      <section
+        id="quizzes-section"
+        class="bg-white rounded-lg shadow-md p-4 mb-8"
+      >
+        <div class="flex justify-between border-b border-gray-200 pb-2 mb-4">
+          <h3 id="available-quizzes-tab" class="text-lg cursor-pointer">
+            Available Quizzes
+          </h3>
+          <h3 id="recent-quizzes-tab" class="text-lg text-gray-400 cursor-pointer">Recent Quizzes</h3>
+        </div>
+      </section>
+      <section class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-bold mb-4">Leaderboard</h3>
+        <ul id="leaderboard-list"></ul>
+      </section>
+    </main>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (!token) return window.location.replace("signin.html");
+
+    const initialsElement = document.getElementById("initials");
+    const recentQuizzesTab = document.getElementById("recent-quizzes-tab");
+    const availableQuizzesTab = document.getElementById("available-quizzes-tab");
+    const quizzesList = document.createElement("div"); // This will hold quizzes dynamically
+    quizzesList.classList.add("space-y-4");
+
+    // Append quizzesList inside quizzes-section without removing the tabs
+    document.getElementById("quizzes-section").appendChild(quizzesList);
+
+    let attemptedQuizzes = [];
+    let unattemptedQuizzes = [];
+
+    async function fetchUserData() {
+        try {
+            const res = await fetch("http://localhost:8000/auth/me", {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (!data.user || data.user.role !== "Participant") return window.location.replace("signin.html");
+            initialsElement.innerText = data.user.username[0].toUpperCase();
+            localStorage.setItem("userId", data.user._id);
+            localStorage.setItem("username", data.user.username);
+        } catch (err) {
+            console.error("Error fetching user data:", err);
+        }
+    }
+
+    async function fetchQuizData() {
+        try {
+            const resQuizzes = await fetch("http://localhost:8000/quizzes", {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const quizzesData = await resQuizzes.json();
+
+            const resAttempts = await fetch("http://localhost:8000/info/quizattempts", {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const attemptsData = await resAttempts.json();
+            localStorage.setItem("numberQuizzes", attemptsData.length);
+
+            const attemptedQuizIds = new Set(attemptsData.map(attempt => attempt.quizId));
+            attemptedQuizzes = attemptsData.map(attempt => {
+                const quiz = quizzesData.data.find(q => q._id === attempt.quizId);
+                return quiz ? { ...quiz, score: attempt.score, timeTaken: attempt.timeTaken } : null;
+            }).filter(Boolean);
+
+            unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id));
+        } catch (err) {
+            console.error("Error fetching quizzes:", err);
+        }
+    }
+
+    function renderAvailableQuizzes() {
+        availableQuizzesTab.classList.add("font-bold", "text-purple-600");
+        recentQuizzesTab.classList.remove("font-bold", "text-purple-600");
+
+        let quizzesHTML = unattemptedQuizzes.length > 0
+            ? unattemptedQuizzes.map(quiz => `
+                <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                    <h3 class="text-lg font-bold mb-2">${quiz.title}</h3>
+                    <p class="text-gray-600">Duration: ${quiz.settings.time_limit} mins</p>
+                    <button class="text-purple-600 font-bold flex items-center mt-2" data-quiz-id="${quiz._id}">
+                        Start Quiz <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+              `).join("")
+            : `<p class="text-gray-600 text-center">No quizzes available.</p>`;
+
+        quizzesList.innerHTML = quizzesHTML; // Update content without removing tabs
+
+        document.querySelectorAll("[data-quiz-id]").forEach(button => {
+            button.addEventListener("click", function () {
+                const quizId = this.dataset.quizId;
+                window.location.href = `startquiz.html?quizId=${quizId}`;
+            });
+        });
+    }
+
+    function renderRecentQuizzes() {
+        recentQuizzesTab.classList.add("font-bold", "text-purple-600");
+        availableQuizzesTab.classList.remove("font-bold", "text-purple-600");
+
+        let quizzesHTML = attemptedQuizzes.length > 0
+            ? attemptedQuizzes.map(quiz => `
+                <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                    <h3 class="text-lg font-bold mb-2">${quiz.title}</h3>
+                    <p class="text-gray-600">Time Taken: ${quiz.settings.time_limit} mins</p>
+                    <p class="text-gray-600">Score: ${quiz.score} / 100</p>
+                </div>
+              `).join("")
+            : `<p class="text-gray-600 text-center">You haven't attempted any quizzes yet.</p>`;
+
+        quizzesList.innerHTML = quizzesHTML; // Update content without removing tabs
+    }
+
+    availableQuizzesTab.addEventListener("click", renderAvailableQuizzes);
+    recentQuizzesTab.addEventListener("click", renderRecentQuizzes);
+
+    async function init() {
+        await fetchUserData();
+        await fetchQuizData();
+        renderAvailableQuizzes(); // Show available quizzes by default
+    }
+
+        const leaderboardList = document.getElementById("leaderboard-list");
+        const getLeaderboards = async () => {
+          const response = await fetch("http://localhost:8000/info/leaderboard", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const response2 = await fetch("http://localhost:8000/user", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const userData = await response2.json();
+         
+          const usersById = userData.reduce((acc, user) => ({ ...acc, [user._id]: user }), {});
+          
+          const response1 = await response.json();
+          console.log(response1);
+         
+          const users = response1.map((user) => ({
+            ...user,
+            name: usersById[user.userId].username,
+          }));
+          console.log(users);
+          const leaderboardHtml = users
+            .map((user) => {
+              return `
+                <li class="flex justify-between items-center py-2">
+                  <div class="flex items-center">
+                    <span class="text-gray-600">${user.rank}</span>
+                    <span
+                      class="bg-purple-200 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center ml-2"
+                      >${user.name[0]}</span
+                    >
+                    <span class="ml-2 font-bold">${user.name}</span>
+                  </div>
+                  <span>${user.score} Points</span>
+                </li>
+              `;
+            })
+            .join("");
+          leaderboardList.innerHTML = leaderboardHtml;
+        };
+        getLeaderboards();
+    
+
+    init();
+});
+
+    </script>
+  </body>
+</html>

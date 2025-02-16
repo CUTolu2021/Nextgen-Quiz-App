@@ -3,14 +3,14 @@ const { Schema, model } = require('mongoose');
 const userSchema = new Schema({
     username: {
         type: String,
-        unique: [true, 'Username already Taken'],
+        unique: [true, 'Username already taken'],
         required: [true, 'Username is required'],
         trim: true, 
         minlength: [3, 'Username must be at least 3 characters long'],
     },
     email: {
         type: String,
-        unique: [true, 'Email already Taken'],
+        unique: [true, 'Email already taken'],
         required: [true, 'Email is required'],
         lowercase: true, 
         trim: true, 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Preview</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f2ebfa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .header {
+      width: 100%;
+      background: none;
+      padding: 15px 20px;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+    }
+
+    .header a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      font-size: 1.1em;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+      margin-top: 60px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .quiz-info {
+      margin-bottom: 20px;
+    }
+
+    .quiz-info h3 {
+      font-size: 1em;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .quiz-info p {
+      font-size: 1.1em;
+      margin: 0 0 15px 0;
+      font-weight: 400;
+    }
+
+    .edit-link {
+      float: right;
+      color: #6c63ff;
+      font-size: 0.9em;
+      text-decoration: none;
+    }
+
+    .edit-link:hover {
+      text-decoration: underline;
+    }
+
+    .question-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .question-number {
+      font-size: 0.9em;
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    .question-card h3 {
+      margin-bottom: 10px;
+    }
+
+    .question-card .points {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: #6c63ff;
+      font-weight: 600;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .option input {
+      cursor: pointer;
+    }
+
+    .correct-answer {
+      font-weight: 600;
+      color: #6c63ff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #eae6ff;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      font-style: italic;
+      color: #666;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .draft-btn {
+      background: #ddd;
+      color: #333;
+    }
+
+    .draft-btn:hover {
+      background: #ccc;
+    }
+
+    .publish {
+      background: #6c63ff;
+      color: white;
+    }
+
+    .publish:hover {
+      background: #594ed9;
+    }
+  </style>
+  <script src="authentication.js"></script>
+</head>
+<body>
+  <div class="header">
+    <a href="createQuiz.html"> <i class="fas fa-arrow-left"></i> Back </a>
+  </div>
+
+  <div class="container">
+    <h1>Preview Quiz</h1>
+
+    <div class="quiz-info">
+      <h3>Quiz Title</h3>
+      <p id="quiz-title">Current Affairs Quiz</p>
+
+      <h3>Quiz Time</h3>
+      <p><span id="quiz-time">30</span> mins</p>
+
+      <h3>Quiz Description</h3>
+      <p id="quiz-description">Current affairs quiz: How well do you know what’s happening?</p>
+    </div>
+
+    <h2>Questions</h2>
+    <div id="questions-container"></div>
+
+    <div class="action-buttons">
+      <button class="button draft-btn">Save Draft</button>
+      <button class="button publish">Publish Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    function loadQuizData() {
+      const quizTitle = localStorage.getItem("quizTitle") || "Untitled Quiz";
+      const quizTime = localStorage.getItem("quizTime") || "30";
+      const quizDescription = localStorage.getItem("quizDescription") || "No description provided.";
+      const questions = JSON.parse(localStorage.getItem("questions")) || [];
+
+      document.getElementById("quiz-title").textContent = quizTitle;
+      document.getElementById("quiz-time").textContent = quizTime;
+      document.getElementById("quiz-description").textContent = quizDescription;
+
+      const questionsContainer = document.getElementById("questions-container");
+      questionsContainer.innerHTML = "";
+
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("question-card");
+        questionDiv.innerHTML = `
+          <p class="question-number">Question ${index + 1} of ${questions.length}</p>
+          <p class="points">Points: ${q.points}</p>
+          <h3>${q.question}</h3>
+          <div class="options">
+            ${q.options
+              .map(
+                (option, i) =>
+                  `<label class="option">
+                    <input type="radio" disabled />
+                    ${option}
+                  </label>`
+              )
+              .join("")}
+          </div>
+          <p class="correct-answer">Correct Answer: ${q.correctOption}</p>
+          ${q.explanation ? `<p class="explanation"><strong>Explanation:</strong> ${q.explanation}</p>` : ""}
+        `;
+        questionsContainer.appendChild(questionDiv);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadQuizData);
+
+    document.querySelector(".draft-btn").addEventListener("click", () => {
+      const quizId = localStorage.getItem("quizId");
+      window.location.href = `createquiz.html`;
+    });
+
+    document.querySelector(".publish").addEventListener("click", () => {
+      const quizId = localStorage.getItem("quizId");
+      window.location.href = `createquiz.html`;
+    });
+  </script>
+</body>
+</html>

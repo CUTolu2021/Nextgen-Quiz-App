@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Start</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .quiz-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .quiz-header h2 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .quiz-header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .quiz-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .info-item {
+      background-color: #f3e8ff;
+      border-radius: 10px;
+      padding: 15px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .info-item span {
+      font-size: 14px;
+      color: #555;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .info-item p {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .icon {
+      font-size: 24px;
+      color: #6a0dad;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .question-box {
+    margin: 20px 0;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.question-text {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.option-btn.selected {
+    background-color: #6a0dad;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #53158f;
+}
+
+
+.option-btn {
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    background: #f3e8ff;
+    color: #6a0dad;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.option-btn:hover {
+    background: #d8b6ff;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.nav-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.prev-btn {
+    background-color: #fff;
+    color: #6a0dad;
+    border: 2px solid #6a0dad;
+}
+
+.prev-btn:hover {
+    background-color: #f3e8ff;
+}
+
+.next-btn {
+    background-color: #6a0dad;
+    color: white;
+}
+
+.next-btn:hover {
+    background-color: #53158f;
+}
+
+
+
+    .quiz-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .quiz-buttons button {
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .back-button {
+      background-color: #fff;
+      color: #6a0dad;
+      border: 2px solid #6a0dad;
+    }
+
+    .back-button:hover {
+      background-color: #f3e8ff;
+    }
+
+    .start-button {
+      background-color: #6a0dad;
+      color: white;
+    }
+
+    .start-button:hover {
+      background-color: #53158f;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <h2><span id="quiz-title">Your Quiz is....</span></h2>
+      <p><span id="quiz-description">How well do you know what's happening?</span></p>
+    </div>
+    <div class="quiz-info">
+      <div class="info-item">
+        <span style="font-size: 24px; color: #7b2cbf" class="icon">⏳</span>
+        <span>Time Limit</span>
+        <p><span id="time-limit">30</span> Mins</p>
+      </div>
+      <div class="info-item">
+        <span style="font-size: 24px; color: #7b2cbf" class="icon">❓</span>
+        <span>Questions</span>
+        <p><span id="total-questions">10</span></p>
+      </div>
+      <div class="info-item">
+        <span style="font-size: 24px; color: #7b2cbf" class="icon">🏆</span>
+        <span>Total Points</span>
+        <p><span id="total-points">10</span></p>
+      </div>
+    </div>
+    <div class="quiz-buttons">
+      <button style="width: 280px; margin-right: 16px; border: 2px solid black; display: flex; align-items: center; justify-content: center;" class="back-button" onclick="window.location.href='participantdashboard.html'">🏠 Back to Dashboard</button>
+      <button style="width: 280px;" class="start-button" id="start-btn">Start Quiz</button>
+    </div>
+  </div>
+
+  <div id="question-container" class="quiz-container" style="display: none;"></div>
+  <div id="result" class="quiz-container hidden" style="display: none;"></div>
+</body>
+<script>
+
+const quizId = new URLSearchParams(window.location.search).get("quizId");
+if(!quizId) {
+    window.location.replace("participantdashboard.html");
+}
+    console.log(quizId);
+    let token = localStorage.getItem("token");
+    if (!token) {
+        fetch("http://localhost:8000/auth/allow-unregistered-users-to-take-quiz", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("status", "unregistered");
+            window.location.reload();
+            console.log(data.token);
+            setTimeout(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("status");
+                window.location.replace("signin.html");
+            }, 1000 * 60 * 30); // delete token after 30 minutes
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            window.location.replace("signin.html");
+        });
+    }
+    token = localStorage.getItem("token");
+    localStorage.setItem("quizId", quizId);
+    
+    let correct = 0;
+    const startBtn = document.getElementById("start-btn");
+    const questionContainer = document.getElementById("question-container");
+    const quizContainer = document.querySelector(".quiz-container");
+    const resultDisplay = document.getElementById("result");
+    const quizTitle = document.getElementById("quiz-title");
+    const quizDescription = document.getElementById("quiz-description");
+    const timeLimit = document.getElementById("time-limit");
+    const totalQuestions = document.getElementById("total-questions");
+    const totalPoints = document.getElementById("total-points");
+    
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timeLeft = 0;
+    let timer;
+    let userAnswers = {}; // Store selected answers (questionId -> answer)
+    
+    async function getQuestions() {
+        try {
+            const response = await fetch(`http://localhost:8000/quizzes/${quizId}/questions`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log("Questions retrieved:", data);
+            questions = data.data;
+        } catch (err) {
+            console.error("Error fetching questions:", err);
+        }
+    }
+    
+    async function getQuizDetails() {
+        try {
+            const response = await fetch(`http://localhost:8000/quizzes/${quizId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log("Quiz information:", data);
+    
+            quizTitle.innerText = data.quiz.title;
+            quizDescription.innerText = data.quiz.description;
+            timeLimit.innerText = data.quiz.settings.time_limit;
+            totalQuestions.innerText = questions.length;
+            totalPoints.innerText = data.quiz.settings.total_points;
+            timeLeft = Number(timeLimit.innerText) * 60; // Convert minutes to seconds
+        } catch (err) {
+            console.error("Error fetching quiz details:", err);
+        }
+    }
+    
+    async function startQuiz() {
+        quizContainer.style.display = "none";
+        questionContainer.style.display = "block";
+    
+        try {
+            const response = await fetch(`http://localhost:8000/quizzes/${quizId}/start_quiz`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log("Quiz started:", data);
+        } catch (err) {
+            console.error("Error starting quiz:", err);
+        }
+    
+        startBtn.style.display = "none";
+        displayQuestion();
+        startTimer();
+    }
+    
+    function displayQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            finishQuiz(false);
+            return;
+        }
+        if (questions.length === 0) return;
+    
+        let q = questions[currentQuestionIndex];
+        let savedAnswer = userAnswers[q._id] || null;
+    
+        questionContainer.innerHTML = `
+            <div class="question-box">
+                <header class="quiz-header">
+                    <h1>${quizTitle.innerText}</h1>
+                    <div class="quiz-timer">
+                        ⏳ <span id="timer">${formatTime(timeLeft)}</span>
+                    </div>
+                    <p class="question-number">Question ${currentQuestionIndex + 1} of ${questions.length}</p>
+                    <p class="question-text">${q.question}</p>
+                    <p class="points">Points: ${q.point}</p>
+                    
+                    <div class="options-container">
+                        ${q.options.map(option => `
+                            <button class="option-btn ${savedAnswer === option ? 'selected' : ''}"
+                                onclick="selectAnswer('${option}', '${q.correctAnswers}', '${q._id}', '${q.question}')">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                </header>
+            </div>
+    
+            <div class="navigation-buttons">
+                <button id="prev-btn" class="nav-btn prev-btn" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>⬅ Previous</button>
+                <button id="next-btn" class="nav-btn next-btn" onclick="${currentQuestionIndex === questions.length - 1 ? 'finishQuiz()' : 'nextQuestion()'}">
+                    ${currentQuestionIndex === questions.length - 1 ? 'Submit Quiz' : 'Next ➡'}
+                </button>
+            </div>
+        `;
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            finishQuiz(false);
+        }
+    }
+    
+    async function selectAnswer(selected, correct, questionId, question) {
+        userAnswers[questionId] = selected;
+    
+        document.querySelectorAll(".option-btn").forEach(btn => {
+            btn.classList.remove("selected");
+            if (btn.innerText.trim() === selected.trim()) {
+                btn.classList.add("selected");
+            }
+        });
+    
+        try {
+            await fetch(`http://localhost:8000/quizzes/${quizId}/submit_answer`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    questionId,
+                    selectedAnswer: selected,
+                    correctAnswer: correct,
+                    question
+                }),
+            });
+        } catch (err) {
+            console.error("Error submitting answer:", err);
+        }
+    
+        if (selected === correct) {
+            score++;
+            correct++;
+        }
+    }
+    
+    let timeUsed = null;
+    function startTimer() {
+    timerDisplay = document.getElementById("timer"); // Ensure it gets the element again
+    timer = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+           
+            finishQuiz(true);
+            return;
+        }
+        timeUsed = timerDisplay.innerText;
+        console.log(timeLeft);
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        timerDisplay.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timeLeft--;
+    }, 1000);
+}
+
+    
+    async function finishQuiz(finishedByTime = false) {
+        questionContainer.innerHTML = "";
+        questionContainer.style.display = "none";
+        resultDisplay.style.display = "block";
+        resultDisplay.innerHTML = `<h2>Quiz Finished!</h2><p>Your Score: ${score} / ${questions.length}</p>`;
+
+    
+        try {
+            await fetch(`http://localhost:8000/quizzes/${quizId}/end_quiz`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ score, correct, wrong: questions.length - correct, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
+            });
+        } catch (err) {
+            console.error("Error ending quiz:", err);
+        }
+        clearInterval(timer);
+        if (finishedByTime){
+            window.location.replace(`quizended.html?finishedInTime=true`);
+        }
+        else{
+            window.location.replace(`quizended.html?finishedInTime=false`);
+        }
+    }
+    
+    function formatTime(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        return `${min}:${sec.toString().padStart(2, '0')}`;
+    }
+    
+    async function init() {
+        await getQuestions();
+        await getQuizDetails();
+        startBtn.addEventListener("click", startQuiz);
+    }
+    
+    init();
+    
+</script>
+</html>
+
+
+

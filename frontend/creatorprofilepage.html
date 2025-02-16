@@ -1,0 +1,209 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="authentication.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      .header {
+        width: 100%;
+        background: #f5f5f5;
+        padding: 15px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .header a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+      }
+
+      .header a i {
+        margin-right: 10px;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body class="bg-purple-100 flex items-center justify-center min-h-screen">
+    <div class="header">
+      <a href="dashboard.html"
+        ><i class="fas fa-arrow-left text-gray-600 mr-2"></i> Back</a
+      >
+    </div>
+    <div class="page">
+      <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center mb-6">
+          <div
+            class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user text-purple-600 text-3xl"></i>
+          </div>
+          <div class="ml-4">
+            <h2 class="text-lg font-semibold">
+              <span id="username">Uchechukwu</span>
+            </h2>
+            <p class="text-gray-500">Quiz Creator</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-gray-100 p-4 rounded-lg flex flex-col items-start">
+            <div class="flex items-center">
+              <i class="fas fa-brain text-purple-600 mb-2 mr-2"></i>
+              <p class="text-gray-500">Total Quizzes</p>
+            </div>
+            <p class="text-xl font-semibold"><span id="quizNumber">0</span></p>
+          </div>
+          <div class="bg-gray-100 p-4 rounded-lg flex flex-col items-start">
+            <div class="flex items-center">
+              <i class="fas fa-users text-purple-600 mb-2 mr-2"></i>
+              <p class="text-gray-500">Active Players</p>
+            </div>
+            <p class="text-xl font-semibold">
+              <span id="activePlayers">0</span>
+            </p>
+          </div>
+          <div class="bg-gray-100 p-4 rounded-lg flex flex-col items-start">
+            <div class="flex items-center">
+              <i class="fas fa-trophy text-purple-600 mb-2 mr-2"></i>
+              <p class="text-gray-500">Completion Rate</p>
+            </div>
+            <p class="text-xl font-semibold">
+              <span id="completionRate">0%</span>
+            </p>
+          </div>
+          <div class="bg-gray-100 p-4 rounded-lg flex flex-col items-start">
+            <div class="flex items-center">
+              <i class="fas fa-chart-line text-purple-600 mb-2 mr-2"></i>
+              <p class="text-gray-500">Avg. Score</p>
+            </div>
+            <p class="text-xl font-semibold"><span id="avgScore">0%</span></p>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex items-center cursor-pointer" onclick="createQuiz()">
+            <div
+              class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-plus text-purple-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="font-semibold">Create Quiz</p>
+              <p class="text-gray-500 text-sm">Start creating a new quiz</p>
+            </div>
+          </div>
+          <div
+            class="flex items-center cursor-pointer"
+            onclick="viewSavedDrafts()"
+          >
+            <div
+              class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-save text-purple-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="font-semibold">Saved Drafts</p>
+              <p class="text-gray-500 text-sm">
+                Find all your saved drafts in one place
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center cursor-pointer" onclick="inviteUsers()">
+            <div
+              class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-user-plus text-purple-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="font-semibold">Invite Users</p>
+              <p class="text-gray-500 text-sm">Invite friends to join Quizzy</p>
+            </div>
+          </div>
+          <div
+            class="flex items-center cursor-pointer"
+            onclick="viewSettings()"
+          >
+            <div
+              class="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-cog text-purple-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="font-semibold">Settings</p>
+              <p class="text-gray-500 text-sm">
+                Adjust your preferences and options
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="h-4"></div>
+      <div
+        class="bg-white rounded-lg shadow-md p-4 flex items-center justify-center"
+      >
+        <button
+          class="text-red-500 font-semibold flex items-center"
+          onclick="logOut()"
+        >
+          <i class="fas fa-sign-out-alt mr-2"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const username = localStorage.getItem("username");
+    const quizNumber = localStorage.getItem("quizNumber");
+    const usernameElement = document.getElementById("username");
+    const quizNumberElement = document.getElementById("quizNumber");
+    const activePlayersElement = document.getElementById("activePlayers");
+    const completionRateElement = document.getElementById("completionRate");
+    const avgScoreElement = document.getElementById("avgScore");
+    usernameElement.innerText = username;
+    quizNumberElement.innerText = quizNumber;
+
+    function logOut() {
+        localStorage.clear();
+        alert("You have been logged out.");
+      window.location.href = "signin.html";
+    }
+
+    function createQuiz() {
+      window.location.href = "create-quiz.html";
+    }
+
+    function viewSavedDrafts() {
+      window.location.href = "saved-drafts.html";
+    }
+
+    function inviteUsers() {
+      window.location.href = "invite-users.html";
+    }
+
+    function viewSettings() {
+      window.location.href = "settings.html";
+    }
+
+    function goBack() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</html>
