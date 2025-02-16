@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-        origin: "https://nextgen-quiz-app.vercel.app",
+        origin: ["https://nextgen-quiz-app.vercel.app", "http://127.0.0.1:5500"],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
