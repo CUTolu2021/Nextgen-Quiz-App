@@ -16,10 +16,10 @@ const createQuiz = async (req, res) => {
 
     try {
         const quiz = await Quiz.create({ title, description, settings, creatorId, status });
-        req.session.quizId = quiz._id; // Save the quiz ID in the session
+     // Save the quiz ID in the session
         res.status(201).json({ message: 'Quiz created successfully', quiz });
     } catch (error) {
-        console.error(error);
+        console.error(error);s
         res.status(500).json({ message: 'Failed to create quiz', error: error.message });
     }
 };
