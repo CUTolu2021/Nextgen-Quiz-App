@@ -208,7 +208,7 @@
       </div>
     </div>
     <div class="quiz-buttons">
-      <button style="width: 280px; margin-right: 16px; border: 2px solid black; display: flex; align-items: center; justify-content: center;" class="back-button" onclick="window.location.href='participantdashboard.html'">🏠 Back to Dashboard</button>
+      <button style="width: 280px; margin-right: 16px; border: 2px solid black; display: flex; align-items: center; justify-content: center;" class="back-button" onclick="window.location.href='/participant-dashboard'">🏠 Back to Dashboard</button>
       <button style="width: 280px;" class="start-button" id="start-btn">Start Quiz</button>
     </div>
   </div>
@@ -465,10 +465,10 @@ if(!quizId) {
         }
         clearInterval(timer);
         if (finishedByTime){
-            window.location.replace(`quizended.html?finishedInTime=true`);
+            window.location.replace(`/quizended?finishedInTime=true`);
         }
         else{
-            window.location.replace(`quizended.html?finishedInTime=false`);
+            window.location.replace(`/quizended?finishedInTime=false`);
         }
     }
     
