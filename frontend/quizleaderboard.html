@@ -199,7 +199,7 @@
             const quizId = localStorage.getItem('quizId');
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('token');
-            fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/leaderboard`, {
+            fetch(`https://nextgen-quiz-app.vercel.app/info/${quizId}/leaderboard`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -207,6 +207,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Leaderboard data:', data);
                     const user = data.find(item => item.userId === userId);
                     if (user) {
                         document.getElementById('user-rank').innerHTML = `#${data.indexOf(user) + 1}`;

@@ -181,7 +181,7 @@ async function saveUpdates() {
 
         // PATCH request to update quiz info
         const quizResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -202,7 +202,7 @@ async function saveUpdates() {
                 option2: container.querySelector('input[name="option2"]').value,
                 option3: container.querySelector('input[name="option3"]').value,
                 option4: container.querySelector('input[name="option4"]').value,
-                correctAnswers: container.querySelector('input[name="correctAnswer"]').value,
+                correctAnswer: container.querySelector('input[name="correctAnswer"]').value,
                 point: container.querySelector('input[name="points"]').value || 1
             };
             questions.push(question);
@@ -218,7 +218,9 @@ async function saveUpdates() {
             body: JSON.stringify({ questions })
         });
 
-        if (!questionResponse.ok) throw new Error("Failed to save questions");
+        const data = await questionResponse.json();
+
+        if (!questionResponse.ok) throw new Error(data.message);
 
         console.log("Questions saved successfully");
         alert('Your updates have been saved successfully!');
@@ -242,7 +244,7 @@ async function publishUpdates() {
 
         // PATCH request to update quiz info
         const quizResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -263,7 +265,7 @@ async function publishUpdates() {
                 option2: container.querySelector('input[name="option2"]').value,
                 option3: container.querySelector('input[name="option3"]').value,
                 option4: container.querySelector('input[name="option4"]').value,
-                correctAnswers: container.querySelector('input[name="correctAnswer"]').value,
+                correctAnswer: container.querySelector('input[name="correctAnswer"]').value,
                 point: container.querySelector('input[name="points"]').value || 1
             };
             questions.push(question);
@@ -274,17 +276,19 @@ async function publishUpdates() {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ questions })
         });
+        const data = await questionResponse.json();
+        console.log(data);
 
-        if (!questionResponse.ok) throw new Error("Failed to save questions");
+        if (!questionResponse.ok) throw new Error(data.message);
 
         console.log("Questions saved successfully");
         alert('Your updates have been saved successfully!');
     } catch (error) {
-        console.error("Error saving updates:", error);
+        console.error("Error saving updates:", error.message);
         alert('Failed to save updates. Please try again.');
     }
 }
