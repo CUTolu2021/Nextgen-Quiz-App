@@ -155,6 +155,10 @@ app.get("/quizleaderboard", (req, res) => {
     res.sendFile(__dirname + '/frontend/quizleaderboard1.html');
 })
 
+app.get("/quizended", (req, res) => {
+    res.sendFile(__dirname + '/frontend/quizended.html');
+})
+
 
 
 app.use("/auth", authRouter);

@@ -60,16 +60,14 @@
             }),
         });
         const data = await response.json();
-        if (!response.ok) {
-            alert("Error uploading quiz!");
-        } else {
+    
             if (data.quiz._id) {
                 alert("Quiz created successfully!");
                 window.location.replace("/upload-quiz?quizId=" + data.quiz._id);
             } else {
                 alert("Error creating quiz!");
             }
-        }
+        
     });
 </script>
 
