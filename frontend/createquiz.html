@@ -449,6 +449,7 @@
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
           console.log("Quiz created with ID:", quizId);
+          localStorage.setItem("quizId", quizId);
           return quizId;
         } catch (error) {
           console.error("Error creating quiz:", error);

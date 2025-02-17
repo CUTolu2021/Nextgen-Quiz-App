@@ -281,7 +281,8 @@
 
     function renderQuizzes(quizzes) {
       quizzesList.innerHTML = "";
-      quizzes.forEach((quiz) => {
+      const latestQuizzes = quizzes.slice(0, 4);
+      latestQuizzes.forEach((quiz) => {
         const quizElement = document.createElement("div");
         quizElement.className =
           "bg-white p-4 rounded-lg shadow-md flex justify-between items-center";

@@ -163,6 +163,10 @@ app.get("/view-results", (req, res) => {
     res.sendFile(__dirname + '/frontend/view-results.html');
 })
 
+app.get("/edit-quiz", (req, res) => {
+    res.sendFile(__dirname + '/frontend/editquiz.html');
+})
+
 
 
 app.use("/auth", authRouter);

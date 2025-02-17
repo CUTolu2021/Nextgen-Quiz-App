@@ -25,43 +25,6 @@ const createQuiz = async (req, res) => {
     }
 };
 
-// Add new questions through the form
-const addQuestions = async (req, res) => {
-    const { question, option1, option2, option3, option4, correctAnswer, point } = req.body;
-    const quizId = req.session.quizId;
-
-    // Validation
-    if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    try {
-        const questionData = await Question.create({
-            question,
-            options: [option1, option2, option3, option4],
-            correctAnswers: correctAnswer,
-            quizId,
-            point
-        });
-        console.log(questionData)
-
-        // Add the question to the quiz
-        const quiz = await Quiz.findById(quizId);
-        quiz.questions.push(questionData._id);
-
-        // Get points for each question add them all together to get the total
-        const totalPoints = question.point;
-
-        // Update the points for the quiz
-        quiz.total_points = totalPoints;
-        await quiz.save();
-        res.status(201).json({ message: 'Question added successfully', questionData });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to add question', error: error.message });
-    }
-};
-
 // Add new questions by quizid
 const addQuestionsByID = async (req, res) => {
     const { quizId } = req.params;
@@ -77,7 +40,7 @@ const addQuestionsByID = async (req, res) => {
             return res.status(404).json({ message: "Quiz not found" });
         }
 
-        let totalPoints = quiz.total_points || 0; // Initialize total points
+        let totalPoints = 0; // Initialize total points
         const questionDocuments = [];
 
         for (const q of questions) {
@@ -90,15 +53,15 @@ const addQuestionsByID = async (req, res) => {
                 options: [q.option1, q.option2, q.option3, q.option4],
                 correctAnswers: q.correctAnswer,
                 quizId,
-                point: q.point || 0
+                point: q.point || 1
             });
 
             questionDocuments.push(newQuestion._id);
-            totalPoints += q.point || 0;
+            totalPoints += q.point || 1;
         }
 
         quiz.questions.push(...questionDocuments);
-        quiz.total_points = totalPoints;
+        quiz.settings.total_points = totalPoints;
         await quiz.save();
 
         res.status(201).json({ message: "Questions added successfully", questions: questionDocuments });
@@ -152,7 +115,7 @@ const uploadQuestions = async (req, res) => {
 
                 // Get total points and update the quiz
                 const totalPoints = createdQuestions.reduce((total, question) => total + question.point, 0);
-                quiz.total_points = (quiz.total_points || 0) + totalPoints;
+                quiz.settings.total_points = totalPoints;
                 await quiz.save();
 
                 res.status(200).json({ message: 'Questions added successfully', quiz });
@@ -364,6 +327,58 @@ const updateQuiz = async (req, res) => {
     }
 };
 
+const updateQuestions = async (req, res) => {
+    const { quizId } = req.params;
+    const { questions } = req.body;
+
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+        return res.status(400).json({ message: 'At least one question is required' });
+    }
+
+    try {
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+
+        if (quiz.creatorId.toString() !== req.user.userId) {
+            return res.status(403).json({ message: "You are not authorized to update this quiz" });
+        }
+
+        Question.deleteMany({ quizId }).exec(); // Delete existing questions
+
+        let totalPoints = quiz.settings.total_points || 0; // Initialize total points
+        const questionDocuments = [];
+
+        for (const q of questions) {
+            if (!q.question || !q.option1 || !q.option2 || !q.option3 || !q.option4 || !q.correctAnswer) {
+                return res.status(400).json({ message: "All fields are required for each question" });
+            }
+
+            const newQuestion = await Question.create({
+                question: q.question,
+                options: [q.option1, q.option2, q.option3, q.option4],
+                correctAnswers: q.correctAnswer,
+                quizId,
+                point: q.point || 1
+            });
+
+            questionDocuments.push(newQuestion._id);
+            totalPoints += q.point || 1;
+        }
+
+        quiz.questions.push(...questionDocuments);
+        quiz.settings.total_points = totalPoints;
+        await quiz.save();
+
+        res.status(201).json({ message: "Questions added successfully", questions: questionDocuments });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to add questions", error: error.message });
+    }
+    
+}
+
 
 //delete quiz by id
 const deleteQuizById = async (req, res) => {
@@ -394,7 +409,7 @@ module.exports = {
     getQuizzes,
     getQuizzesByUserId,
     getQuestionByQuizId,
-    addQuestions,
+    updateQuestions,
     deleteQuizById,
     getQuizById,
     updateQuiz,

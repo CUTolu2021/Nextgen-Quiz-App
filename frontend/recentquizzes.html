@@ -1,225 +1,148 @@
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   All Quizzes
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <script>
-    function navigateTo(url) {
-      window.location.href = url;
-    }
-  </script>
- </head>
- <body class="bg-purple-100">
-  <div class="w-full bg-white py-4 px-6 flex items-center">
-   <i class="fas fa-arrow-left text-gray-500 cursor-pointer" onclick="navigateTo('/creator-dashboard')">
-   </i>
-   <a class="ml-2 text-gray-500 cursor-pointer" onclick="navigateTo('/creator-dashboard')">
-    Back
-   </a>
-  </div>
-  <div class="max-w-4xl mx-auto p-4">
-   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">
-     All Quizzes
-    </h1>
-    <button class="bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="navigateTo('createquiz.html')">
-     <i class="fas fa-plus mr-2">
-     </i>
-     Create New Quiz
-    </button>
-   </div>
-   <div>
-    <h2 class="text-lg font-semibold text-gray-700 mb-4">
-     Recent Quizzes
-    </h2>
-    <div class="space-y-4">
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="Geography Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/Af69MKtckGyChnNaWeJiyHZxnUhPv3w9_FB8DCzTCLQ.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         Geography Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-globe mr-1">
-         </i>
-         80 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         30mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 50%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         10/02/2025
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=1')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="Sports Legend Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/4MP11DboLL_s14N8wEDy5H49wues2S2PcXMvo1tqTv8.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         Sports Legend Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-football-ball mr-1">
-         </i>
-         120 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         20mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 82%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         05/02/2025
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=2')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="Current Events Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/02rx6mFz0MFDNAlSFm9XL9R40EzMvvmrzbV5IHT08i0.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         Current Events Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-newspaper mr-1">
-         </i>
-         60 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         60mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 100%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         01/02/2025
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=3')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="English Language Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/zk3gJ_gw7OroV7w8GQnPJPO8vU4hsw5aTEl9RHmS_YI.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         English Language Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-book mr-1">
-         </i>
-         70 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         60mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 75%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         20/12/2024
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=4')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="Movie Buff Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/YS5xZqz7fg_5JVWiR07exCUh-tXaV1gJBit0yLqoQ6A.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         Movie Buff Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-film mr-1">
-         </i>
-         71 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         20mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 68%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         20/11/2024
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=5')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
-     <!-- Quiz Item -->
-     <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-      <div class="flex items-center">
-       <img alt="Mathematics Quiz Icon" class="w-10 h-10 rounded-full mr-4" height="40" src="https://storage.googleapis.com/a1aa/image/Eh2vRCfHWxazPDI111YPSa4i7xvoQB3HSKLQV9_ZSJQ.jpg" width="40"/>
-       <div>
-        <h3 class="text-gray-800 font-semibold">
-         Mathematics Quiz
-        </h3>
-        <div class="flex items-center text-gray-500 text-sm">
-         <i class="fas fa-square-root-alt mr-1">
-         </i>
-         60 participants
-         <i class="fas fa-clock ml-4 mr-1">
-         </i>
-         60mins
-         <i class="fas fa-chart-bar ml-4 mr-1">
-         </i>
-         Avg. Score: 70%
-         <i class="fas fa-calendar-alt ml-4 mr-1">
-         </i>
-         15/11/2024
-        </div>
-       </div>
-      </div>
-      <button class="text-purple-600 font-semibold" onclick="navigateTo('editquiz.html?id=6')">
-       Edit Quiz
-       <i class="fas fa-chevron-right">
-       </i>
-      </button>
-     </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>All Quizzes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="authentication.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+    </script>
+  </head>
+  <body class="bg-purple-100">
+    <div class="w-full bg-white py-4 px-6 flex items-center">
+      <i
+        class="fas fa-arrow-left text-gray-500 cursor-pointer"
+        onclick="navigateTo('/creator-dashboard')"
+      >
+      </i>
+      <a
+        class="ml-2 text-gray-500 cursor-pointer"
+        onclick="navigateTo('/creator-dashboard')"
+      >
+        Back
+      </a>
     </div>
-   </div>
-  </div>
- </body>
+    <div class="max-w-4xl mx-auto p-4">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">All Quizzes</h1>
+        <button
+          class="bg-purple-600 text-white px-4 py-2 rounded-lg"
+          onclick="navigateTo('/create-quiz')"
+        >
+          <i class="fas fa-plus mr-2"> </i>
+          Create New Quiz
+        </button>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Recent Quizzes</h2>
+        <div class="space-y-4">
+          <!-- Quiz Item -->
+          <div id="quiz-items"></div>
+          <script>
+            const token = localStorage.getItem("token");
+
+            async function getQuizzes() {
+              try {
+                const res = await fetch(
+                  "https://nextgen-quiz-app.vercel.app/quizzes",
+                  {
+                    method: "GET",
+                    headers: { Authorization: `Bearer ${token}` },
+                  }
+                );
+                const data = await res.json();
+                const quizzes = data.data;
+
+                const quizItems = document.getElementById("quiz-items");
+                console.log(quizzes);
+                quizzes.forEach((quiz) => {
+                  const quizItem = document.createElement("div");
+                  quizItem.classList.add(
+                    "bg-white",
+                    "p-4",
+                    "rounded-lg",
+                    "shadow",
+                    "flex",
+                    "justify-between",
+                    "items-center"
+                  );
+                  const image = document.createElement("img");
+                  image.src =
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                  image.classList.add("w-10", "h-10", "rounded-full", "mr-4");
+                  const details = document.createElement("div");
+                  const title = document.createElement("h3");
+                  title.classList.add("text-gray-800", "font-semibold");
+                  title.textContent = quiz.title;
+                  const stats = document.createElement("div");
+                  stats.classList.add(
+                    "flex",
+                    "items-center",
+                    "text-gray-500",
+                    "text-sm"
+                  );
+                  const participants = document.createElement("i");
+                  participants.classList.add("fas", "fa-users", "mr-1");
+                  const participantsText = document.createElement("span");
+                  participantsText.textContent = `${
+                    quiz.participants || 0
+                  } participants`;
+                  const clock = document.createElement("i");
+                  clock.classList.add("fas", "fa-clock", "ml-4", "mr-1");
+                  const time = document.createElement("span");
+                  time.textContent = `${quiz.settings.time_limit}mins`;
+                  const score = document.createElement("i");
+                  score.classList.add("fas", "fa-chart-bar", "ml-4", "mr-1");
+                  const scoreText = document.createElement("span");
+                  scoreText.textContent = `Avg. Score: ${quiz.score || 0}%`;
+                  const calendar = document.createElement("i");
+                  calendar.classList.add(
+                    "fas",
+                    "fa-calendar-alt",
+                    "ml-4",
+                    "mr-1"
+                  );
+                  const date = document.createElement("span");
+                  date.textContent = quiz.date;
+                  stats.appendChild(participants);
+                  stats.appendChild(participantsText);
+                  stats.appendChild(clock);
+                  stats.appendChild(time);
+                  stats.appendChild(score);
+                  stats.appendChild(scoreText);
+                  stats.appendChild(calendar);
+                  stats.appendChild(date);
+                  details.appendChild(title);
+                  details.appendChild(stats);
+                  const editButton = document.createElement("button");
+                  editButton.classList.add("text-purple-600", "font-semibold");
+                  editButton.textContent = "Edit Quiz";
+                  editButton.onclick = () =>
+                    navigateTo(`/edit-quiz?quizId=${quiz._id}`);
+                  const editIcon = document.createElement("i");
+                  editIcon.classList.add("fas", "fa-chevron-right", "ml-2");
+                  editButton.appendChild(editIcon);
+                  quizItem.appendChild(image);
+                  quizItem.appendChild(details);
+                  quizItem.appendChild(editButton);
+                  quizItems.appendChild(quizItem);
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            }
+
+            getQuizzes();
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
