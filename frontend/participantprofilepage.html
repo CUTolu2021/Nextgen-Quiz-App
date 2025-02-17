@@ -218,10 +218,7 @@
     }
 
     function goBack() {
-        const currentPage = document.querySelector('.page:not(.hidden)');
-        if (currentPage.id !== 'dashboard') {
-            showPage('dashboard');
-        }
+        window.location.href = "/participant-dashboard";
     }
 
     function logOut() {

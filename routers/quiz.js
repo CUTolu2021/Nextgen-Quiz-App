@@ -18,8 +18,8 @@ const upload = multer({ storage: storage });
 
 router.post('/',restrictTo('Creator'),createQuiz);
 router.delete('/:quizId',restrictTo('Creator'),deleteQuizById);
-router.post('/add-questions',restrictTo('Creator'),addQuestions);
 router.post('/:quizId/add-questions',restrictTo('Creator'),addQuestionsByID);
+router.put('/:quizId', restrictTo('Creator'),updateQuiz)
 
 router.get('/', getQuizzes)
 //router.get('/', getQuizzesByUserId)
