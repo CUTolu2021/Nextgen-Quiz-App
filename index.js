@@ -143,6 +143,14 @@ app.get("/upload-quiz", (req, res) => {
     res.sendFile(__dirname + '/frontend/uploadcsvfile.html');
 })
 
+app.get("/quiz-leaderboard", (req, res) => {
+    res.sendFile(__dirname + '/frontend/quizleaderboard.html');
+})
+
+app.get("/quizleaderboard", (req, res) => {
+    res.sendFile(__dirname + '/frontend/quizleaderboard1.html');
+})
+
 
 
 app.use("/auth", authRouter);

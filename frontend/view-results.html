@@ -116,9 +116,9 @@
                 const leaderboardData = await response.json();
                 const userRank = leaderboardData.findIndex(leaderboardEntry => leaderboardEntry.userId === userId) + 1; // assuming the response contains an array of objects with a 'userId' field for each user
                 if (userRank <= 10) {
-                    window.location.href = 'quizleaderboard.html';
+                    window.location.href = '/quiz-leaderboard';
                 } else {
-                    window.location.href = 'quizleaderboard1.html';
+                    window.location.href = '/quizleaderboard';
                 }
             } else {
                 console.error("Failed to fetch leaderboard data");

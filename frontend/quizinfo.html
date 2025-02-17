@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Info Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="authentication.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="bg-purple-100 flex items-center justify-center min-h-screen">
@@ -34,4 +35,42 @@
         </form>
     </div>
 </body>
+<script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.replace("/signin");
+    }
+
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const quizTitle = document.getElementById("quiz-title").value;
+        const quizTime = document.getElementById("quiz-time").value;
+        const quizDescription = document.getElementById("quiz-description").value;
+        const response = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                title: quizTitle,
+                time: quizTime,
+                description: quizDescription,
+            }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            alert("Error uploading quiz!");
+        } else {
+            if (data.quiz._id) {
+                alert("Quiz created successfully!");
+                window.location.replace("/upload-quiz?quizId=" + data.quiz._id);
+            } else {
+                alert("Error creating quiz!");
+            }
+        }
+    });
+</script>
+
 </html>

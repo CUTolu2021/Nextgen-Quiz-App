@@ -84,6 +84,10 @@ const updateLeaderboard = async (userId, quizId, score) => {
         // Recalculate rankings for this specific quiz
         const leaderboardEntries = await QuizLeaderboard.find({ quizId }).sort({ score: -1, createdAt: 1 });
 
+        // Reset the ranks for this quiz
+        await QuizLeaderboard.updateMany({ quizId }, { $set: { rank: 0 } });
+
+        // Assign new ranks based on the sorted scores
         for (let i = 0; i < leaderboardEntries.length; i++) {
             leaderboardEntries[i].rank = i + 1;
             await leaderboardEntries[i].save();
@@ -106,7 +110,7 @@ const getQuizAttemptByUserId = async (req, res) => {
 
 const getLeaderboard = async (req, res) => {
     try {
-        const attempts = await Leaderboard.find();
+        const attempts = await QuizAttempt.find();
         console.log(attempts);
         const leaderboardEntries = {};
         attempts.forEach(attempt => {

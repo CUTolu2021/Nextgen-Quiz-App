@@ -164,12 +164,8 @@
     </style>
 </head>
 <body>
-    <script>
-        const role = localStorage.getItem("role");
-        const backLink = role === "Creator" ? "/creator-dashboard" : "/participant-dashboard";
-    </script>
     <div class="header">
-        <a href="<%= backLink %>"><i class="fas fa-arrow-left"></i> Settings</a>
+        <i class="fas fa-arrow-left" style="margin-right: 30px" onclick="dashboard()"></i> Settings
     </div>
 
     <div class="container">
@@ -247,4 +243,22 @@
         </div>
     </div>
 </body>
+
+<script>
+    function logOut() {
+        localStorage.clear();
+        alert("You have been logged out.");
+        window.location.href = "/signin";
+    }
+
+    function dashboard() {
+        const role = localStorage.getItem("role");
+        if (role !== "Creator") {
+            window.href.location = "/participant-dashboard";
+        }
+        else{
+            window.href.location = "/creator-dashboard";
+        }
+    }
+</script>
 </html>

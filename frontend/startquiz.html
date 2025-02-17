@@ -252,7 +252,7 @@ if(!quizId) {
     token = localStorage.getItem("token");
     localStorage.setItem("quizId", quizId);
     
-    let correct = 0;
+    let correctNum = 0;
     const startBtn = document.getElementById("start-btn");
     const questionContainer = document.getElementById("question-container");
     const quizContainer = document.querySelector(".quiz-container");
@@ -420,7 +420,7 @@ if(!quizId) {
     
         if (selected === correct) {
             score++;
-            correct++;
+            correctNum++;
         }
     }
     
@@ -435,7 +435,6 @@ if(!quizId) {
             return;
         }
         timeUsed = timerDisplay.innerText;
-        console.log(timeLeft);
         let minutes = Math.floor(timeLeft / 60);
         let seconds = timeLeft % 60;
 
@@ -459,7 +458,7 @@ if(!quizId) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ score, correct, wrong: questions.length - correct, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
+                body: JSON.stringify({ score, correct: correctNum, wrong: questions.length - correctNum, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
             });
         } catch (err) {
             console.error("Error ending quiz:", err);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quizzy</title>
-    <script src="authentication.js"></script>
+    <script type="text/javascript" src="authentication.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -164,7 +164,7 @@
         document.querySelectorAll("[data-quiz-id]").forEach(button => {
             button.addEventListener("click", function () {
                 const quizId = this.dataset.quizId;
-                window.location.href = `/start-quiz?quizId=${quizId}`;
+                window.location.href = `/startquiz?quizId=${quizId}`;
             });
         });
     }
