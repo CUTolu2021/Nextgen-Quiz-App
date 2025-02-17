@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-        origin: ["https://nextgen-quiz-app.vercel.app", "http://127.0.0.1:5500"],
+        origin: ["https://nextgen-quiz-app.vercel.app", "http://localhost:8000"],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }));
@@ -140,7 +140,7 @@ app.get("/quiz-info", (req, res) => {
 })
 
 app.get("/all-quizzes", (req, res) => {
-    res.sendFile(__dirname + '/frontend/allquizzes.html');
+    res.sendFile(__dirname + '/frontend/recentquizzes.html');
 })
 
 app.get("/upload-quiz", (req, res) => {
