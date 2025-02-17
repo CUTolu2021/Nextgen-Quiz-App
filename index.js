@@ -46,6 +46,10 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + '/frontend/signin.html');
 });
 
+app.get("/authentication.js", (req, res) => {
+    res.sendFile(__dirname + '/frontend/authentication.js');
+})
+
 app.get("/signin", (req, res) => {
     res.sendFile(__dirname + '/frontend/signin.html');
 });

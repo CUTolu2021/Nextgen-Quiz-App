@@ -446,11 +446,6 @@
             body: JSON.stringify(quizData),
           });
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message);
-          }
-
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
           console.log("Quiz created with ID:", quizId);
@@ -474,11 +469,6 @@
             body: JSON.stringify(quizData),
           });
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message);
-          }
-
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
           console.log("Quiz created with ID:", quizId);
@@ -494,6 +484,7 @@
           console.error(
             "Quiz ID is missing. Make sure the quiz is created first."
           );
+          alert("Quiz ID is missing. Make sure the quiz is created first.");
           return;
         }
 
