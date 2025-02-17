@@ -24,7 +24,7 @@
                 <label for="quiz-time" class="block text-gray-700 font-semibold mb-2">Quiz Time</label>
                 <div class="flex items-center">
                     <i class="fas fa-hourglass-half text-gray-400 mr-2"></i>
-                    <input type="text" id="quiz-time" placeholder="Enter quiz time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    <input type="number" id="quiz-time" placeholder="Enter quiz time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
                 </div>
             </div>
             <div class="mb-6">
@@ -55,11 +55,15 @@
             },
             body: JSON.stringify({
                 title: quizTitle,
-                time: quizTime,
                 description: quizDescription,
+                settings:{
+                    time_limit:Number(quizTime),
+                    total_points:0
+                }
             }),
         });
         const data = await response.json();
+        console.log(data);
     
             if (data.quiz._id) {
                 alert("Quiz created successfully!");
