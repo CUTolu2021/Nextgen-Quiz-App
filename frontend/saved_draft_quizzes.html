@@ -1,0 +1,90 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Saved Drafts
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+     const quizzes = [
+       {
+         title: 'Physics Concepts Quiz',
+         date: '10/02/2025',
+         questions: 10,
+         icon: 'https://storage.googleapis.com/a1aa/image/RGmlrmCZodG0-pOJltddiDSSKxPe2qd3OEo1NoGr8-8.jpg'
+       },
+       {
+         title: 'Music Quiz',
+         date: '09/02/2025',
+         questions: 10,
+         icon: 'https://storage.googleapis.com/a1aa/image/xQYWKFMdDWAZeUAXSw53RQt7nEdC8GA4e827nFLCoAE.jpg'
+       }
+     ];
+
+     const container = document.getElementById('quizzes-container');
+
+     if (quizzes.length === 0) {
+       container.innerHTML = `
+         <div class="text-center text-gray-500">
+           <p>No draft quizzes available.</p>
+           <p>Saving a draft, allows you to keep the quizzes you are not ready to publish yet.</p>
+         </div>
+       `;
+     } else {
+       quizzes.forEach(quiz => {
+         const quizElement = document.createElement('div');
+         quizElement.className = 'bg-white p-4 rounded shadow flex justify-between items-center';
+         quizElement.innerHTML = `
+           <div class="flex items-center">
+             <div>
+               <h2 class="font-semibold flex items-center">
+                 <img alt="Icon representing ${quiz.title}" class="w-6 h-6 rounded-full mr-2 p-[3px]" height="24" src="${quiz.icon}" width="24"/>
+                 ${quiz.title}
+               </h2>
+               <div class="text-gray-500 flex items-center" style="font-size: 10px;">
+                 <i class="fas fa-calendar-alt mr-2"></i>
+                 ${quiz.date}
+                 <span class="mx-2">•</span>
+                 ${quiz.questions} Questions
+               </div>
+             </div>
+           </div>
+           <div class="flex items-center space-x-4">
+             <button class="text-purple-600">Edit Quiz</button>
+             <button class="text-red-500"><i class="fas fa-trash-alt"></i></button>
+           </div>
+         `;
+         container.appendChild(quizElement);
+       });
+     }
+   });
+  </script>
+ </head>
+ <body class="bg-purple-100 min-h-screen">
+  <div class="p-4">
+   <button class="text-gray-500 flex items-center">
+    <i class="fas fa-arrow-left mr-2">
+    </i>
+    Back
+   </button>
+  </div>
+  <div class="max-w-4xl mx-auto p-4">
+   <div class="flex justify-between items-center mb-6">
+    <h1 class="text-[20px] font-bold">
+     Saved Drafts
+    </h1>
+    <a href="createquiz.html" class="bg-purple-600 text-white px-4 py-2 rounded flex items-center">
+     <i class="fas fa-plus mr-2">
+     </i>
+     Create New Quiz
+    </a>
+   </div>
+   <div id="quizzes-container" class="space-y-4">
+   </div>
+  </div>
+ </body>
+</html>
