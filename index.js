@@ -119,7 +119,7 @@ app.get("/create-quiz", (req, res) => {
     res.sendFile(__dirname + '/frontend/createquiz.html');
 })
 
-app.get("/saved-drafts", (req, res) => {
+app.get("/quiz-drafted", (req, res) => {
     res.sendFile(__dirname + '/frontend/savedraft.html');
 })
 

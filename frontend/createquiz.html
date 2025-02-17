@@ -471,6 +471,7 @@
 
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
+          localStorage.setItem("quizId", quizId);
           console.log("Quiz created with ID:", quizId);
           return quizId;
         } catch (error) {
@@ -531,7 +532,7 @@
             localStorage.removeItem("quizDescription");
             localStorage.removeItem("quizTime");
             localStorage.removeItem("questions");
-            window.location.href = "/creator-dashboard";
+            window.location.href = "/quiz-published";
           }
         });
 

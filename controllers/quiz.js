@@ -2,6 +2,7 @@ const {Quiz,QuizAttempt,QuizResponse} = require('../models/quiz');
 const Question = require('../models/question');
 const fs = require('fs');
 const csv = require('csv-parser');
+const stream = require('stream')
 
 
 // Create a new quiz
@@ -62,42 +63,6 @@ const addQuestions = async (req, res) => {
 };
 
 // Add new questions by quizid
-const addQuestionsByIDTest = async (req, res) => {
-    const { question, option1, option2, option3, option4, correctAnswer, point } = req.body;
-    const {quizId} = req.params
-
-    // Validation
-    if (!question || !option1 || !option2 || !option3 || !option4 || !correctAnswer) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    try {
-        const questionData = await Question.create({
-            question,
-            options: [option1, option2, option3, option4],
-            correctAnswers: correctAnswer,
-            quizId,
-            point
-        });
-        console.log(questionData)
-
-        // Add the question to the quiz
-        const quiz = await Quiz.findById(quizId);
-        quiz.questions.push(questionData._id);
-
-        // Get points for each question add them all together to get the total
-        const totalPoints = question.point;
-
-        // Update the points for the quiz
-        quiz.total_points = totalPoints;
-        await quiz.save();
-        res.status(201).json({ message: 'Question added successfully', questionData });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to add question', error: error.message });
-    }
-};
-
 const addQuestionsByID = async (req, res) => {
     const { quizId } = req.params;
     const questions = req.body.questions; // Expecting an array of questions
@@ -143,64 +108,6 @@ const addQuestionsByID = async (req, res) => {
     }
 };
 
-
-// Upload CSV and create questions
-const uploadCSV = async (req, res) => {
-    const quizId = req.session.quizId;
-
-    // Check if the quiz exists and the user is authorized
-    const quiz = await Quiz.findById(quizId, 'creatorId questions');
-    if (!quiz) {
-        return res.status(404).json({ message: 'Quiz not found' });
-    }
-    if (quiz.creatorId.toString() !== req.user.userId) {
-        return res.status(403).json({ message: 'Unauthorized to update this quiz' });
-    }
-
-    // Check if a file was uploaded
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const results = [];
-    fs.createReadStream(req.file.path)
-        .pipe(csv())
-        .on('data', (data) => results.push(data))
-        .on('end', async () => {
-            try {
-                const questions = results.map(item => ({
-                    question: item.question,
-                    options: [item.option1, item.option2, item.option3, item.option4],
-                    correctAnswers: item.correctAnswers, // Assuming correctAnswers is a comma-separated string
-                    isMultipleChoice: item.isMultipleChoice === 'true',
-                    imageUrl: item.imageUrl || null,
-                    videoUrl: item.videoUrl || null,
-                    quizId,
-                    point: item.point || 1      
-                }));
-
-                const createdQuestions = await Question.insertMany(questions);
-                quiz.questions.push(...createdQuestions.map(q => q._id));
-                await quiz.save();
-
-                // Get points for each question add them all together to get the total
-                const totalPoints = createdQuestions.reduce((total, question) => total + question.point, 0);
-
-                // Update the points for the quiz
-                quiz.total_points = totalPoints;
-                await quiz.save();
-
-                // Clean up the uploaded file
-                fs.unlinkSync(req.file.path);
-
-                res.status(200).json({ message: 'Questions added successfully', quiz });
-            } catch (error) {
-                console.error(error);
-                res.status(500).json({ message: 'Failed to process CSV', error: error.message });
-            }
-        });
-};
-
 // Upload questions using a patch request to update questions
 const uploadQuestions = async (req, res) => {
     const quizId = req.params.quizId;
@@ -219,8 +126,12 @@ const uploadQuestions = async (req, res) => {
         return res.status(400).json({ message: 'No file uploaded' });
     }
 
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(req.file.buffer);
+
     const results = [];
-    fs.createReadStream(req.file.path)
+    
+    bufferStream
         .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', async () => {
@@ -233,22 +144,16 @@ const uploadQuestions = async (req, res) => {
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
                     quizId,
-                    point: item.point
+                    point: parseInt(item.point, 10) || 0, // Ensure point is a number
                 }));
 
                 const createdQuestions = await Question.insertMany(questions);
                 quiz.questions.push(...createdQuestions.map(q => q._id));
-                await quiz.save();
 
-                // Get points for each question add them all together to get the total
+                // Get total points and update the quiz
                 const totalPoints = createdQuestions.reduce((total, question) => total + question.point, 0);
-
-                // Update the points for the quiz
-                quiz.total_points = totalPoints;
+                quiz.total_points = (quiz.total_points || 0) + totalPoints;
                 await quiz.save();
-
-                // Clean up the uploaded file
-                fs.unlinkSync(req.file.path);
 
                 res.status(200).json({ message: 'Questions added successfully', quiz });
             } catch (error) {
@@ -484,7 +389,6 @@ const deleteQuizById = async (req, res) => {
 
 module.exports = {
     createQuiz,
-    uploadCSV,
     updateQuestionImage,
     uploadQuestions,
     getQuizzes,

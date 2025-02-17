@@ -5,7 +5,7 @@ const { restrictTo } = require('../middleware/auth');
 const { startQuiz, endQuiz, submitAnswer, getQuizResults } = require('../controllers/quizAttempts');
 
 // Multer setup
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
     destination: (req, file, cb) => {
       cb(null, 'uploads/'); // Specify the upload directory
     },
@@ -23,7 +23,6 @@ router.put('/:quizId', restrictTo('Creator'),updateQuiz)
 
 router.get('/', getQuizzes)
 //router.get('/', getQuizzesByUserId)
-router.post('/upload-csv',restrictTo('Creator'), upload.single('file'), uploadCSV);
 router.put('/:quizId/image/:questionId',restrictTo('Creator'),upload.single('image'), updateQuestionImage);
 router.patch('/:quizId/upload-questions',restrictTo('Creator'), upload.single('file'), uploadQuestions);
 router.get('/:quizId', getQuizById);
