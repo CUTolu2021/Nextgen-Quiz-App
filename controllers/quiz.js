@@ -261,6 +261,51 @@ const getQuestionByQuizId = async (req, res) => {
     }
 };
 
+const getQuizStats = async (req, res) => {
+    const { quizId } = req.params;
+    let result = {
+        totalAttempts: 0,
+        totalCompleted: 0,
+        averageScore: 0,
+        averageTimeTaken: 0,
+        completionRate: 0
+    };
+
+    try {
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+
+        const attempts = await QuizAttempt.find({ quizId });
+        if (!attempts.length) {
+            return res.status(404).json({ message: 'No attempts found for this quiz' });
+        }
+
+        result.totalAttempts = attempts.length;
+        const completed = attempts.filter(attempt => attempt.isCompleted);
+        result.totalCompleted = completed.length;
+
+        const scores = completed.map(attempt => attempt.score);
+        const totalScore = scores.reduce((a, b) => a + b, 0);
+        result.averageScore = totalScore / completed.length;
+
+        const times = completed.map(attempt => attempt.timeUsed);
+        const totalTime = times.reduce((a, b) => a + b, 0);
+        result.averageTimeTaken = totalTime / completed.length;
+
+        result.completionRate = (completed.length / attempts.length) * 100;
+
+        res.json({
+            message: 'Quiz stats fetched successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching quiz stats', error: error.message });
+    }
+};
+
 //Get Quiz by ID (GET /quizzes/:id)
 const getQuizById = async (req, res) => {
     //Controller function to fetch a quiz by its ID
@@ -404,6 +449,7 @@ const deleteQuizById = async (req, res) => {
 
 module.exports = {
     createQuiz,
+    getQuizStats,
     updateQuestionImage,
     uploadQuestions,
     getQuizzes,

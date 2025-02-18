@@ -465,9 +465,7 @@ document.addEventListener("visibilitychange", () => {
     async function finishQuiz(finishedByTime = false) {
         questionContainer.innerHTML = "";
         questionContainer.style.display = "none";
-        resultDisplay.style.display = "block";
-        resultDisplay.innerHTML = `<h2>Quiz Finished!</h2><p>Your Score: ${score} / ${questions.length}</p>`;
-
+        resultDisplay.style.display = "none";
     
         try {
             await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/end_quiz`, {
