@@ -264,6 +264,7 @@ if(!quizId) {
     const totalPoints = document.getElementById("total-points");
     
     let questions = [];
+    let totalPointsGained = 0;
     let currentQuestionIndex = 0;
     let score = 0;
     let timeLeft = 0;
@@ -357,7 +358,7 @@ if(!quizId) {
                     <div class="options-container">
                         ${q.options.map(option => `
                             <button class="option-btn ${savedAnswer === option ? 'selected' : ''}"
-                                onclick="selectAnswer('${option}', '${q.correctAnswers}', '${q._id}', '${q.question}')">
+                                onclick="selectAnswer('${option}', '${q.correctAnswers}', '${q._id}', '${q.question}', '${q.point}')">
                                 ${option}
                             </button>
                         `).join('')}
@@ -390,7 +391,7 @@ if(!quizId) {
         }
     }
     
-    async function selectAnswer(selected, correct, questionId, question) {
+    async function selectAnswer(selected, correct, questionId, question, point) {
         userAnswers[questionId] = selected;
     
         document.querySelectorAll(".option-btn").forEach(btn => {
@@ -421,6 +422,7 @@ if(!quizId) {
         if (selected === correct) {
             score++;
             correctNum++;
+            totalPointsGained += q.point;
         }
     }
     
@@ -458,7 +460,7 @@ if(!quizId) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ score, correct: correctNum, wrong: questions.length - correctNum, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
+                body: JSON.stringify({ score, points: totalPointsGained, correct: correctNum, wrong: questions.length - correctNum, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
             });
         } catch (err) {
             console.error("Error ending quiz:", err);

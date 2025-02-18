@@ -62,6 +62,7 @@
         let questionCount = 0;
         let questions = [];
         const token = localStorage.getItem("token");
+        localStorage.setItem("quizId", quizId);
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchQuizData();
@@ -228,6 +229,7 @@ async function saveUpdates() {
         console.error("Error saving updates:", error);
         alert('Failed to save updates. Please try again.');
     }
+    window.location.href = '/quiz-drafted';
 }
 
 async function publishUpdates() {
@@ -291,6 +293,7 @@ async function publishUpdates() {
         console.error("Error saving updates:", error.message);
         alert('Failed to save updates. Please try again.');
     }
+    window.location.href = '/quiz-published';
 }
 
 

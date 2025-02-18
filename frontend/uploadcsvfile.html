@@ -29,6 +29,7 @@
         const quizId = new URLSearchParams(window.location.search).get("quizId");
         const token = localStorage.getItem("token");
         let uploadAbortController;
+        localStorage.setItem("quizId", quizId);
 
         document.getElementById('browseLink').addEventListener('click', function(event) {
             event.preventDefault();
@@ -210,8 +211,8 @@
                 <button class="bg-purple-500 text-white py-2 px-4 rounded-lg w-full">Uploading...</button>
             `;
             setTimeout(() => {
-                alert("Quiz uploaded successfully!, Redirecting to dashboard...");
-                window.location.replace(`/creator-dashboard`);
+                alert("Quiz uploaded successfully!, Redirecting...");
+                window.location.replace(`/quiz-published`);
             }, 3000);
         }
     </script>

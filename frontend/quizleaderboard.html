@@ -166,7 +166,7 @@
 <body>
     <div class="leaderboard-container">
         <div class="header">
-            <a href="/view-results" class="back-button">&leftarrow; Back</a>
+            <a href="/participant-dashboard" class="back-button">&leftarrow; Back</a>
             <div class="congrats">
                 <h2>Congratulations on Your Perfect Score</h2>
                 <p>You ranked <span id="user-rank"></span> in this quiz! Share your achievements with friends</p>
@@ -215,24 +215,35 @@
                         document.getElementById('user-rank').innerHTML = 'Not Found';
                     }
 
-                    const tbody = document.getElementById('leaderboard-tbody');
-                    data.forEach((item, index) => {
-                        const tr = document.createElement('tr');
-                        const rankTd = document.createElement('td');
-                        const nameTd = document.createElement('td');
-                        const scoreTd = document.createElement('td');
-                        const timeTd = document.createElement('td');
+                    fetch('https://nextgen-quiz-app.vercel.app/user', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(users => {
+                            console.log('Users data:', users);
+                            const usersById = users.reduce((acc, user) => ({ ...acc, [user._id]: user }), {});
 
-                        rankTd.innerHTML = index < 3 ? 
-                            `<img src="${item.medalIcon}" alt="${item.rank} Medal" class="medal-icon">` : 
-                            `#${index + 1}`;
-                        nameTd.textContent = item.name;
-                        scoreTd.textContent = item.score;
-                        scoreTd.classList.add('score');
-                        timeTd.textContent = item.time;
-                        timeTd.classList.add('time');
+                            const tbody = document.getElementById('leaderboard-tbody');
+                            data.forEach((item, index) => {
+                                const tr = document.createElement('tr');
+                                const rankTd = document.createElement('td');
+                                const nameTd = document.createElement('td');
+                                const scoreTd = document.createElement('td');
+                                const timeTd = document.createElement('td');
 
-                        tr.appendChild(rankTd);
+                                rankTd.innerHTML = index < 3 ? 
+                                    `<img src="https://cdn-icons-png.flaticon.com/512/843/843285.png" alt="${item.rank} Medal" class="medal-icon">` : 
+                                    `#${index + 1}`;
+                                nameTd.textContent = usersById[item.userId].username;
+                                scoreTd.textContent = item.score;
+                                scoreTd.classList.add('score');
+                                timeTd.textContent = item.time;
+                                timeTd.classList.add('time');
+
+                                tr.appendChild(rankTd);
                         tr.appendChild(nameTd);
                         tr.appendChild(scoreTd);
                         tr.appendChild(timeTd);
@@ -241,6 +252,7 @@
                 })
                 .catch(error => console.error('Error fetching leaderboard data:', error));
             
+            });
         </script>
     </div>
 </body>

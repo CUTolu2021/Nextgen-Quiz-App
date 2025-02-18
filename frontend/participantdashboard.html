@@ -137,7 +137,7 @@
                 return quiz ? { ...quiz, score: attempt.score, timeTaken: attempt.timeTaken } : null;
             }).filter(Boolean);
 
-            unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id));
+            unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id) && quiz.status === "Published");
         } catch (err) {
             console.error("Error fetching quizzes:", err);
         }
@@ -178,7 +178,7 @@
                 <div class="bg-white p-4 rounded-lg shadow-md mb-4">
                     <h3 class="text-lg font-bold mb-2">${quiz.title}</h3>
                     <p class="text-gray-600">Time Taken: ${quiz.settings.time_limit} mins</p>
-                    <p class="text-gray-600">Score: ${quiz.score} / 100</p>
+                    <p class="text-gray-600">Score: ${quiz.score} / ${quiz.settings.total_points}</p>
                 </div>
               `).join("")
             : `<p class="text-gray-600 text-center">You haven't attempted any quizzes yet.</p>`;

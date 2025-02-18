@@ -27,7 +27,7 @@ const startQuiz = async (req, res) => {
 };
 const endQuiz = async (req, res) => {
     const { quizId } = req.params;
-    const { score,correct,wrong,timeUsed } = req.body;
+    const { score,points,correct,wrong,timeUsed } = req.body;
     const userId = req.user.userId; // Assuming user ID is available in req.user
 
     try {
@@ -51,9 +51,10 @@ const endQuiz = async (req, res) => {
         attempt.score = score;
         attempt.correct = correct;
         attempt.wrong = wrong;
+        attempt.points = points;
         await attempt.save();
         if(userId !== null){
-            await updateLeaderboard(userId, quizId, score);
+            await updateLeaderboard(userId, quizId, points,timeUsed);
         }
 
         res.status(200).json({ message: 'Quiz ended', score: attempt.score });
@@ -62,20 +63,21 @@ const endQuiz = async (req, res) => {
     }
 };
 
-const updateLeaderboard = async (userId, quizId, score) => {
+const updateLeaderboard = async (userId, quizId, points,timeUsed) => {
     try {
         const existingEntry = await QuizLeaderboard.findOne({ userId, quizId });
 
         if (existingEntry) {
             // Update the existing entry with the new score
-            existingEntry.score = score;
+            existingEntry.score = points;
             await existingEntry.save();
         } else {
             // Create a new entry if it doesn't exist
             const newEntry = new QuizLeaderboard({
                 userId,
                 quizId,
-                score,
+                score: points,
+                timeUsed,
                 createdAt: new Date()
             });
             await newEntry.save();
@@ -121,7 +123,7 @@ const getLeaderboard = async (req, res) => {
                     score: 0,
                 };
             }
-            leaderboardEntries[userId].score += attempt.score;
+            leaderboardEntries[userId].score += attempt.points;
         });
 
         const sortedLeaderboard = Object.values(leaderboardEntries).sort((a, b) => b.score - a.score);
@@ -203,7 +205,7 @@ const submitAnswer = async (req, res) => {
             attempt.isCompleted = true; 
             attempt.endTime = currentTime; // Set end time
             await attempt.save();
-            return res.status(200).json({ message: 'Quiz ended due to time limit', score: attempt.score });
+            return res.status(200).json({ message: 'Quiz ended due to time limit', score: attempt.score, points: attempt.points });
         }
 
         // Find existing response to update

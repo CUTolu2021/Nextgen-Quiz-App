@@ -10,6 +10,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
 const cors = require('cors');
+const { getLeaderboard } = require("./controllers/quizAttempts");
 
 dotenv.config();
 
@@ -167,12 +168,20 @@ app.get("/edit-quiz", (req, res) => {
     res.sendFile(__dirname + '/frontend/editquiz.html');
 })
 
+app.get("/saved-drafts", (req, res) => {
+    res.sendFile(__dirname + '/frontend/saveddrafts.html');
+})
+
+
+
 
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/quizzes", verifyJWTAuthToken, quizRouter);
 app.use("/info", verifyJWTAuthToken, infoRouter);
+
+app.get("/leaderboard", verifyJWTAuthToken, getLeaderboard);
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {

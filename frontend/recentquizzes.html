@@ -58,7 +58,7 @@
                   }
                 );
                 const data = await res.json();
-                const quizzes = data.data;
+                const quizzes = data.data.filter((quiz) => quiz.status === "Published");
 
                 const quizItems = document.getElementById("quiz-items");
                 console.log(quizzes);
@@ -75,8 +75,8 @@
                   );
                   const image = document.createElement("img");
                   image.src =
-                    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-                  image.classList.add("w-10", "h-10", "rounded-full", "mr-4");
+                    "https://cdn-icons-png.flaticon.com/512/825/825731.png";
+                  image.classList.add("w-10", "h-10", "mr-4");
                   const details = document.createElement("div");
                   const title = document.createElement("h3");
                   title.classList.add("text-gray-800", "font-semibold");
@@ -110,7 +110,7 @@
                     "mr-1"
                   );
                   const date = document.createElement("span");
-                  date.textContent = quiz.date;
+                  date.textContent = new Date(quiz.updatedAt).toLocaleString()
                   stats.appendChild(participants);
                   stats.appendChild(participantsText);
                   stats.appendChild(clock);

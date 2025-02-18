@@ -12,6 +12,7 @@ const quizLeaderboardSchema = new Schema({
     score: {type: Number, required: true},
     quizId:{type: Schema.Types.ObjectId, ref: 'Quiz', required: true},
     rank: {type: Number, default:0, },
+    timeUsed: {type:Number, default:0,},
     createdAt: {type: Date, default: Date.now},
 });
 
