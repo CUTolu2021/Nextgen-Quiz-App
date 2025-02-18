@@ -27,7 +27,7 @@ const startQuiz = async (req, res) => {
 };
 const endQuiz = async (req, res) => {
     const { quizId } = req.params;
-    const { score,points,correct,wrong,timeUsed } = req.body;
+    const { timeUsed } = req.body;
     const userId = req.user.userId; // Assuming user ID is available in req.user
 
     try {
@@ -40,21 +40,32 @@ const endQuiz = async (req, res) => {
         if (!attempt) {
             return res.status(404).json({ message: 'Attempt not found' });
         }
-        if(attempt.score !== 0){
-            return res.status(200).json({ message: `Quiz already attempted, you scored ${score} in this quiz compared to your previous score ${attempt.score} <br> You used ${timeUsed} min compared to your previous ${attempt.timeUsed} min`});
-        }
-
+        
         // Update the end time and status
         attempt.isCompleted = true; 
         attempt.endTime = new Date(); // Set end time
         attempt.timeUsed = timeUsed;
-        attempt.score = score;
+
+        // Calculate score and points
+        const responses = await QuizResponse.find({ userId, quizId });
+        responses.forEach(response => {
+            attempt.points += response.point;
+            attempt.score += response.selectedAnswer === response.correctAnswer ? 1 : 0;
+        });
+        let correct = 0;
+        let wrong = 0;
+        responses.forEach(response => {
+            if (response.selectedAnswer === response.correctAnswer) {
+                correct++;
+            } else {
+                wrong++;
+            }
+        })
         attempt.correct = correct;
         attempt.wrong = wrong;
-        attempt.points = points;
         await attempt.save();
         if(userId !== null){
-            await updateLeaderboard(userId, quizId, points,timeUsed);
+            await updateLeaderboard(userId, quizId, attempt.points,timeUsed);
         }
 
         res.status(200).json({ message: 'Quiz ended', score: attempt.score });
@@ -212,7 +223,7 @@ const getQuizResults = async (req, res) => {
 
 const submitAnswer = async (req, res) => {
     const { quizId } = req.params;
-    const { questionId, question,selectedAnswer, correctAnswer } = req.body;
+    const { questionId, question,selectedAnswer, correctAnswer, point } = req.body;
     const userId = req.user.userId; // Assuming user ID is available in req.user
 
     try {
@@ -244,6 +255,8 @@ const submitAnswer = async (req, res) => {
             response.selectedAnswer = selectedAnswer;
             response.correctAnswer = correctAnswer;
             response.question = question;
+            response.point = Number(point); // Add the new point;
+            
 
         } else {
             // If no previous answer exists, create a new one
@@ -253,7 +266,8 @@ const submitAnswer = async (req, res) => {
                 questionId,
                 selectedAnswer,
                 correctAnswer,
-                question
+                question,
+                point: Number(point)
             });
         }
         if(selectedAnswer === correctAnswer){

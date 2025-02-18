@@ -119,6 +119,10 @@ const quizResponseSchema = new Schema({
         type: String,
         required: true
     },
+    point: {
+        type: Number,
+        default: 0
+    },
     isCorrect: {
         type: Boolean,
         required: true

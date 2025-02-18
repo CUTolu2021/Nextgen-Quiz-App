@@ -172,6 +172,9 @@ app.get("/saved-drafts", (req, res) => {
     res.sendFile(__dirname + '/frontend/saveddrafts.html');
 })
 
+app.get("/recommended-quizzes", (req, res) => {
+    res.sendFile(__dirname + '/frontend/recommendedquizzes.html');
+})
 
 
 

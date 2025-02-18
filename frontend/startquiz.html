@@ -412,18 +412,14 @@ if(!quizId) {
                     questionId,
                     selectedAnswer: selected,
                     correctAnswer: correct,
-                    question
+                    question,
+                    point
                 }),
             });
         } catch (err) {
             console.error("Error submitting answer:", err);
         }
     
-        if (selected === correct) {
-            score++;
-            correctNum++;
-            totalPointsGained += Number(point);
-        }
     }
     
     let timeUsed = null;
@@ -474,7 +470,7 @@ document.addEventListener("visibilitychange", () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ score, points: totalPointsGained, correct: correctNum, wrong: questions.length - correctNum, timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
+                body: JSON.stringify({  timeUsed: (((Number(timeLimit.innerText)*60) - timeLeft)/60).toFixed(2) }),
             });
         } catch (err) {
             console.error("Error ending quiz:", err);

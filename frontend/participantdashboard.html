@@ -62,6 +62,7 @@
         <button
           id="start-quiz-button"
           class="bg-white text-purple-600 font-bold py-2 px-4 rounded-full flex items-center"
+          onclick="window.location.href='/recommended-quizzes'"
         >
           <i class="fas fa-book-open mr-2"></i> Start New Quiz
         </button>
@@ -134,7 +135,7 @@
             const attemptedQuizIds = new Set(attemptsData.map(attempt => attempt.quizId));
             attemptedQuizzes = attemptsData.map(attempt => {
                 const quiz = quizzesData.data.find(q => q._id === attempt.quizId);
-                return quiz ? { ...quiz, score: attempt.score, timeTaken: attempt.timeTaken } : null;
+                return quiz ? { ...quiz, score: attempt.score, timeTaken: attempt.timeTaken, points: attempt.points } : null;
             }).filter(Boolean);
 
             unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id) && quiz.status === "Published");
@@ -178,10 +179,10 @@
                 <div class="bg-white p-4 rounded-lg shadow-md mb-4">
                     <h3 class="text-lg font-bold mb-2">${quiz.title}</h3>
                     <p class="text-gray-600">Time Taken: ${quiz.settings.time_limit} mins</p>
-                    <p class="text-gray-600">Score: ${quiz.score} / ${quiz.settings.total_points}</p>
+                    <p class="text-gray-600">Score: ${quiz.points} / ${quiz.settings.total_points}</p>
                 </div>
               `).join("")
-            : `<p class="text-gray-600 text-center">You haven't attempted any quizzes yet.</p>`;
+            : `<p class="text-gray-600 text-center">No quizzes taken yet! <a href = "/recommended-quizzes" class="text-purple-600 font-bold">Get started</a> and take your first quiz</p>`;
 
         quizzesList.innerHTML = quizzesHTML; // Update content without removing tabs
     }
