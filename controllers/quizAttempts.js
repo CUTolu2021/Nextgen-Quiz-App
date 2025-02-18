@@ -131,7 +131,22 @@ const getLeaderboard = async (req, res) => {
             entry.rank = index + 1;
         });
 
-        res.status(200).json(sortedLeaderboard);
+        const leaderboardPromises = sortedLeaderboard.map(async (entry, index) => {
+            const leaderboardEntry = await Leaderboard.findOneAndUpdate(
+                { userId: entry.userId },
+                {
+                    userId: entry.userId,
+                    score: entry.score,
+                    rank: index + 1,
+                },
+                { upsert: true, new: true }
+            );
+            return leaderboardEntry;
+        });
+
+        const leaderboard = await Promise.all(leaderboardPromises);
+
+        res.status(200).json(leaderboard);
     } catch (error) {
         console.error('Error fetching leaderboard:', error.message);
         res.status(500).json({ message: 'Internal server error' });
@@ -142,7 +157,20 @@ const getLeaderboardByQuizId = async (req, res) => {
     const { quizId } = req.params;
     try {
         const leaderboardEntries = await QuizLeaderboard.find({ quizId }).sort({ score: -1, createdAt: 1 });
+        console.log(leaderboardEntries);
         res.status(200).json(leaderboardEntries);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getLeaderboardByUserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const leaderboard = await Leaderboard.find({ userId });
+        console.log(leaderboard);
+        res.status(200).json(leaderboard);
     } catch (error) {
         console.error('Error fetching leaderboard:', error.message);
         res.status(500).json({ message: 'Internal server error' });
@@ -255,4 +283,4 @@ const allowUnregisteredUsersToTakeQuiz = async (req, res) => {
 }
 
 
-module.exports = { startQuiz,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };
+module.exports = { startQuiz,getLeaderboardByUserId,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };

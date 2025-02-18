@@ -263,7 +263,7 @@
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        quizzes = data.data;
+        quizzes = data.data.filter((quiz) => quiz.creatorId === userId);;
 
         if (data.total > 0) {
           quizNumberElement.innerText = data.total;
