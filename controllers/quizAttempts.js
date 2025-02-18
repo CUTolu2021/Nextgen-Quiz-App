@@ -45,11 +45,15 @@ const endQuiz = async (req, res) => {
         attempt.isCompleted = true; 
         attempt.endTime = new Date(); // Set end time
         attempt.timeUsed = timeUsed;
+        attempt.points = 0;
+        attempt.score = 0;
 
         // Calculate score and points
         const responses = await QuizResponse.find({ userId, quizId });
         responses.forEach(response => {
-            attempt.points += response.point;
+            if(response.selectedAnswer === response.correctAnswer){
+                attempt.points += response.point;
+            }
             attempt.score += response.selectedAnswer === response.correctAnswer ? 1 : 0;
         });
         let correct = 0;
