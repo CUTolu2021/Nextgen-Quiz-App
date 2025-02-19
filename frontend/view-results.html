@@ -108,11 +108,15 @@
         document.addEventListener('DOMContentLoaded', fetchAnswers);
 
 
-        if (status === 'unregistered') {
-            alert('Please register to be able to view the leaderboards.');
+        
+        
+        async function redirectToLeaderboard() {
+            if (status === 'unregistered') {
+            alert('Please register or signin to be able to view the leaderboards.');
             window.location.href = '/signin';
         }
-        async function redirectToLeaderboard() {
+        else {
+
             const response = await fetch(`https://nextgen-quiz-app.vercel.app/info/${quizId}/leaderboard`, 
             {
                 method: "GET",
@@ -133,6 +137,7 @@
                 console.error("Failed to fetch leaderboard data");
             }
         }
+    }
         async function updateAttemptInfo() {
             const response = await fetch(`https://nextgen-quiz-app.vercel.app/info/${quizId}/quizattempts`,
             {

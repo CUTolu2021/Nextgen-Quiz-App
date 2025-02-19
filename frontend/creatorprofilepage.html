@@ -184,7 +184,7 @@
     quizNumberElement.innerText = quizNumber;
     activePlayersElement.innerText = activePlayers;
     completionRateElement.innerText = completionRate + "%";
-    avgScoreElement.innerText = avgScore;
+    avgScoreElement.innerText = parseFloat(avgScore).toFixed(2);
 
 
     function logOut() {
@@ -202,7 +202,7 @@
     }
 
     function inviteUsers() {
-      window.location.href = "/invite-users";
+      alert("Feature coming soon!");
     }
 
     function viewSettings() {

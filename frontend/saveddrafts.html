@@ -66,6 +66,11 @@
             console.log(data);
 
            const quizzes = data.data.filter((quiz) => quiz.status === "Draft");
+           if (quizzes.length === 0) {
+            const noDrafts = document.getElementById('no-drafts');
+            noDrafts.classList.remove('hidden');
+            return;
+           }
           const container = document.getElementById('drafts-container');
           quizzes.forEach(draft => {
             const element = document.createElement('div');
