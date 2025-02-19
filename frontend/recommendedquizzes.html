@@ -6,91 +6,7 @@
   <script src="https://cdn.tailwindcss.com">
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <script>
-   function navigateTo(url) {
-      window.location.href = url;
-    }
 
-    function refreshQuizzes() {
-      const quizzes = [
-        {
-          title: "Math Quiz",
-          icon: "https://placehold.co/24x24",
-          participants: 50,
-          duration: "25mins",
-          difficulty: "Medium",
-          difficultyColor: "bg-orange-200 text-orange-600",
-          link: "#"
-        },
-        {
-          title: "History Quiz",
-          icon: "https://placehold.co/24x24",
-          participants: 90,
-          duration: "40mins",
-          difficulty: "Hard",
-          difficultyColor: "bg-red-200 text-red-600",
-          link: "#"
-        },
-        {
-          title: "Art Quiz",
-          icon: "https://placehold.co/24x24",
-          participants: 60,
-          duration: "20mins",
-          difficulty: "Easy",
-          difficultyColor: "bg-green-200 text-green-600",
-          link: "#"
-        },
-        {
-          title: "Physics Quiz",
-          icon: "https://placehold.co/24x24",
-          participants: 80,
-          duration: "35mins",
-          difficulty: "Medium",
-          difficultyColor: "bg-orange-200 text-orange-600",
-          link: "#"
-        },
-        {
-          title: "Chemistry Quiz",
-          icon: "https://placehold.co/24x24",
-          participants: 70,
-          duration: "30mins",
-          difficulty: "Hard",
-          difficultyColor: "bg-red-200 text-red-600",
-          link: "#"
-        }
-      ];
-
-      const quizContainer = document.getElementById('quiz-container');
-      quizContainer.innerHTML = '';
-
-      quizzes.forEach(quiz => {
-        const quizElement = `
-          <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-            <div>
-              <div class="flex items-center mb-2">
-                <img alt="${quiz.title} Icon" class="w-6 h-6 mr-2" height="24" src="${quiz.icon}" width="24"/>
-                <span class="font-semibold">${quiz.title}</span>
-              </div>
-              <div class="text-gray-500 text-sm flex items-center">
-                <i class="fas fa-users mr-1"></i>
-                ${quiz.participants} participants
-                <i class="fas fa-clock ml-4 mr-1"></i>
-                ${quiz.duration}
-              </div>
-            </div>
-            <div class="flex items-center">
-              <span class="${quiz.difficultyColor} text-sm font-semibold px-2 py-1 rounded mr-4">${quiz.difficulty}</span>
-              <a class="text-purple-600 font-semibold" href="${quiz.link}">
-                Start Quiz
-                <i class="fas fa-arrow-right ml-1"></i>
-              </a>
-            </div>
-          </div>
-        `;
-        quizContainer.innerHTML += quizElement;
-      });
-    }
-  </script>
  </head>
  <body class="bg-purple-100 min-h-screen flex flex-col items-center">
   <div class="w-full bg-white py-4 px-6 flex items-center">
@@ -112,24 +28,14 @@
    </div>
    <script>
      document.addEventListener('DOMContentLoaded', () => {
-       fetch('https://nextgen-quiz-app.vercel.app/quizzes',
-         {
-           method: 'GET',
-           headers: {
-             'Authorization': `Bearer ${localStorage.getItem('token')}`
-           }
-         }
-       )
-         .then(response => response.json())
-         .then(data => {
-          console.log(data);
-           const quizzes = data.data.filter(quiz => quiz.status === 'Published' && quiz.settings.time_limit > 0);
-console.log(quizzes);
+       const quizzes = JSON.parse(localStorage.getItem('unattemptedQuizzes'));
+       console.log(quizzes);
        const quizContainer = document.getElementById('quiz-container');
        quizContainer.innerHTML = '';
 
        quizzes.forEach(quiz => {
          // Fetch participants count for each quiz
+         console.log(quiz);
          fetch(`http://localhost:8000/quizzes/${quiz._id}/stats`,
            {
              method: 'GET',
@@ -146,7 +52,7 @@ console.log(quizzes);
                <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
                  <div>
                    <div class="flex items-center mb-2">
-                     <img alt="${quiz.title} Icon" class="w-6 h-6 mr-2" height="24" src="${quiz.icon}" width="24"/>
+                     <img alt="Quiz Icon" class="w-6 h-6 mr-2" height="24" src="https://cdn-icons-png.flaticon.com/512/825/825731.png" width="24"/>
                      <span class="font-semibold">${quiz.title}</span>
                    </div>
                    <div class="text-gray-500 text-sm flex items-center">
@@ -170,8 +76,6 @@ console.log(quizzes);
            .catch(error => console.error('Error fetching participants:', error));
        });
      })
-     .catch(error => console.error('Error fetching quizzes:', error));
-   });
 
    </script>
    <div class="mt-6 text-gray-600 text-center cursor-pointer" onclick="refreshQuizzes()">

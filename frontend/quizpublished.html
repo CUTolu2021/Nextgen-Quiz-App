@@ -23,7 +23,7 @@
         <div class="bg-gray-100 rounded-lg p-4 mb-6">
             <label class="block text-black text-sm mb-2" for="quiz-link">Quiz Link</label>
             <div class="flex items-center bg-white rounded-lg border border-gray-300 p-2">
-                <input id="quiz-link" type="text" value="https://nextgen-quiz-app.vercel.app/quizzes/${quizId}" readonly class="flex-grow text-black focus:outline-none">
+                <input id="quiz-link" type="text" value="https://nextgen-quiz-app.vercel.app/startquiz" readonly class="flex-grow text-black focus:outline-none">
                 <button id="copy-btn" class="ml-2 text-gray-500">
                     <i class="far fa-copy"></i>
                 </button>
@@ -55,7 +55,7 @@
 
         const quizId = localStorage.getItem('quizId');
         const link = document.getElementById('quiz-link');
-        link.value = `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`;
+        link.value = `https://nextgen-quiz-app.vercel.app/startquiz?quizId=${quizId}`;
 
         document.getElementById('share-btn').addEventListener('click', function() {
             window.location.href = '/share'; // Replace with the actual URL of the share page

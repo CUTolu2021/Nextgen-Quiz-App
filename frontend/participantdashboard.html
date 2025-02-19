@@ -139,6 +139,7 @@
             }).filter(Boolean);
 
             unattemptedQuizzes = quizzesData.data.filter(quiz => !attemptedQuizIds.has(quiz._id) && quiz.status === "Published");
+            localStorage.setItem("unattemptedQuizzes", JSON.stringify(unattemptedQuizzes));
         } catch (err) {
             console.error("Error fetching quizzes:", err);
         }
