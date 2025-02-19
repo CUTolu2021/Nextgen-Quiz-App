@@ -449,14 +449,6 @@ if(!quizId) {
         }, 1000);
     }
 
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-        clearInterval(intervalId);
-    } else {
-        startTimer();
-    }
-});
-
     
     async function finishQuiz(finishedByTime = false) {
         questionContainer.innerHTML = "";
