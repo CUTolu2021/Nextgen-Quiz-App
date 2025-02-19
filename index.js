@@ -4,8 +4,7 @@ const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
 const quizRouter = require("./routers/quiz");
 const infoRouter = require("./routers/info");
-const swaggerUi = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
+const schedule = require('node-schedule');
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
@@ -186,6 +185,10 @@ app.use("/info", verifyJWTAuthToken, infoRouter);
 
 app.get("/leaderboard", verifyJWTAuthToken, getLeaderboard);
 
+// Delete unregistered users quiz attempts
+schedule.scheduleJob('0 0 * * *', () => {
+    deleteUnregisteredUsersQuizAttempts();
+});
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error("An Error Occurred: ", err.message);

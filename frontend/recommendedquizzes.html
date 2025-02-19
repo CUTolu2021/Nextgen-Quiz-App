@@ -36,7 +36,7 @@
        quizzes.forEach(quiz => {
          // Fetch participants count for each quiz
          console.log(quiz);
-         fetch(`http://localhost:8000/quizzes/${quiz._id}/stats`,
+         fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`,
            {
              method: 'GET',
              headers: {

@@ -53,11 +53,11 @@ const addQuestionsByID = async (req, res) => {
                 options: [q.option1, q.option2, q.option3, q.option4],
                 correctAnswers: q.correctAnswer,
                 quizId,
-                point: q.point || 1
+                point: Number(q.point) || 1
             });
 
             questionDocuments.push(newQuestion._id);
-            totalPoints += q.point || 1;
+            totalPoints += Number(q.point) || 1;
         }
 
         quiz.questions.push(...questionDocuments);
@@ -266,6 +266,8 @@ const getQuizStats = async (req, res) => {
     let result = {
         totalAttempts: 0,
         totalCompleted: 0,
+        totalScore: 0,
+        totalTimeTaken: 0,
         averageScore: 0,
         averageTimeTaken: 0,
         completionRate: 0
@@ -288,10 +290,12 @@ const getQuizStats = async (req, res) => {
 
         const scores = completed.map(attempt => attempt.score);
         const totalScore = scores.reduce((a, b) => a + b, 0);
+        result.totalScore = totalScore;
         result.averageScore = totalScore / completed.length;
 
         const times = completed.map(attempt => attempt.timeUsed);
         const totalTime = times.reduce((a, b) => a + b, 0);
+        result.totalTimeTaken = totalTime;
         result.averageTimeTaken = totalTime / completed.length;
 
         result.completionRate = (completed.length / attempts.length) * 100;
@@ -348,6 +352,53 @@ const getQuizById = async (req, res) => {
     }
 };
 
+const getPublishedQuizzesStats = async (req, res) => {
+    const { userId } = req.user;
+    try {
+        const quizzes = await Quiz.find({ creatorId: userId, active_status: 'active', status: 'Published' });
+
+        const statsPromises = quizzes.map(async (quiz) => {
+            const attempts = await QuizAttempt.find({ quizId: quiz._id });
+            const completed = attempts.filter(attempt => attempt.isCompleted);
+
+            const totalScore = completed.reduce((total, attempt) => total + attempt.score, 0);
+            const totalTimeTaken = completed.reduce((total, attempt) => total + attempt.timeUsed, 0);
+
+            return {
+                totalAttempts: attempts.length,
+                totalCompleted: completed.length,
+                totalScore,
+                totalTimeTaken
+            };
+        });
+
+        const stats = await Promise.all(statsPromises);
+        const totalAttempts = stats.reduce((total, stat) => total + stat.totalAttempts, 0);
+        const totalCompleted = stats.reduce((total, stat) => total + stat.totalCompleted, 0);
+        const totalScore = stats.reduce((total, stat) => total + stat.totalScore, 0);
+        const totalTimeTaken = stats.reduce((total, stat) => total + stat.totalTimeTaken, 0);
+
+        const completionRate = totalCompleted ? (totalCompleted / totalAttempts) * 100 : 0;
+        const avgScore = totalCompleted ? totalScore / totalCompleted : 0;
+
+        res.json({
+            success: true,
+            message: 'Quizzes fetched successfully',
+            data: {
+                totalAttempts,
+                totalCompleted,
+                totalScore,
+                totalTimeTaken,
+                completionRate,
+                avgScore
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching quizzes', error: error.message });
+    }
+};
+
 //update quiz 
 const updateQuiz = async (req, res) => {
     const { quizId } = req.params; // quizId = req.params.id;
@@ -390,7 +441,9 @@ const updateQuestions = async (req, res) => {
             return res.status(403).json({ message: "You are not authorized to update this quiz" });
         }
 
-        Question.deleteMany({ quizId }).exec(); // Delete existing questions
+        Question.deleteMany({ quizId }).exec();
+        quiz.questions = [];
+         // Delete existing questions
 
         let totalPoints = quiz.settings.total_points || 0; // Initialize total points
         const questionDocuments = [];
@@ -405,11 +458,11 @@ const updateQuestions = async (req, res) => {
                 options: [q.option1, q.option2, q.option3, q.option4],
                 correctAnswers: q.correctAnswer,
                 quizId,
-                point: q.point || 1
+                point: Number(q.point) || 1
             });
 
             questionDocuments.push(newQuestion._id);
-            totalPoints += q.point || 1;
+            totalPoints += Number(q.point) || 1;
         }
 
         quiz.questions.push(...questionDocuments);
@@ -459,5 +512,6 @@ module.exports = {
     deleteQuizById,
     getQuizById,
     updateQuiz,
-    addQuestionsByID
+    addQuestionsByID,
+    getPublishedQuizzesStats
 };

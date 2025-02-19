@@ -172,6 +172,9 @@
     const userId = localStorage.getItem("userId");
     const username = localStorage.getItem("username");
     const quizNumber = localStorage.getItem("quizNumber");
+    const activePlayers = localStorage.getItem("activePlayers");
+    const completionRate = localStorage.getItem("completionRate");
+    const avgScore = localStorage.getItem("avgScore");
     const usernameElement = document.getElementById("username");
     const quizNumberElement = document.getElementById("quizNumber");
     const activePlayersElement = document.getElementById("activePlayers");
@@ -179,6 +182,10 @@
     const avgScoreElement = document.getElementById("avgScore");
     usernameElement.innerText = username;
     quizNumberElement.innerText = quizNumber;
+    activePlayersElement.innerText = activePlayers;
+    completionRateElement.innerText = completionRate + "%";
+    avgScoreElement.innerText = avgScore;
+
 
     function logOut() {
         localStorage.clear();

@@ -39,29 +39,7 @@
                     <p class="text-2xl font-bold text-red-500" id="wrong"></p>
                 </div>
             </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const scoreElement = document.getElementById('score');
-                    const feedbackHeading = document.getElementById('feedback-heading');
-                    const feedbackMessage = document.getElementById('feedback-message');
-                    
-                    const correct = parseInt(document.getElementById('correct').textContent, 10);
-                    const wrong = parseInt(document.getElementById('wrong').textContent, 10);
-                    const total = correct + wrong;
-                    const scorePercentage = Math.round((correct / total) * 100);
-                    
-                    if(scorePercentage >= 100) {
-                        feedbackHeading.textContent = "Genius Alert 🎉";
-                        feedbackMessage.textContent = "Quiz Ninja! You sneaked up on every correct answer!";  
-                    } else if(scorePercentage >= 50) {
-                        feedbackHeading.textContent = "Good Job! 👏";
-                        feedbackMessage.textContent = "You're doing great! Keep up the good work.";
-                    } else {
-                        feedbackHeading.textContent = "Better Luck Next Time 😔";
-                        feedbackMessage.textContent = "You're Not Alone! We all have off days sometimes";
-                    }
-                });
-            </script>
+            
             <div class="flex justify-center space-x-4 mb-6">
                 <button id="view-leaderboard" class="bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="redirectToLeaderboard()">View Leaderboard</button>
             </div>
@@ -94,6 +72,7 @@
                 }
             });
             const answers = await response.json();
+            console.log(answers);
             renderAnswers(answers);
         }
 
@@ -173,6 +152,25 @@
             document.getElementById('time').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             document.getElementById('correct').innerText = data[0].correct;
             document.getElementById('wrong').innerText = data[0].wrong;
+            
+                    const feedbackHeading = document.getElementById('feedback-heading');
+                    const feedbackMessage = document.getElementById('feedback-message');
+                    const correct = data[0].correct;
+                    const total = data[0].correct + data[0].wrong;
+                    console.log(total);
+                    const scorePercentage = Math.round((correct / total) * 100);
+                    console.log(scorePercentage);
+                    
+                    if(scorePercentage >= 100) {
+                        feedbackHeading.textContent = "Genius Alert 🎉";
+                        feedbackMessage.textContent = "Quiz Ninja! You sneaked up on every correct answer!";  
+                    } else if(scorePercentage >= 50) {
+                        feedbackHeading.textContent = "Good Job! 👏";
+                        feedbackMessage.textContent = "You're doing great! Keep up the good work.";
+                    } else {
+                        feedbackHeading.textContent = "Better Luck Next Time 😔";
+                        feedbackMessage.textContent = "You're Not Alone! We all have off days sometimes";
+                    }
          }
         updateAttemptInfo();
 
@@ -187,6 +185,12 @@
             document.getElementById('share-page').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
         }
+
+        
+                
+                    
+            
+            
     </script>
 </body>
 </html>

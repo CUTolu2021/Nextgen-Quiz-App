@@ -209,6 +209,8 @@ async function saveUpdates() {
             questions.push(question);
         });
 
+        console.log(questions);
+
         // POST request to save questions
         const questionResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
             method: 'PUT',
@@ -216,7 +218,7 @@ async function saveUpdates() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ questions })
+            body: JSON.stringify({ questions: questions })
         });
 
         const data = await questionResponse.json();
@@ -225,11 +227,12 @@ async function saveUpdates() {
 
         console.log("Questions saved successfully");
         alert('Your updates have been saved successfully!');
+        window.location.href = '/quiz-drafted';
     } catch (error) {
         console.error("Error saving updates:", error);
         alert('Failed to save updates. Please try again.');
     }
-    window.location.href = '/quiz-drafted';
+    
 }
 
 async function publishUpdates() {
@@ -259,7 +262,7 @@ async function publishUpdates() {
         console.log("Quiz info updated successfully");
 
         // Collect updated questions
-        const questions = [];
+        const newQuestions = [];
         document.querySelectorAll('.question-container').forEach((container, index) => {
             const question = {
                 question: container.querySelector('input[name="question"]').value,
@@ -270,8 +273,10 @@ async function publishUpdates() {
                 correctAnswer: container.querySelector('input[name="correctAnswer"]').value,
                 point: container.querySelector('input[name="points"]').value || 1
             };
-            questions.push(question);
+            newQuestions.push(question);
         });
+
+        console.log(newQuestions);
 
         // POST request to save questions
         const questionResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
@@ -280,8 +285,9 @@ async function publishUpdates() {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({ questions })
+            body: JSON.stringify({ questions: newQuestions })
         });
+        console.log(questionResponse);
         const data = await questionResponse.json();
         console.log(data);
 
@@ -289,12 +295,14 @@ async function publishUpdates() {
 
         console.log("Questions saved successfully");
         alert('Your updates have been saved successfully!');
+        window.location.href = '/quiz-published';
+
     } catch (error) {
         console.error("Error saving updates:", error.message);
         alert('Failed to save updates. Please try again.');
     }
-    window.location.href = '/quiz-published';
 }
+    
 
 
         // Go back function

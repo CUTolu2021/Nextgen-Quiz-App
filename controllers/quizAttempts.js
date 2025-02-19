@@ -52,7 +52,7 @@ const endQuiz = async (req, res) => {
         const responses = await QuizResponse.find({ userId, quizId });
         responses.forEach(response => {
             if(response.selectedAnswer === response.correctAnswer){
-                attempt.points += response.point;
+                attempt.points += Number(response.point);
             }
             attempt.score += response.selectedAnswer === response.correctAnswer ? 1 : 0;
         });
@@ -84,14 +84,14 @@ const updateLeaderboard = async (userId, quizId, points,timeUsed) => {
 
         if (existingEntry) {
             // Update the existing entry with the new score
-            existingEntry.score = points;
+            existingEntry.score = Number(points);
             await existingEntry.save();
         } else {
             // Create a new entry if it doesn't exist
             const newEntry = new QuizLeaderboard({
                 userId,
                 quizId,
-                score: points,
+                score: Number(points),
                 timeUsed,
                 createdAt: new Date()
             });
@@ -127,18 +127,20 @@ const getQuizAttemptByUserId = async (req, res) => {
 
 const getLeaderboard = async (req, res) => {
     try {
-        const attempts = await QuizAttempt.find();
+        const attempts = await QuizAttempt.find({ userId: { $ne: null } });
         console.log(attempts);
         const leaderboardEntries = {};
+        
         attempts.forEach(attempt => {
             const userId = attempt.userId.toString();
+
             if (!leaderboardEntries[userId]) {
                 leaderboardEntries[userId] = {
                     userId,
                     score: 0,
                 };
             }
-            leaderboardEntries[userId].score += attempt.points;
+            leaderboardEntries[userId].score += Number(attempt.points);
         });
 
         const sortedLeaderboard = Object.values(leaderboardEntries).sort((a, b) => b.score - a.score);
@@ -167,7 +169,6 @@ const getLeaderboard = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
-
 const getLeaderboardByQuizId = async (req, res) => {
     const { quizId } = req.params;
     try {
@@ -300,5 +301,16 @@ const allowUnregisteredUsersToTakeQuiz = async (req, res) => {
     res.status(200).json({ token });
 }
 
+const deleteUnregisteredUsersQuizAttempts = async (req, res) => {
+    try {
+        await QuizAttempt.deleteMany({ userId: null });
+        await QuizResponse.deleteMany({ userId: null });
 
-module.exports = { startQuiz,getLeaderboardByUserId,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };
+        res.status(200).json({ message: 'Unregistered users quiz attempts deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
+
+module.exports = { startQuiz,deleteUnregisteredUsersQuizAttempts,getLeaderboardByUserId,allowUnregisteredUsersToTakeQuiz,getQuizResults, endQuiz, submitAnswer, getQuizAttemptByUserId, getLeaderboardByQuizId, getQuizAttemptByQuizId, getLeaderboard };

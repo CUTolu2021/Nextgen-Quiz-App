@@ -62,7 +62,18 @@
 
                 const quizItems = document.getElementById("quiz-items");
                 console.log(quizzes);
-                quizzes.forEach((quiz) => {
+                quizzes.forEach(async (quiz) => {
+                  const response = await fetch(
+                    `https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`,
+                    {
+                      method: "GET",
+                      headers: { Authorization: `Bearer ${token}` },
+                    }
+                  );
+                  const participantData = await response.json();
+                  console.log(participantData);
+                  const { totalCompleted, averageScore } = participantData.data || 0;
+
                   const quizItem = document.createElement("div");
                   quizItem.classList.add(
                     "bg-white",
@@ -88,12 +99,8 @@
                     "text-gray-500",
                     "text-sm"
                   );
-                  const participants = document.createElement("i");
-                  participants.classList.add("fas", "fa-users", "mr-1");
                   const participantsText = document.createElement("span");
-                  participantsText.textContent = `${
-                    quiz.participants || 0
-                  } participants`;
+                  participantsText.textContent = `${totalCompleted || 0} participants`;
                   const clock = document.createElement("i");
                   clock.classList.add("fas", "fa-clock", "ml-4", "mr-1");
                   const time = document.createElement("span");
@@ -101,7 +108,7 @@
                   const score = document.createElement("i");
                   score.classList.add("fas", "fa-chart-bar", "ml-4", "mr-1");
                   const scoreText = document.createElement("span");
-                  scoreText.textContent = `Avg. Score: ${quiz.score || 0}%`;
+                  scoreText.textContent = `Avg. Score: ${(averageScore || 0).toFixed(2)}`;
                   const calendar = document.createElement("i");
                   calendar.classList.add(
                     "fas",
@@ -111,7 +118,6 @@
                   );
                   const date = document.createElement("span");
                   date.textContent = new Date(quiz.updatedAt).toLocaleString()
-                  stats.appendChild(participants);
                   stats.appendChild(participantsText);
                   stats.appendChild(clock);
                   stats.appendChild(time);
@@ -129,9 +135,33 @@
                   const editIcon = document.createElement("i");
                   editIcon.classList.add("fas", "fa-chevron-right", "ml-2");
                   editButton.appendChild(editIcon);
+                  const deleteButton = document.createElement("button");
+                  deleteButton.classList.add("text-red-500", "font-semibold", "ml-2");
+                  deleteButton.textContent = "Delete Quiz";
+                  deleteButton.onclick = async () => {
+                    try {
+                      const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                      });
+                      if (response.ok) {
+                        alert("Quiz deleted successfully!");
+                        window.location.reload('/creator-dashboard');
+                        window.location.reload();
+                      } else {
+                        alert("Error deleting quiz, please try again later");
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  };
+                  const deleteIcon = document.createElement("i");
+                  deleteIcon.classList.add("fas", "fa-trash-alt", "ml-2");
+                  deleteButton.appendChild(deleteIcon);
                   quizItem.appendChild(image);
                   quizItem.appendChild(details);
                   quizItem.appendChild(editButton);
+                  quizItem.appendChild(deleteButton);
                   quizItems.appendChild(quizItem);
                 });
               } catch (err) {
