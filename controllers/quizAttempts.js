@@ -105,13 +105,12 @@ const updateLeaderboard = async (userId, quizId, points, timeUsed) => {
       createdAt: 1,
     });
 
-    // Reset the ranks for this quiz
-    await QuizLeaderboard.updateMany({ quizId }, { $set: { rank: 0 } });
-
     // Assign new ranks based on the sorted scores
     for (let i = 0; i < leaderboardEntries.length; i++) {
-      leaderboardEntries[i].rank = i + 1;
-      await leaderboardEntries[i].save();
+      await QuizLeaderboard.updateOne(
+        { _id: leaderboardEntries[i]._id },
+        { $set: { rank: i + 1 } }
+      );
     }
   } catch (error) {
     console.error("Error updating leaderboard:", error.message);

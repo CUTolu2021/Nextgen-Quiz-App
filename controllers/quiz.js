@@ -249,7 +249,10 @@ const getQuestionByQuizId = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
         for (const question of quiz.questions) {
-            result.push(await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl point'));
+            const q = await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl point');
+            if (q) {
+                result.push(q);
+            }
         }
         res.json({
             message: 'Questions fetched successfully',
@@ -441,7 +444,7 @@ const updateQuestions = async (req, res) => {
             return res.status(403).json({ message: "You are not authorized to update this quiz" });
         }
 
-        Question.deleteMany({ quizId }).exec();
+        await Question.deleteMany({ quizId }).exec();
         quiz.questions = [];
          // Delete existing questions
 

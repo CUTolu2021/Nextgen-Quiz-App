@@ -198,13 +198,13 @@
       let totalTime = 0;
       attempts.forEach((attempt) => {
         totalScore += attempt.points;
-        totalTime += attempt.timeUsed;
+        totalTime += attempt.timeUsed || 0;
       });
 
       document.getElementById("totalPoints").innerText = totalScore;
       document.getElementById("avgFinishTime").innerText = formatTime(
         totalTime / numberQuizzes
-      );
+      ) || "N/A";
     }
 
     function formatTime(seconds) {
