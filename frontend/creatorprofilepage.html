@@ -181,7 +181,7 @@
     const completionRateElement = document.getElementById("completionRate");
     const avgScoreElement = document.getElementById("avgScore");
     usernameElement.innerText = username;
-    quizNumberElement.innerText = quizNumber;
+    quizNumberElement.innerText = quizNumber || 0;
     activePlayersElement.innerText = activePlayers;
     completionRateElement.innerText = completionRate + "%";
     avgScoreElement.innerText = parseFloat(avgScore).toFixed(2);

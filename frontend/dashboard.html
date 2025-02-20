@@ -386,7 +386,7 @@
           const userId = localStorage.getItem("userId");
           const token = localStorage.getItem("token");
           const response = await fetch(
-            `http://localhost:8000/quizzes/published/statistics`,
+            `https://nextgen-quiz-app.vercel.app/quizzes/published/statistics`,
             {
               method: "GET",
               headers: { Authorization: `Bearer ${token}` },
