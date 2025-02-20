@@ -1,81 +1,97 @@
 <html>
- <head>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="authentication.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <script>
-    function navigateTo(url) {
-      window.location.href = url;
-    }
-
-    async function deleteQuiz(element) {
-        console.log(element);
-      const quizId = element
-      console.log(quizId); 
-      await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          window.location.reload('/creator-dashboard');
-          window.location.reload();
-          
-        })
-        .catch(error => {
-          console.error('Error deleting quiz:', error);
-        });
-        
-    }
-    
-  </script>
- </head>
- <body class="bg-purple-100">
-  <div class="w-full bg-white py-4 px-6 flex items-center">
-   <i class="fas fa-arrow-left text-gray-500 cursor-pointer" onclick="navigateTo('/creator-profile')"></i>
-   <a class="ml-2 text-gray-500 cursor-pointer" onclick="navigateTo('/creator-profile')">Back</a>
-  </div>
-  <div class="max-w-4xl mx-auto p-4">
-   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Saved Drafts</h1>
-    <button class="bg-purple-600 text-white px-4 py-2 rounded flex items-center" onclick="navigateTo('/create-quiz')">
-     <i class="fas fa-plus mr-2"></i>
-     Create New Quiz
-    </button>
-   </div>
-   <div id="drafts-container" class="space-y-4">
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="authentication.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
     <script>
-      fetch('https://nextgen-quiz-app.vercel.app/quizzes',
-        {
-          method: 'GET',
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+
+      async function deleteQuiz(element) {
+        const quizId = element;
+
+        await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        }
-      )
-        .then(response => response.json())
-        .then(data => {
-
-            if (data.data.length === 0) {
-                const noDrafts = document.getElementById('no-drafts');
-                noDrafts.classList.remove('hidden');
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            window.location.reload("/creator-dashboard");
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error deleting quiz:", error);
+          });
+      }
+    </script>
+  </head>
+  <body class="bg-purple-100">
+    <div class="w-full bg-white py-4 px-6 flex items-center">
+      <i
+        class="fas fa-arrow-left text-gray-500 cursor-pointer"
+        onclick="navigateTo('/creator-profile')"
+      ></i>
+      <a
+        class="ml-2 text-gray-500 cursor-pointer"
+        onclick="navigateTo('/creator-profile')"
+        >Back</a
+      >
+    </div>
+    <div class="max-w-4xl mx-auto p-4">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Saved Drafts</h1>
+        <button
+          class="bg-purple-600 text-white px-4 py-2 rounded flex items-center"
+          onclick="navigateTo('/create-quiz')"
+        >
+          <i class="fas fa-plus mr-2"></i>
+          Create New Quiz
+        </button>
+      </div>
+      <div id="drafts-container" class="space-y-4">
+        <script>
+          fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.data.length === 0) {
+                const noDrafts = document.getElementById("no-drafts");
+                noDrafts.classList.remove("hidden");
                 return;
-            }
-            console.log(data);
+              }
 
-           const quizzes = data.data.filter((quiz) => quiz.status === "Draft");
-           if (quizzes.length === 0) {
-            const noDrafts = document.getElementById('no-drafts');
-            noDrafts.classList.remove('hidden');
-            return;
-           }
-          const container = document.getElementById('drafts-container');
-          quizzes.forEach(draft => {
-            const element = document.createElement('div');
-            element.classList.add('bg-white', 'p-4', 'rounded', 'shadow', 'flex', 'justify-between', 'items-center', 'quiz-item');
-            element.innerHTML = `
+              const quizzes = data.data.filter(
+                (quiz) => quiz.status === "Draft"
+              );
+              if (quizzes.length === 0) {
+                const noDrafts = document.getElementById("no-drafts");
+                noDrafts.classList.remove("hidden");
+                return;
+              }
+              const container = document.getElementById("drafts-container");
+              quizzes.forEach((draft) => {
+                const element = document.createElement("div");
+                element.classList.add(
+                  "bg-white",
+                  "p-4",
+                  "rounded",
+                  "shadow",
+                  "flex",
+                  "justify-between",
+                  "items-center",
+                  "quiz-item"
+                );
+                element.innerHTML = `
               <div class="flex items-center">
                 <img alt="Quiz Icon" class="w-10 h-10 mr-4" height="40" src="https://cdn-icons-png.flaticon.com/512/825/825731.png" width="40"/>
                 <div>
@@ -83,24 +99,36 @@
                   <div class="text-gray-500 text-sm flex items-center">
                     <i class="fas fa-calendar-alt mr-2"></i>
                     ${new Date(draft.updatedAt).toLocaleString()}
-                    <span class="ml-4">${draft.questions.length} Questions</span>
+                    <span class="ml-4">${
+                      draft.questions.length
+                    } Questions</span>
                   </div>
                 </div>
               </div>
               <div class="flex items-center space-x-4">
-                <button class="text-purple-600" onclick="navigateTo('/edit-quiz?quizId=${draft._id}')">Edit Quiz</button>
-                <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuiz('${draft._id}')"></i>
+                <button class="text-purple-600" onclick="navigateTo('/edit-quiz?quizId=${
+                  draft._id
+                }')">Edit Quiz</button>
+                <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuiz('${
+                  draft._id
+                }')"></i>
               </div>
             `;
-            container.appendChild(element);
-          });
-        });
-    </script>
-   </div>
-   <div id="no-drafts" class="hidden flex-grow flex flex-col items-center justify-center">
-    <p class="text-gray-500 mt-2">No draft quizzes available</p>
-    <p class="text-gray-500">Saving a draft allows you to keep a quiz you aren't ready to publish yet.</p>
-   </div>
-  </div>
- </body>
+                container.appendChild(element);
+              });
+            });
+        </script>
+      </div>
+      <div
+        id="no-drafts"
+        class="hidden flex-grow flex flex-col items-center justify-center"
+      >
+        <p class="text-gray-500 mt-2">No draft quizzes available</p>
+        <p class="text-gray-500">
+          Saving a draft allows you to keep a quiz you aren't ready to publish
+          yet.
+        </p>
+      </div>
+    </div>
+  </body>
 </html>

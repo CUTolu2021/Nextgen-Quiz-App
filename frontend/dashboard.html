@@ -275,8 +275,9 @@
               }
             );
             const data = await res.json();
-            quizzes = data.data.filter((quiz) => quiz.creatorId === userId && quiz.status === "Published");
-            console.log(quizzes);
+            quizzes = data.data.filter(
+              (quiz) => quiz.creatorId === userId && quiz.status === "Published"
+            );
 
             if (data.total > 0) {
               quizNumberElement.innerText = data.total;
@@ -300,21 +301,23 @@
               "bg-white p-4 rounded-lg shadow-md flex justify-between items-center";
 
             try {
-              const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`, {
-                method: 'GET',
-                headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+              const response = await fetch(
+                `https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`,
+                {
+                  method: "GET",
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
                 }
-              });
+              );
               const stats = await response.json();
-              console.log(stats);
               const { totalCompleted, averageScore } = stats.data || 0;
-              console.log (stats.totalCompleted);
-
               quizElement.innerHTML = `
                 <div>
                   <h4 class="text-lg font-bold">${quiz.title}</h4>
-                  <p class="text-gray-600">Participants: ${totalCompleted || 0}</p>
+                  <p class="text-gray-600">Participants: ${
+                    totalCompleted || 0
+                  }</p>
                 </div>
                 <div class="text-gray-600 text-center">
                   <p>Avg. Score: ${(averageScore || 0).toFixed(2)}</p>
@@ -324,7 +327,7 @@
                 </div>
               `;
             } catch (error) {
-              console.error('Error fetching quiz stats:', error);
+              console.error("Error fetching quiz stats:", error);
               quizElement.innerHTML = `
                 <div>
                   <h4 class="text-lg font-bold">${quiz.title}</h4>
@@ -393,19 +396,19 @@
             }
           );
           const data = await response.json();
-          console.log(data.data);
           const activeplayers = data.data.totalCompleted;
           const completionRate = Number(data.data.completionRate).toFixed(2);
           const avgScore = data.data.avgScore;
-          if (activePlayersElement) activePlayersElement.innerText = data.data.totalCompleted;
+          if (activePlayersElement)
+            activePlayersElement.innerText = data.data.totalCompleted;
           if (completionRateElement)
             completionRateElement.innerText = `${completionRate}%`;
-          if (avgScoreElement) avgScoreElement.innerText = `${avgScore.toFixed(2)}`;
+          if (avgScoreElement)
+            avgScoreElement.innerText = `${avgScore.toFixed(2)}`;
           localStorage.setItem("activePlayers", activeplayers);
           localStorage.setItem("completionRate", completionRate);
           localStorage.setItem("avgScore", avgScore);
         }
-
       });
     </script>
   </body>

@@ -1,53 +1,53 @@
 <html>
- <head>
-  <title>
-   Recommended Quizzes
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <head>
+    <title>Recommended Quizzes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-purple-100 min-h-screen flex flex-col items-center">
+    <div class="w-full bg-white py-4 px-6 flex items-center">
+      <i class="fas fa-arrow-left text-gray-500"> </i>
+      <a
+        class="ml-2 text-gray-500 cursor-pointer"
+        onclick="navigateTo('/participant-dashboard')"
+      >
+        Back to Dashboard
+      </a>
+    </div>
+    <div class="w-full max-w-2xl p-4">
+      <h1 class="text-2xl font-bold mb-2">Recommended Quizzes</h1>
+      <p class="text-gray-600 mb-6">Based on your recent quizzes</p>
+      <div class="space-y-4" id="quiz-container">
+        <!-- Dynamic quiz elements will be inserted here by JavaScript -->
+      </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const quizzes = JSON.parse(
+            localStorage.getItem("unattemptedQuizzes")
+          );
 
- </head>
- <body class="bg-purple-100 min-h-screen flex flex-col items-center">
-  <div class="w-full bg-white py-4 px-6 flex items-center">
-   <i class="fas fa-arrow-left text-gray-500">
-   </i>
-   <a class="ml-2 text-gray-500 cursor-pointer" onclick="navigateTo('/participant-dashboard')">
-    Back to Dashboard
-   </a>
-  </div>
-  <div class="w-full max-w-2xl p-4">
-   <h1 class="text-2xl font-bold mb-2">
-    Recommended Quizzes
-   </h1>
-   <p class="text-gray-600 mb-6">
-    Based on your recent quizzes
-   </p>
-   <div class="space-y-4" id="quiz-container">
-     <!-- Dynamic quiz elements will be inserted here by JavaScript -->
-   </div>
-   <script>
-     document.addEventListener('DOMContentLoaded', () => {
-       const quizzes = JSON.parse(localStorage.getItem('unattemptedQuizzes'));
-       console.log(quizzes);
-       const quizContainer = document.getElementById('quiz-container');
-       quizContainer.innerHTML = '';
+          const quizContainer = document.getElementById("quiz-container");
+          quizContainer.innerHTML = "";
 
-       quizzes.forEach(quiz => {
-         // Fetch participants count for each quiz
-         console.log(quiz);
-         fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`,
-           {
-             method: 'GET',
-             headers: {
-               'Authorization': `Bearer ${localStorage.getItem('token')}`
-             }
-           }
-         )
-           .then(response => response.json())
-           .then(data => {
-             const participants = data.data.totalCompleted || 0;
-             const quizElement = `
+          quizzes.forEach((quiz) => {
+            // Fetch participants count for each quiz
+
+            fetch(
+              `https://nextgen-quiz-app.vercel.app/quizzes/${quiz._id}/stats`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                const participants = data.data.totalCompleted || 0;
+                const quizElement = `
                <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
                  <div>
                    <div class="flex items-center mb-2">
@@ -70,10 +70,10 @@
                  </div>
                </div>
              `;
-             quizContainer.innerHTML += quizElement;
-           })
-           .catch(error => {
-             const quizElement = `
+                quizContainer.innerHTML += quizElement;
+              })
+              .catch((error) => {
+                const quizElement = `
                <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
                  <div>
                    <div class="flex items-center mb-2">
@@ -96,16 +96,17 @@
                  </div>
                </div>
              `;
-             quizContainer.innerHTML += quizElement;
-           });
-       });
-     })
-
-   </script>
-   <div class="mt-6 text-gray-600 text-center cursor-pointer" onclick="window.location.reload()">
-    Refresh
-   </div>
-  </div>
- </body>
+                quizContainer.innerHTML += quizElement;
+              });
+          });
+        });
+      </script>
+      <div
+        class="mt-6 text-gray-600 text-center cursor-pointer"
+        onclick="window.location.reload()"
+      >
+        Refresh
+      </div>
+    </div>
+  </body>
 </html>
-

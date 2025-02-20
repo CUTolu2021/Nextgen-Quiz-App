@@ -1,201 +1,222 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz Results</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
     <style>
-        .hidden { display: none; }
+      .hidden {
+        display: none;
+      }
     </style>
-</head>
-<body class="bg-purple-100 flex justify-center items-center min-h-screen">
-    <div id="main-content" class="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md">
-        <div class="text-center">
-            <div class="flex justify-center items-center mb-4">
-                <div class="bg-red-100 rounded-full p-4">
-                    <i class="fas fa-hourglass-half text-3xl text-red-500"></i>
-                </div>
-            </div>
-            <h1 class="text-2xl font-bold mb-2">
-                <span id="feedback-heading" class="text-black-500"></span>
-            </h1>
-            <p id="feedback-message" class="text-gray-600 mb-6"></p>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-purple-200 p-4 rounded-lg">
-                    <p class="text-gray-600">Score</p>
-                    <p class="text-2xl font-bold" id="score"></p>
-                </div>
-                <div class="bg-purple-200 p-4 rounded-lg">
-                    <p class="text-gray-600">Time</p>
-                    <p class="text-2xl font-bold" id="time"></p>
-                </div>
-                <div class="bg-purple-200 p-4 rounded-lg">
-                    <p class="text-gray-600">Correct</p>
-                    <p class="text-2xl font-bold" id="correct"></p>
-                </div>
-                <div class="bg-purple-200 p-4 rounded-lg">
-                    <p class="text-gray-600">Wrong</p>
-                    <p class="text-2xl font-bold text-red-500" id="wrong"></p>
-                </div>
-            </div>
-            
-            <div class="flex justify-center space-x-4 mb-6">
-                <button id="view-leaderboard" class="bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="redirectToLeaderboard()">View Leaderboard</button>
-            </div>
+  </head>
+  <body class="bg-purple-100 flex justify-center items-center min-h-screen">
+    <div
+      id="main-content"
+      class="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md"
+    >
+      <div class="text-center">
+        <div class="flex justify-center items-center mb-4">
+          <div class="bg-red-100 rounded-full p-4">
+            <i class="fas fa-hourglass-half text-3xl text-red-500"></i>
+          </div>
         </div>
-        <div>
-            <h2 class="text-xl font-bold mb-4">Review Answers</h2>
-            <div id="answers-container"></div>
+        <h1 class="text-2xl font-bold mb-2">
+          <span id="feedback-heading" class="text-black-500"></span>
+        </h1>
+        <p id="feedback-message" class="text-gray-600 mb-6"></p>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-purple-200 p-4 rounded-lg">
+            <p class="text-gray-600">Score</p>
+            <p class="text-2xl font-bold" id="score"></p>
+          </div>
+          <div class="bg-purple-200 p-4 rounded-lg">
+            <p class="text-gray-600">Time</p>
+            <p class="text-2xl font-bold" id="time"></p>
+          </div>
+          <div class="bg-purple-200 p-4 rounded-lg">
+            <p class="text-gray-600">Correct</p>
+            <p class="text-2xl font-bold" id="correct"></p>
+          </div>
+          <div class="bg-purple-200 p-4 rounded-lg">
+            <p class="text-gray-600">Wrong</p>
+            <p class="text-2xl font-bold text-red-500" id="wrong"></p>
+          </div>
         </div>
+
+        <div class="flex justify-center space-x-4 mb-6">
+          <button
+            id="view-leaderboard"
+            class="bg-purple-600 text-white px-4 py-2 rounded-lg"
+            onclick="redirectToLeaderboard()"
+          >
+            View Leaderboard
+          </button>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold mb-4">Review Answers</h2>
+        <div id="answers-container"></div>
+      </div>
     </div>
 
-    
-
     <script>
-        const token = localStorage.getItem('token');
-        const quizId = localStorage.getItem('quizId');
-        const userId = localStorage.getItem('userId');
-        const status = localStorage.getItem('status');
-        if (!token || !quizId) {
-            window.location.href = '/participant-dashboard';
-        }
-        
+      const token = localStorage.getItem("token");
+      const quizId = localStorage.getItem("quizId");
+      const userId = localStorage.getItem("userId");
+      const status = localStorage.getItem("status");
+      if (!token || !quizId) {
+        window.location.href = "/participant-dashboard";
+      }
 
-        
-        async function fetchAnswers() {
-            const response = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/results`, {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const answers = await response.json();
-            console.log(answers);
-            renderAnswers(answers);
-        }
+      async function fetchAnswers() {
+        const response = await fetch(
+          `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/results`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const answers = await response.json();
 
-        function renderAnswers(answers) {
-            const container = document.getElementById('answers-container');
-            container.innerHTML = ''; // Clear any existing content
-            answers.forEach(answer => {
-                const answerDiv = document.createElement('div');
-                answerDiv.classList.add('mb-4');
+        renderAnswers(answers);
+      }
 
-                answerDiv.innerHTML = `
+      function renderAnswers(answers) {
+        const container = document.getElementById("answers-container");
+        container.innerHTML = ""; // Clear any existing content
+        answers.forEach((answer) => {
+          const answerDiv = document.createElement("div");
+          answerDiv.classList.add("mb-4");
+
+          answerDiv.innerHTML = `
                     <div class="bg-white border border-gray-300 rounded-lg p-4">
                         <div class="flex justify-between items-center cursor-pointer" onclick="toggleAnswer(this)">
                             <p class="font-semibold">${answer.question}</p>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="mt-2 hidden">
-                            <p>Your answer: <span class="${answer.isCorrect ? 'text-green-500' : 'text-red-500'}">${answer.selectedAnswer}</span></p>
-                            ${answer.correctAnswer ? `<p>Correct answer: <span class="text-green-500">${answer.correctAnswer}</span></p>` : ''}
+                            <p>Your answer: <span class="${
+                              answer.isCorrect
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }">${answer.selectedAnswer}</span></p>
+                            ${
+                              answer.correctAnswer
+                                ? `<p>Correct answer: <span class="text-green-500">${answer.correctAnswer}</span></p>`
+                                : ""
+                            }
                         </div>
                     </div>
                 `;
-                container.appendChild(answerDiv);
-            });
-        }
+          container.appendChild(answerDiv);
+        });
+      }
 
-        function toggleAnswer(element) {
-            const details = element.nextElementSibling;
-            details.classList.toggle('hidden');
-        }
+      function toggleAnswer(element) {
+        const details = element.nextElementSibling;
+        details.classList.toggle("hidden");
+      }
 
-        // Fetch answers when the page loads
-        document.addEventListener('DOMContentLoaded', fetchAnswers);
+      // Fetch answers when the page loads
+      document.addEventListener("DOMContentLoaded", fetchAnswers);
 
-
-        
-        
-        async function redirectToLeaderboard() {
-            if (status === 'unregistered') {
-            alert('Please register or signin to be able to view the leaderboards.');
-            window.location.href = '/signin';
-        }
-        else {
-
-            const response = await fetch(`https://nextgen-quiz-app.vercel.app/info/${quizId}/leaderboard`, 
+      async function redirectToLeaderboard() {
+        if (status === "unregistered") {
+          alert(
+            "Please register or signin to be able to view the leaderboards."
+          );
+          window.location.href = "/signin";
+        } else {
+          const response = await fetch(
+            `https://nextgen-quiz-app.vercel.app/info/${quizId}/leaderboard`,
             {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (response.ok) {
-                const leaderboardData = await response.json();
-                const userRank = leaderboardData.findIndex(leaderboardEntry => leaderboardEntry.userId === userId) + 1; // assuming the response contains an array of objects with a 'userId' field for each user
-                if (userRank <= 10) {
-                    window.location.href = '/quiz-leaderboard';
-                } else {
-                    window.location.href = '/quizleaderboard';
-                }
-            } else {
-                console.error("Failed to fetch leaderboard data");
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
             }
+          );
+          if (response.ok) {
+            const leaderboardData = await response.json();
+            const userRank =
+              leaderboardData.findIndex(
+                (leaderboardEntry) => leaderboardEntry.userId === userId
+              ) + 1; // assuming the response contains an array of objects with a 'userId' field for each user
+            if (userRank <= 10) {
+              window.location.href = "/quiz-leaderboard";
+            } else {
+              window.location.href = "/quizleaderboard";
+            }
+          } else {
+            console.error("Failed to fetch leaderboard data");
+          }
         }
-    }
-        async function updateAttemptInfo() {
-            const response = await fetch(`https://nextgen-quiz-app.vercel.app/info/${quizId}/quizattempts`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            } 
-            ); 
-            const data = await response.json();
-            console.log(data);
-            document.getElementById('score').innerText = data[0].score;
-            console.log(data[0].score);
-            const minutes = Math.floor(data[0].timeUsed);
-            const seconds = Math.floor((data[0].timeUsed - minutes) * 60);
-            document.getElementById('time').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('correct').innerText = data[0].correct;
-            document.getElementById('wrong').innerText = data[0].wrong;
-            
-                    const feedbackHeading = document.getElementById('feedback-heading');
-                    const feedbackMessage = document.getElementById('feedback-message');
-                    const correct = data[0].correct;
-                    const total = data[0].correct + data[0].wrong;
-                    console.log(total);
-                    const scorePercentage = Math.round((correct / total) * 100);
-                    console.log(scorePercentage);
-                    
-                    if(scorePercentage >= 100) {
-                        feedbackHeading.textContent = "Genius Alert 🎉";
-                        feedbackMessage.textContent = "Quiz Ninja! You sneaked up on every correct answer!";  
-                    } else if(scorePercentage >= 50) {
-                        feedbackHeading.textContent = "Good Job! 👏";
-                        feedbackMessage.textContent = "You're doing great! Keep up the good work.";
-                    } else {
-                        feedbackHeading.textContent = "Better Luck Next Time 😔";
-                        feedbackMessage.textContent = "You're Not Alone! We all have off days sometimes";
-                    }
-         }
-        updateAttemptInfo();
+      }
+      async function updateAttemptInfo() {
+        const response = await fetch(
+          `https://nextgen-quiz-app.vercel.app/info/${quizId}/quizattempts`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
 
-        function toggleAnswer(element) {
-            const answer = element.nextElementSibling;
-            answer.classList.toggle('hidden');
+        document.getElementById("score").innerText = data[0].score;
+
+        const minutes = Math.floor(data[0].timeUsed);
+        const seconds = Math.floor((data[0].timeUsed - minutes) * 60);
+        document.getElementById("time").innerText = `${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
+        document.getElementById("correct").innerText = data[0].correct;
+        document.getElementById("wrong").innerText = data[0].wrong;
+
+        const feedbackHeading = document.getElementById("feedback-heading");
+        const feedbackMessage = document.getElementById("feedback-message");
+        const correct = data[0].correct;
+        const total = data[0].correct + data[0].wrong;
+
+        const scorePercentage = Math.round((correct / total) * 100);
+
+        if (scorePercentage >= 100) {
+          feedbackHeading.textContent = "Genius Alert 🎉";
+          feedbackMessage.textContent =
+            "Quiz Ninja! You sneaked up on every correct answer!";
+        } else if (scorePercentage >= 50) {
+          feedbackHeading.textContent = "Good Job! 👏";
+          feedbackMessage.textContent =
+            "You're doing great! Keep up the good work.";
+        } else {
+          feedbackHeading.textContent = "Better Luck Next Time 😔";
+          feedbackMessage.textContent =
+            "You're Not Alone! We all have off days sometimes";
         }
+      }
+      updateAttemptInfo();
 
+      function toggleAnswer(element) {
+        const answer = element.nextElementSibling;
+        answer.classList.toggle("hidden");
+      }
 
-        function goBack() {
-            document.getElementById('leaderboard').classList.add('hidden');
-            document.getElementById('share-page').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-        }
-
-        
-                
-                    
-            
-            
+      function goBack() {
+        document.getElementById("leaderboard").classList.add("hidden");
+        document.getElementById("share-page").classList.add("hidden");
+        document.getElementById("main-content").classList.remove("hidden");
+      }
     </script>
-</body>
+  </body>
 </html>

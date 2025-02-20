@@ -173,9 +173,14 @@
   </head>
   <body>
     <div class="header">
-      <div class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer" >
-      <a href="/creator-dashboard"> <i class="fas fa-arrow-left text-gray-600 mr-2"></i><span class="text-gray-600">Back</span> </a>
-    </div>
+      <div
+        class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer"
+      >
+        <a href="/creator-dashboard">
+          <i class="fas fa-arrow-left text-gray-600 mr-2"></i
+          ><span class="text-gray-600">Back</span>
+        </a>
+      </div>
     </div>
     <div class="container" id="quizContainer">
       <div class="top-icons">
@@ -189,25 +194,25 @@
         </div>
       </div>
       <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
-      <h1 class="text-2xl font-bold mb-6">Create New Quiz</h1>
-      <div class="input-group mb-4">
-        <label for="quizTitle">Quiz Title</label>
-        <input type="text" id="quizTitle" placeholder="Enter quiz title" />
-      </div>
-      <div class="input-group mb-4">
-        <label for="quizTime">Quiz Time (minutes)</label>
-        <input type="number" id="quizTime" value="15" min="0.5"/>
-      </div>
-      <div class="input-group">
-        <label for="quizDescription">Quiz Description</label>
-        <textarea
-          id="quizDescription"
-          placeholder="Enter quiz description"
-        ></textarea>
-      </div>
-      <button class="button" id="addQuestionButton">
-        <i class="fas fa-plus mr-2"></i> Add Question
-      </button>
+        <h1 class="text-2xl font-bold mb-6">Create New Quiz</h1>
+        <div class="input-group mb-4">
+          <label for="quizTitle">Quiz Title</label>
+          <input type="text" id="quizTitle" placeholder="Enter quiz title" />
+        </div>
+        <div class="input-group mb-4">
+          <label for="quizTime">Quiz Time (minutes)</label>
+          <input type="number" id="quizTime" value="15" min="0.5" />
+        </div>
+        <div class="input-group">
+          <label for="quizDescription">Quiz Description</label>
+          <textarea
+            id="quizDescription"
+            placeholder="Enter quiz description"
+          ></textarea>
+        </div>
+        <button class="button" id="addQuestionButton">
+          <i class="fas fa-plus mr-2"></i> Add Question
+        </button>
       </div>
       <div class="questions-section" id="questionsSection">
         <h2>Questions</h2>
@@ -437,18 +442,20 @@
         const quizData = collectQuizData();
 
         try {
-          const response = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(quizData),
-          });
+          const response = await fetch(
+            "https://nextgen-quiz-app.vercel.app/quizzes",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(quizData),
+            }
+          );
 
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
-          console.log("Quiz created with ID:", quizId);
           localStorage.setItem("quizId", quizId);
           return quizId;
         } catch (error) {
@@ -461,19 +468,21 @@
         quizData.status = "Draft";
 
         try {
-          const response = await fetch("https://nextgen-quiz-app.vercel.app/quizzes", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(quizData),
-          });
+          const response = await fetch(
+            "https://nextgen-quiz-app.vercel.app/quizzes",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(quizData),
+            }
+          );
 
           const data = await response.json();
           quizId = data.quiz._id; // Store the quiz ID
           localStorage.setItem("quizId", quizId);
-          console.log("Quiz created with ID:", quizId);
           return quizId;
         } catch (error) {
           console.error("Error creating quiz:", error);
@@ -491,11 +500,6 @@
         }
 
         const questions = collectQuestionData();
-        console.log(
-          "Sending questions:",
-          JSON.stringify({ questions }, null, 2)
-        );
-
         try {
           const response = await fetch(
             `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/add-questions`,

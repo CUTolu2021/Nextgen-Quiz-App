@@ -1,314 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
-<body class="bg-purple-100 min-h-screen">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body class="bg-purple-100 min-h-screen">
     <!-- Back Button -->
-    <div class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer" onclick="goBack()">
-        <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
-        <span class="text-gray-600">Back</span>
+    <div
+      class="flex items-center mb-4 bg-white rounded-lg shadow-md text-center p-4 cursor-pointer"
+      onclick="goBack()"
+    >
+      <i class="fas fa-arrow-left text-gray-600 mr-2"></i>
+      <span class="text-gray-600">Back</span>
     </div>
 
     <!-- Quiz Edit Form -->
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
-        <h1 class="text-2xl font-bold mb-6">Edit Quiz</h1>
+      <h1 class="text-2xl font-bold mb-6">Edit Quiz</h1>
 
-        <!-- Quiz Title -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">Quiz Title</label>
-            <input type="text" id="quiz-title" class="w-full border rounded p-2" placeholder="Enter quiz title">
+      <!-- Quiz Title -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">Quiz Title</label>
+        <input
+          type="text"
+          id="quiz-title"
+          class="w-full border rounded p-2"
+          placeholder="Enter quiz title"
+        />
+      </div>
+
+      <!-- Quiz Time -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">Quiz Time</label>
+        <div class="flex items-center">
+          <i class="fas fa-hourglass-half text-gray-500 mr-2"></i>
+          <input
+            type="number"
+            id="quiz-time-limit"
+            class="w-full border rounded p-2"
+          />
         </div>
+      </div>
 
-        <!-- Quiz Time -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">Quiz Time</label>
-            <div class="flex items-center">
-                <i class="fas fa-hourglass-half text-gray-500 mr-2"></i>
-                <input type="number" id="quiz-time-limit" class="w-full border rounded p-2">
-            </div>
-        </div>
+      <!-- Quiz Description -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2"
+          >Quiz Description</label
+        >
+        <textarea
+          id="quiz-description"
+          class="w-full border rounded p-2"
+          placeholder="Enter quiz description"
+        ></textarea>
+      </div>
 
-        <!-- Quiz Description -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">Quiz Description</label>
-            <textarea id="quiz-description" class="w-full border rounded p-2" placeholder="Enter quiz description"></textarea>
-        </div>
+      <!-- Questions Container -->
+      <div id="questionsContainer"></div>
 
-        <!-- Questions Container -->
-        <div id="questionsContainer"></div>
-
-        <!-- Add Question Button -->
-        <button class="bg-purple-500 text-white rounded-lg px-4 py-2 mb-4 flex items-center" onclick="addQuestion()">
-            <i class="fas fa-plus mr-2"></i> Add Question
-        </button>
+      <!-- Add Question Button -->
+      <button
+        class="bg-purple-500 text-white rounded-lg px-4 py-2 mb-4 flex items-center"
+        onclick="addQuestion()"
+      >
+        <i class="fas fa-plus mr-2"></i> Add Question
+      </button>
     </div>
 
     <!-- Action Buttons -->
     <div class="max-w-4xl mx-auto mt-4 flex justify-end space-x-4">
-        <button class="border border-purple-500 text-purple-500 rounded-lg px-4 py-2" onclick="saveUpdates()">Save Updates</button>
-        <button class="bg-purple-500 text-white rounded-lg px-4 py-2 flex items-center" onclick="publishUpdates()">
-            <i class="fas fa-share mr-2"></i> Publish Updates
-        </button>
+      <button
+        class="border border-purple-500 text-purple-500 rounded-lg px-4 py-2"
+        onclick="saveUpdates()"
+      >
+        Save Updates
+      </button>
+      <button
+        class="bg-purple-500 text-white rounded-lg px-4 py-2 flex items-center"
+        onclick="publishUpdates()"
+      >
+        <i class="fas fa-share mr-2"></i> Publish Updates
+      </button>
     </div>
 
     <!-- JavaScript -->
     <script>
-        const quizId = new URLSearchParams(window.location.search).get('quizId');
-        let questionCount = 0;
-        let questions = [];
-        const token = localStorage.getItem("token");
-        localStorage.setItem("quizId", quizId);
+      const quizId = new URLSearchParams(window.location.search).get("quizId");
+      let questionCount = 0;
+      let questions = [];
+      const token = localStorage.getItem("token");
+      localStorage.setItem("quizId", quizId);
 
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchQuizData();
-            getQuestionData();
-        });
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchQuizData();
+        getQuestionData();
+      });
 
-        // Fetch quiz details & questions from API
-        async function fetchQuizData() {
-            try {
-                const res = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+      // Fetch quiz details & questions from API
+      async function fetchQuizData() {
+        try {
+          const res = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-                if (!res.ok) throw new Error("Failed to fetch quiz data");
-                const data = await res.json();
-                
-                // Populate Quiz Details
-                document.getElementById('quiz-title').value = data.quiz.title;
-                document.getElementById('quiz-description').value = data.quiz.description;
-                document.getElementById('quiz-time-limit').value = data.quiz.settings.time_limit;
+          if (!res.ok) throw new Error("Failed to fetch quiz data");
+          const data = await res.json();
 
+          // Populate Quiz Details
+          document.getElementById("quiz-title").value = data.quiz.title;
+          document.getElementById("quiz-description").value =
+            data.quiz.description;
+          document.getElementById("quiz-time-limit").value =
+            data.quiz.settings.time_limit;
         } catch (error) {
-                console.error("Error fetching quiz:", error);
+          console.error("Error fetching quiz:", error);
+        }
+      }
+
+      async function getQuestionData() {
+        try {
+          const res = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
             }
-        };
+          );
 
-        async function getQuestionData() {
-            try {
-                const res = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+          const data = await res.json();
+          questions = data.data;
 
-                
-                const data = await res.json();
-                questions = data.data
-                console.log(questions)
-                
-                data.data.forEach((question, index) => {
-                    addQuestion(question, index + 1);
-                });
-            } catch (error) {
-                console.error("Error fetching quiz:", error);
-            }
-        };
+          data.data.forEach((question, index) => {
+            addQuestion(question, index + 1);
+          });
+        } catch (error) {
+          console.error("Error fetching quiz:", error);
+        }
+      }
 
-        // Function to add a question (Pre-filled or empty)
-        function addQuestion(questionData = {}, questionNumber = null) {
-            questionCount++;
-            const qNum = questionNumber || questionCount;
-            const questionContainer = document.createElement('div');
-            questionContainer.classList.add('border', 'rounded-lg', 'p-4', 'mb-4', 'question-container');
+      // Function to add a question (Pre-filled or empty)
+      function addQuestion(questionData = {}, questionNumber = null) {
+        questionCount++;
+        const qNum = questionNumber || questionCount;
+        const questionContainer = document.createElement("div");
+        questionContainer.classList.add(
+          "border",
+          "rounded-lg",
+          "p-4",
+          "mb-4",
+          "question-container"
+        );
 
-            questionContainer.innerHTML = `
+        questionContainer.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-bold">Question ${qNum}</h2>
                     <i class="fas fa-trash-alt text-red-500 cursor-pointer" onclick="deleteQuestion(this)"></i>
                 </div>
-                <input type="text" class="w-full border rounded p-2 mb-2" name="question" placeholder="Enter question" value="${questionData.question || ''}">
+                <input type="text" class="w-full border rounded p-2 mb-2" name="question" placeholder="Enter question" value="${
+                  questionData.question || ""
+                }">
                 <div class="mb-4">
                     ${createOptions(questionData)}
                 </div>
-                <input type="text" class="w-full border rounded p-2 mb-2" name="correctAnswer" placeholder="Correct Answer" value="${questionData.correctAnswers || ''}">
-                <input type="number" class="w-16 border rounded p-2 mr-4" name="points" placeholder="Points" value="${questionData.point || 1}">
+                <input type="text" class="w-full border rounded p-2 mb-2" name="correctAnswer" placeholder="Correct Answer" value="${
+                  questionData.correctAnswers || ""
+                }">
+                <input type="number" class="w-16 border rounded p-2 mr-4" name="points" placeholder="Points" value="${
+                  questionData.point || 1
+                }">
             `;
 
-            document.getElementById('questionsContainer').appendChild(questionContainer);
-        }
+        document
+          .getElementById("questionsContainer")
+          .appendChild(questionContainer);
+      }
 
-        // Function to create options inputs
-        function createOptions(questionData) {
-            const options = questionData.options || ['', '', '', ''];
-            return options.map((opt, i) => `
+      // Function to create options inputs
+      function createOptions(questionData) {
+        const options = questionData.options || ["", "", "", ""];
+        return options
+          .map(
+            (opt, i) => `
                 <div class="flex items-center mb-2">
                     <input type="radio" name="question${questionCount}" class="mr-2">
-                    <input type="text" class="w-full border rounded p-2" name="option${i + 1}" value="${opt}" placeholder="Option ${i + 1}">
+                    <input type="text" class="w-full border rounded p-2" name="option${
+                      i + 1
+                    }" value="${opt}" placeholder="Option ${i + 1}">
                 </div>
-            `).join('');
-        }
+            `
+          )
+          .join("");
+      }
 
-        // Delete question function
-        function deleteQuestion(element) {
-            element.closest('.question-container').remove();
-            updateQuestionNumbers();
-        }
+      // Delete question function
+      function deleteQuestion(element) {
+        element.closest(".question-container").remove();
+        updateQuestionNumbers();
+      }
 
-        // Update question numbers after deletion
-        function updateQuestionNumbers() {
-            document.querySelectorAll('.question-container').forEach((container, index) => {
-                container.querySelector('h2').textContent = `Question ${index + 1}`;
-                container.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.name = `question${index + 1}`;
-                });
+      // Update question numbers after deletion
+      function updateQuestionNumbers() {
+        document
+          .querySelectorAll(".question-container")
+          .forEach((container, index) => {
+            container.querySelector("h2").textContent = `Question ${index + 1}`;
+            container
+              .querySelectorAll('input[type="radio"]')
+              .forEach((radio) => {
+                radio.name = `question${index + 1}`;
+              });
+          });
+      }
+
+      // Save quiz updates
+      // Save quiz updates
+      async function saveUpdates() {
+        try {
+          // Get updated quiz info
+          const updatedQuizData = {
+            title: document.getElementById("quiz-title").value,
+            description: document.getElementById("quiz-description").value,
+            settings: {
+              time_limit: document.getElementById("quiz-time-limit").value,
+            },
+            status: "Draft",
+          };
+
+          // PATCH request to update quiz info
+          const quizResponse = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(updatedQuizData),
+            }
+          );
+
+          if (!quizResponse.ok) throw new Error("Failed to update quiz info");
+
+          // Collect updated questions
+          const questions = [];
+          document
+            .querySelectorAll(".question-container")
+            .forEach((container, index) => {
+              const question = {
+                question: container.querySelector('input[name="question"]')
+                  .value,
+                option1: container.querySelector('input[name="option1"]').value,
+                option2: container.querySelector('input[name="option2"]').value,
+                option3: container.querySelector('input[name="option3"]').value,
+                option4: container.querySelector('input[name="option4"]').value,
+                correctAnswer: container.querySelector(
+                  'input[name="correctAnswer"]'
+                ).value,
+                point:
+                  container.querySelector('input[name="points"]').value || 1,
+              };
+              questions.push(question);
             });
+
+          // POST request to save questions
+          const questionResponse = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ questions: questions }),
+            }
+          );
+
+          const data = await questionResponse.json();
+
+          if (!questionResponse.ok) throw new Error(data.message);
+          alert("Your updates have been saved successfully!");
+          window.location.href = "/quiz-drafted";
+        } catch (error) {
+          console.error("Error saving updates:", error);
+          alert("Failed to save updates. Please try again.");
         }
+      }
 
-        // Save quiz updates
-        // Save quiz updates
-async function saveUpdates() {
-    try {
-        // Get updated quiz info
-        const updatedQuizData = {
-            title: document.getElementById('quiz-title').value,
-            description: document.getElementById('quiz-description').value,
+      async function publishUpdates() {
+        try {
+          // Get updated quiz info
+          const updatedQuizData = {
+            title: document.getElementById("quiz-title").value,
+            description: document.getElementById("quiz-description").value,
             settings: {
-                time_limit: document.getElementById('quiz-time-limit').value,
+              time_limit: document.getElementById("quiz-time-limit").value,
             },
-            status: 'Draft'
-        };
+            status: "Published",
+          };
 
-        // PATCH request to update quiz info
-        const quizResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(updatedQuizData)
-        });
+          // PATCH request to update quiz info
+          const quizResponse = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(updatedQuizData),
+            }
+          );
 
-        if (!quizResponse.ok) throw new Error("Failed to update quiz info");
+          if (!quizResponse.ok) throw new Error("Failed to update quiz info");
 
-        console.log("Quiz info updated successfully");
-
-        // Collect updated questions
-        const questions = [];
-        document.querySelectorAll('.question-container').forEach((container, index) => {
-            const question = {
-                question: container.querySelector('input[name="question"]').value,
+          // Collect updated questions
+          const newQuestions = [];
+          document
+            .querySelectorAll(".question-container")
+            .forEach((container, index) => {
+              const question = {
+                question: container.querySelector('input[name="question"]')
+                  .value,
                 option1: container.querySelector('input[name="option1"]').value,
                 option2: container.querySelector('input[name="option2"]').value,
                 option3: container.querySelector('input[name="option3"]').value,
                 option4: container.querySelector('input[name="option4"]').value,
-                correctAnswer: container.querySelector('input[name="correctAnswer"]').value,
-                point: container.querySelector('input[name="points"]').value || 1
-            };
-            questions.push(question);
-        });
+                correctAnswer: container.querySelector(
+                  'input[name="correctAnswer"]'
+                ).value,
+                point:
+                  container.querySelector('input[name="points"]').value || 1,
+              };
+              newQuestions.push(question);
+            });
 
-        console.log(questions);
+          // POST request to save questions
+          const questionResponse = await fetch(
+            `https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ questions: newQuestions }),
+            }
+          );
+          const data = await questionResponse.json();
 
-        // POST request to save questions
-        const questionResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ questions: questions })
-        });
-
-        const data = await questionResponse.json();
-
-        if (!questionResponse.ok) throw new Error(data.message);
-
-        console.log("Questions saved successfully");
-        alert('Your updates have been saved successfully!');
-        window.location.href = '/quiz-drafted';
-    } catch (error) {
-        console.error("Error saving updates:", error);
-        alert('Failed to save updates. Please try again.');
-    }
-    
-}
-
-async function publishUpdates() {
-    try {
-        // Get updated quiz info
-        const updatedQuizData = {
-            title: document.getElementById('quiz-title').value,
-            description: document.getElementById('quiz-description').value,
-            settings: {
-                time_limit: document.getElementById('quiz-time-limit').value,
-            },
-            status: 'Published'
-        };
-
-        // PATCH request to update quiz info
-        const quizResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(updatedQuizData)
-        });
-
-        if (!quizResponse.ok) throw new Error("Failed to update quiz info");
-
-        console.log("Quiz info updated successfully");
-
-        // Collect updated questions
-        const newQuestions = [];
-        document.querySelectorAll('.question-container').forEach((container, index) => {
-            const question = {
-                question: container.querySelector('input[name="question"]').value,
-                option1: container.querySelector('input[name="option1"]').value,
-                option2: container.querySelector('input[name="option2"]').value,
-                option3: container.querySelector('input[name="option3"]').value,
-                option4: container.querySelector('input[name="option4"]').value,
-                correctAnswer: container.querySelector('input[name="correctAnswer"]').value,
-                point: container.querySelector('input[name="points"]').value || 1
-            };
-            newQuestions.push(question);
-        });
-
-        console.log(newQuestions);
-
-        // POST request to save questions
-        const questionResponse = await fetch(`https://nextgen-quiz-app.vercel.app/quizzes/${quizId}/questions`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ questions: newQuestions })
-        });
-        console.log(questionResponse);
-        const data = await questionResponse.json();
-        console.log(data);
-
-        if (!questionResponse.ok) throw new Error(data.message);
-
-        console.log("Questions saved successfully");
-        alert('Your updates have been saved successfully!');
-        window.location.href = '/quiz-published';
-
-    } catch (error) {
-        console.error("Error saving updates:", error.message);
-        alert('Failed to save updates. Please try again.');
-    }
-}
-    
-
-
-        // Go back function
-        function goBack() {
-            window.location.href = '/all-quizzes';
+          if (!questionResponse.ok) throw new Error(data.message);
+          alert("Your updates have been saved successfully!");
+          window.location.href = "/quiz-published";
+        } catch (error) {
+          console.error("Error saving updates:", error.message);
+          alert("Failed to save updates. Please try again.");
         }
+      }
+
+      // Go back function
+      function goBack() {
+        window.location.href = "/all-quizzes";
+      }
     </script>
-</body>
+  </body>
 </html>
