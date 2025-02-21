@@ -107,7 +107,7 @@ const uploadQuestions = async (req, res) => {
                     imageUrl: item.imageUrl || null,
                     videoUrl: item.videoUrl || null,
                     quizId,
-                    point: parseInt(item.point, 10) || 0, // Ensure point is a number
+                    point: parseInt(item.point, 10) || 1, // Ensure point is a number
                 }));
 
                 const createdQuestions = await Question.insertMany(questions);

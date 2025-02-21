@@ -455,7 +455,14 @@
           );
 
           const data = await response.json();
-          quizId = data.quiz._id; // Store the quiz ID
+          
+          if(data.message === "unauthorized") {
+            window.alert(data.message + ", Please Login and try again");
+            localStorage.clear();
+            window.location.href = "/signin";
+          }
+          quizId = data.quiz._id; 
+          // Store the quiz ID
           localStorage.setItem("quizId", quizId);
           return quizId;
         } catch (error) {
