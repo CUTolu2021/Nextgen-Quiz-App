@@ -275,14 +275,20 @@
               }
             );
             const data = await res.json();
+
+            
+            const quizNumber = data.data.filter(
+              (quiz) => quiz.creatorId === userId
+            )
+            
             quizzes = data.data.filter(
               (quiz) => quiz.creatorId === userId && quiz.status === "Published"
             );
 
-            if (data.total > 0) {
-              quizNumberElement.innerText = data.total;
-              localStorage.setItem("quizNumber", data.total);
-              renderQuizzes(data.data);
+            if (quizNumber.length > 0) {
+              quizNumberElement.innerText = quizNumber.length;
+              localStorage.setItem("quizNumber", quizNumber.length);
+              renderQuizzes(quizzes);
               return true;
             }
             return false;
