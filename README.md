@@ -18,3 +18,4 @@ Clone the repository: git clone https://github.com/CUTolu2021/Nextgen-Quiz-App
 Install dependencies: npm install
 Start the application: npm start
 Access the application: http://localhost:8000
+Postman Documentation: https://documenter.getpostman.com/view/40432357/2sAYdbMsKT
