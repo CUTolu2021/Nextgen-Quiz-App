@@ -264,7 +264,7 @@
             localStorage.removeItem("status");
             localStorage.clear();
             window.location.replace("/signin");
-          }, 1000 * 60 * 30); // delete token after 30 minutes
+          }, 1000 * 60 * 30); 
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -393,9 +393,9 @@
                             <button class="option-btn ${
                               savedAnswer === option ? "selected" : ""
                             }"
-                                onclick="selectAnswer('${option}', '${
+                                onclick="selectAnswer(\`${option}\`, \`${
                               q.correctAnswers
-                            }', '${q._id}', '${q.question}', '${q.point}')">
+                            }\`, '${q._id}', \`${q.question}\`, '${q.point}')">
                                 ${option}
                             </button>
                         `
@@ -422,6 +422,10 @@
                 </button>
             </div>
         `;
+      
+        timerDisplay = document.getElementById("timer");
+        timerDisplay.innerText = formatTime(timeLeft);
+        startTimer();
     }
 
     function prevQuestion() {
@@ -471,7 +475,7 @@
               correctAnswer: correct,
               question,
               point,
-            }),
+              }),
           }
         );
       } catch (err) {
@@ -480,33 +484,35 @@
     }
 
     let timeUsed = null;
-    let intervalId = null;
+    let timerRunning = false;
+    let intervalId;
+    let lastTime;
     function startTimer() {
-      timerDisplay = document.getElementById("timer"); // Ensure it gets the element again
-      intervalId = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(intervalId);
+      if (timerRunning) {
+        cancelAnimationFrame(animationFrameId);
+    timerRunning = false;
+  }
 
-          finishQuiz(true);
-          return;
-        }
+  timerRunning = true;
+  lastTime = performance.now();
+  animationFrameId = requestAnimationFrame(tick);
+}
 
-        if (timeLeft <= 5) {
-          timerDisplay.style.color = "red"; // Change color when 5 seconds left
-        } else {
-          timerDisplay.style.color = ""; // Reset color when more than 5 seconds left
-        }
-
-        timeUsed = timerDisplay.innerText;
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-
-        timerDisplay.innerText = `${minutes}:${seconds
-          .toString()
-          .padStart(2, "0")}`;
-        timeLeft--;
-      }, 1000);
-    }
+function tick() {
+  const currentTime = performance.now();
+  const elapsed = (currentTime - lastTime) / 1000;
+  if (elapsed >= 1) {
+    timeLeft -= 1;
+    lastTime = currentTime;
+  }
+  timerDisplay.innerText = formatTime(timeLeft);
+  if (timeLeft <= 0) {
+    cancelAnimationFrame(animationFrameId);
+    finishQuiz(true);
+  } else {
+    animationFrameId = requestAnimationFrame(tick);
+  }
+}
 
     async function finishQuiz(finishedByTime = false) {
       questionContainer.innerHTML = "";
