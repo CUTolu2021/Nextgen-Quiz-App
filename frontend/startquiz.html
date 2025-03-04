@@ -264,7 +264,7 @@
             localStorage.removeItem("status");
             localStorage.clear();
             window.location.replace("/signin");
-          }, 1000 * 60 * 30); 
+          }, 1000 * 60 * 30);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -422,10 +422,10 @@
                 </button>
             </div>
         `;
-      
-        timerDisplay = document.getElementById("timer");
-        timerDisplay.innerText = formatTime(timeLeft);
-        startTimer();
+
+      timerDisplay = document.getElementById("timer");
+      timerDisplay.innerText = formatTime(timeLeft);
+      startTimer();
     }
 
     function prevQuestion() {
@@ -475,7 +475,7 @@
               correctAnswer: correct,
               question,
               point,
-              }),
+            }),
           }
         );
       } catch (err) {
@@ -487,32 +487,47 @@
     let timerRunning = false;
     let intervalId;
     let lastTime;
+    let fallbackTimerId;
     function startTimer() {
       if (timerRunning) {
         cancelAnimationFrame(animationFrameId);
-    timerRunning = false;
-  }
+        timerRunning = false;
+      }
 
-  timerRunning = true;
-  lastTime = performance.now();
-  animationFrameId = requestAnimationFrame(tick);
-}
+      timerRunning = true;
+      lastTime = performance.now();
+      animationFrameId = requestAnimationFrame(tick);
 
-function tick() {
-  const currentTime = performance.now();
-  const elapsed = (currentTime - lastTime) / 1000;
-  if (elapsed >= 1) {
-    timeLeft -= 1;
-    lastTime = currentTime;
-  }
-  timerDisplay.innerText = formatTime(timeLeft);
-  if (timeLeft <= 0) {
-    cancelAnimationFrame(animationFrameId);
-    finishQuiz(true);
-  } else {
-    animationFrameId = requestAnimationFrame(tick);
-  }
-}
+      // Start fallback timer
+      fallbackTimerId = setInterval(() => {
+        if (!document.hidden) return;
+        timeLeft -= 1;
+        if (timeLeft <= 0) {
+          clearInterval(fallbackTimerId);
+          finishQuiz(true);
+        }
+      }, 1000);
+    }
+
+    function tick() {
+      const currentTime = performance.now();
+      const elapsed = (currentTime - lastTime) / 1000;
+      if (elapsed >= 1) {
+        timeLeft -= 1;
+        lastTime = currentTime;
+        if (timeLeft <= 5) {
+          timerDisplay.style.color = "red"; // Change color when 5 seconds left
+        }
+      }
+      timerDisplay.innerText = formatTime(timeLeft);
+      if (timeLeft <= 0) {
+        cancelAnimationFrame(animationFrameId);
+        clearInterval(fallbackTimerId);
+        finishQuiz(true);
+      } else {
+        animationFrameId = requestAnimationFrame(tick);
+      }
+    }
 
     async function finishQuiz(finishedByTime = false) {
       questionContainer.innerHTML = "";

@@ -1,4 +1,4 @@
 .env
 node_modules
-test copy.html
-testpreview.html
+frontend/test copy.html
+frontend/testpreview.html

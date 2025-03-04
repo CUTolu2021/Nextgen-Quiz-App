@@ -290,3 +290,73 @@ function displayQuestion() {
         </div>
     </main>
 </div>
+
+The issue you're experiencing is due to the fact that the fallback timer is decrementing the timeLeft variable every second, in addition to the requestAnimationFrame timer.
+
+When you leave the quiz page, the requestAnimationFrame timer is paused, but the fallback timer continues to run, decrementing the timeLeft variable every second. This means that when you return to the quiz page, the timeLeft variable has been decremented more than it would have been if the requestAnimationFrame timer had been running continuously.
+
+To fix this issue, you can modify the fallback timer to only decrement the timeLeft variable by the amount of time that has elapsed since the page was hidden. This will ensure that the timeLeft variable is decremented at a consistent rate, regardless of whether the page is visible or not.
+
+Here's an updated version of the code that implements this fix:
+
+javascript
+CopyInsert
+let timeUsed = null;
+let timerRunning = false;
+let intervalId;
+let lastTime;
+let fallbackTimerId;
+let hiddenTime = null;
+
+function startTimer() {
+  if (timerRunning) {
+    cancelAnimationFrame(animationFrameId);
+    timerRunning = false;
+  }
+
+  timerRunning = true;
+  lastTime = performance.now();
+  animationFrameId = requestAnimationFrame(tick);
+
+  // Start fallback timer
+  fallbackTimerId = setInterval(() => {
+    if (!document.hidden) return;
+    if (hiddenTime === null) hiddenTime = performance.now();
+    const elapsed = (performance.now() - hiddenTime) / 1000;
+    timeLeft -= elapsed;
+    hiddenTime = performance.now();
+    if (timeLeft <= 0) {
+      clearInterval(fallbackTimerId);
+      finishQuiz(true);
+    }
+  }, 1000);
+}
+
+function tick() {
+  const currentTime = performance.now();
+  const elapsed = (currentTime - lastTime) / 1000;
+  if (elapsed >= 1) {
+    timeLeft -= 1;
+    lastTime = currentTime;
+    if (timeLeft <= 5) {
+      timerDisplay.style.color = "red"; // Change color when 5 seconds left
+    }
+  }
+  timerDisplay.innerText = formatTime(timeLeft);
+  if (timeLeft <= 0) {
+    cancelAnimationFrame(animationFrameId);
+    clearInterval(fallbackTimerId);
+    finishQuiz(true);
+  } else {
+    animationFrameId = requestAnimationFrame(tick);
+  }
+}
+
+// Add event listener to detect when page becomes visible again
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    startTimer();
+    hiddenTime = null;
+  }
+});
+In this updated code, the fallback timer only decrements the timeLeft variable by the amount of time that has elapsed since the page was hidden. This ensures that the timeLeft variable is decremented at a consistent rate, regardless of whether the page is visible or not.
