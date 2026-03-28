@@ -20,10 +20,12 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = (
+const corsOriginsEnv =
   process.env.CORS_ORIGINS ||
-  "https://nextgen-quiz-app.vercel.app,http://localhost:8000"
-)
+  process.env.CORS_ORIGIN ||
+  "https://nextgen-quiz-app.vercel.app,http://localhost:8000";
+
+const allowedOrigins = corsOriginsEnv
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -42,6 +44,7 @@ app.use(
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
   })
 );
 
