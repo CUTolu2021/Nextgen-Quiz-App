@@ -42,7 +42,7 @@ const getUserById = async (req, res) => {
 const getUserStats = async (req, res) => {
   const { userId } = req.params;
   try {
-    const leaderboardEntry = await Leaderboard.find({ userId });
+    const leaderboardEntry = await Leaderboard.findOne({ userId });
     if (!leaderboardEntry) {
       return res.status(404).json({ message: "User not found on leaderboard" });
     }
@@ -61,17 +61,18 @@ const getUserStats = async (req, res) => {
     const totalCompleted = quizAttempts.filter(
       (attempt) => attempt.isCompleted
     ).length;
-    const completionRate = (totalCompleted / totalAttempts) * 100;
+    const completionRate =
+      totalAttempts === 0 ? 0 : (totalCompleted / totalAttempts) * 100;
 
     const allQuizScores = quizAttempts.map((attempt) => attempt.score);
-    const highestScore = Math.max(...allQuizScores);
+    const highestScore = allQuizScores.length ? Math.max(...allQuizScores) : 0;
     const totalQuizTime = quizAttempts.reduce(
-      (acc, attempt) => acc + attempt.timeUsed,
+      (acc, attempt) => acc + (attempt.timeUsed || 0),
       0
     );
 
     res.status(200).json({
-      globalRank: leaderboardEntry[0].rank,
+      globalRank: leaderboardEntry.rank,
       completionRate,
       highestScore,
       totalQuizTime,
@@ -87,20 +88,45 @@ const getUserStats = async (req, res) => {
 const updateUserById = async (req, res) => {
   try {
     const { userId } = req.user;
-    const user = await User.findByIdAndUpdate(
-      userId,
-      req.body,
-      { new: true },
-      { password: 0, __v: 0, createdAt: 0, updatedAt: 0 }
-    );
+    const { username, password } = req.body;
+
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    if (req.body.password) {
-      user.password = hashPassword(req.body.password);
-      await user.save();
+
+    if (typeof username === "string") {
+      const trimmedUsername = username.trim();
+      if (trimmedUsername.length < 3) {
+        return res.status(400).json({
+          message: "Username must be at least 3 characters long",
+        });
+      }
+      user.username = trimmedUsername;
     }
-    res.status(200).json({ message: "Role updated successfully" });
+
+    if (typeof password === "string") {
+      if (password.length < 6) {
+        return res.status(400).json({
+          message: "Password must be at least 6 characters long",
+        });
+      }
+      user.password = await hashPassword(password);
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        active_status: user.active_status,
+        emailVerified: user.emailVerified,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: "Failed to update user",

@@ -1,5 +1,6 @@
 const { QuizAttempt, Quiz, QuizResponse } = require("../models/quiz");
 const { QuizLeaderboard, Leaderboard } = require("../models/leaderboard");
+const Question = require("../models/question");
 const { generateToken } = require("./auth");
 
 const startQuiz = async (req, res) => {
@@ -51,16 +52,16 @@ const endQuiz = async (req, res) => {
     // Calculate score and points
     const responses = await QuizResponse.find({ userId, quizId });
     responses.forEach((response) => {
-      if (response.selectedAnswer === response.correctAnswer) {
-        attempt.points += Number(response.point);
+      if (response.isCorrect) {
+        attempt.points += Number(response.point || 0);
       }
       attempt.score +=
-        response.selectedAnswer === response.correctAnswer ? 1 : 0;
+        response.isCorrect ? 1 : 0;
     });
     let correct = 0;
     let wrong = 0;
     responses.forEach((response) => {
-      if (response.selectedAnswer === response.correctAnswer) {
+      if (response.isCorrect) {
         correct++;
       } else {
         wrong++;
@@ -233,9 +234,19 @@ const getQuizResults = async (req, res) => {
 
 const submitAnswer = async (req, res) => {
   const { quizId } = req.params;
-  const { questionId, question, selectedAnswer, correctAnswer, point } =
-    req.body;
-  const userId = req.user.userId; // Assuming user ID is available in req.user
+  const userId = req.user.userId;
+  const payload = req.body && typeof req.body === "object" ? req.body : {};
+  const body =
+    payload._requestBody && typeof payload._requestBody === "object"
+      ? payload._requestBody
+      : payload;
+  const { questionId, selectedAnswer } = body;
+
+  if (!questionId || typeof selectedAnswer !== "string") {
+    return res.status(400).json({
+      message: "questionId and selectedAnswer are required",
+    });
+  }
 
   try {
     const quiz = await Quiz.findById(quizId);
@@ -246,6 +257,10 @@ const submitAnswer = async (req, res) => {
     const attempt = await QuizAttempt.findOne({ userId, quizId });
     if (!attempt) {
       return res.status(404).json({ message: "Attempt not found" });
+    }
+
+    if (attempt.isCompleted) {
+      return res.status(400).json({ message: "Quiz attempt already completed" });
     }
 
     // Check if the time limit has been exceeded
@@ -264,17 +279,35 @@ const submitAnswer = async (req, res) => {
         });
     }
 
-    // Find existing response to update
+    const questionDoc = await Question.findOne(
+      { _id: questionId, quizId },
+      "question options correctAnswers point"
+    );
+
+    if (!questionDoc) {
+      return res.status(404).json({ message: "Question not found for this quiz" });
+    }
+
+    if (!questionDoc.options.includes(selectedAnswer)) {
+      return res.status(400).json({
+        message: "Selected answer is not a valid option for this question",
+      });
+    }
+
+    const correctAnswer = questionDoc.correctAnswers;
+    const question = questionDoc.question;
+    const point = Number(questionDoc.point || 0);
+    const isCorrect = selectedAnswer === correctAnswer;
+
     let response = await QuizResponse.findOne({ userId, quizId, questionId });
 
     if (response) {
-      // If the user has already answered this question, update the answer
       response.selectedAnswer = selectedAnswer;
       response.correctAnswer = correctAnswer;
       response.question = question;
-      response.point = Number(point); // Add the new point;
+      response.point = point;
+      response.isCorrect = isCorrect;
     } else {
-      // If no previous answer exists, create a new one
       response = new QuizResponse({
         userId,
         quizId,
@@ -282,13 +315,9 @@ const submitAnswer = async (req, res) => {
         selectedAnswer,
         correctAnswer,
         question,
-        point: Number(point),
+        point,
+        isCorrect,
       });
-    }
-    if (selectedAnswer === correctAnswer) {
-      response.isCorrect = true;
-    } else {
-      response.isCorrect = false;
     }
 
     await response.save();
@@ -315,13 +344,19 @@ const deleteUnregisteredUsersQuizAttempts = async (req, res) => {
     await QuizAttempt.deleteMany({ userId: null });
     await QuizResponse.deleteMany({ userId: null });
 
-    res
-      .status(200)
-      .json({
-        message: "Unregistered users quiz attempts deleted successfully",
-      });
+    if (res) {
+      res
+        .status(200)
+        .json({
+          message: "Unregistered users quiz attempts deleted successfully",
+        });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    if (res) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    } else {
+      console.error("Scheduled cleanup failed:", error.message);
+    }
   }
 };
 

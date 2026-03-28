@@ -1,7 +1,6 @@
 const route = require('express').Router();
 const { signup, login, forgotPassword, resetPassword, getProfile, verifyEmail, verifyOTP } = require('../controllers/auth');
 const { verifyJWTAuthToken } = require('../middleware/auth');
-const passport = require('passport');
 const { allowUnregisteredUsersToTakeQuiz } = require('../controllers/quizAttempts');
 
 /**

@@ -249,7 +249,7 @@ const getQuestionByQuizId = async (req, res) => {
             return res.status(404).json({ message: 'Quiz not found' });
         }
         for (const question of quiz.questions) {
-            const q = await Question.findById(question._id, 'question options correctAnswers isMultipleChoice imageUrl videoUrl point');
+            const q = await Question.findById(question._id, 'question options isMultipleChoice imageUrl videoUrl point');
             if (q) {
                 result.push(q);
             }
@@ -317,6 +317,8 @@ const getQuizStats = async (req, res) => {
 const getQuizById = async (req, res) => {
     //Controller function to fetch a quiz by its ID
     const { quizId } = req.params;
+    const requesterId = req.user.userId;
+    const requesterRole = req.user.role;
 
     try {
         //Fetch quiz with questions
@@ -334,12 +336,25 @@ const getQuizById = async (req, res) => {
             });
         }
 
+        const includeCorrectAnswers =
+            requesterRole === 'Creator' &&
+            quiz.creatorId &&
+            quiz.creatorId.toString() === requesterId;
+
+        const sanitizedQuestions = quiz.questions.map((question) => {
+            const questionObj = question.toObject();
+            if (!includeCorrectAnswers) {
+                delete questionObj.correctAnswers;
+            }
+            return questionObj;
+        });
+
         // Prepare full quiz response with complete question details
         res.status(200).json({
             success: true,
             quiz: {
                 ...quiz.toObject(), // Convert Mongoose document to plain object
-                questions: quiz.questions // Include full questions array
+                questions: sanitizedQuestions
             }
         });
 

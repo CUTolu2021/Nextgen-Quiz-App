@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const { sendEmail } = require("../utils/emailService");
@@ -21,7 +22,7 @@ const generateToken = (user, expiresIn = "10m") => {
 
 // Generate a random validation token of length 6 mix of digits and letters
 const generateValidationToken = () => {
-  return Math.random().toString(36).substr(2, 6).toUpperCase();
+  return crypto.randomBytes(3).toString("hex").toUpperCase();
 };
 
 // Hash password
@@ -30,9 +31,44 @@ const hashPassword = async (password) => {
   return bcrypt.hash(password, salt);
 };
 
+const getBaseUrl = (req) => {
+  const configuredBaseUrl =
+    process.env.APP_BASE_URL || process.env.PUBLIC_BASE_URL;
+
+  if (configuredBaseUrl) {
+    try {
+      return new URL(configuredBaseUrl).origin;
+    } catch (error) {
+      console.error("Invalid APP_BASE_URL/PUBLIC_BASE_URL:", error.message);
+      return null;
+    }
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return `${req.protocol}://${req.get("host")}`;
+  }
+
+  return null;
+};
+
+const buildAppLink = (req, path, token) => {
+  const baseUrl = getBaseUrl(req);
+
+  if (!baseUrl) {
+    return null;
+  }
+
+  const link = new URL(path, baseUrl);
+  link.searchParams.set("token", token);
+  return link.toString();
+};
+
 // User signup
 const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
+  const requestedRole = role === "Creator" ? "Creator" : "Participant";
+  const assignedRole =
+    process.env.ALLOW_CREATOR_SIGNUP === "true" ? requestedRole : "Participant";
 
   // Validation
   if (!username || !password || !email) {
@@ -63,24 +99,27 @@ const signup = async (req, res) => {
       }
       if (existingUser.emailVerified && username !== existingUser.username) {
         return res.status(200).json({ message: "Email already exists" });
-      } else {
-        const token = generateToken(existingUser, "10m");
-
-        const verificationLink = `${req.protocol}://${req.get(
-          "host"
-        )}/verify-email?token=${token}`; //`${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
-        await sendEmail(
-          existingUser.email,
-          "Quizzy Email Verification",
-          `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`
-        );
-        return res
-          .status(200)
-          .json({
-            message:
-              "Email already exists, please verify your email. A verification link has been sent to your email.",
-          });
       }
+
+      const token = generateToken(existingUser, "10m");
+      const verificationLink = buildAppLink(req, "/verify-email", token);
+
+      if (!verificationLink) {
+        return res.status(500).json({
+          message:
+            "Unable to generate verification link. Set APP_BASE_URL in environment variables.",
+        });
+      }
+
+      await sendEmail(
+        existingUser.email,
+        "Quizzy Email Verification",
+        `Click the link to verify your email: ${verificationLink}\n\nThis link is valid for 10 minutes.`
+      );
+      return res.status(200).json({
+        message:
+          "Email already exists, please verify your email. A verification link has been sent to your email.",
+      });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -90,15 +129,19 @@ const signup = async (req, res) => {
       username,
       password: hashedPassword,
       email,
-      role,
+      role: assignedRole,
       emailVerificationToken: validationToken,
     });
 
     const token = generateToken(newUser);
+    const verificationLink = buildAppLink(req, "/verify-email", token);
 
-    const verificationLink = `${req.protocol}://${req.get(
-      "host"
-    )}/verify-email?token=${token}`; //`usie 127:00.1:5500/frontend/verify-email?token=${token}`;//${req.protocol}://${req.get('host')}/auth/verify?token=${token}`;
+    if (!verificationLink) {
+      return res.status(500).json({
+        message:
+          "Unable to generate verification link. Set APP_BASE_URL in environment variables.",
+      });
+    }
 
     await sendEmail(
       newUser.email,
@@ -109,7 +152,6 @@ const signup = async (req, res) => {
     return res.status(201).json({
       message:
         "Please verify your email. A verification link has been sent to your email.",
-      token,
     });
   } catch (err) {
     console.error(err);
@@ -141,7 +183,7 @@ const verifyEmail = async (req, res) => {
       return res.status(403).json({ message: "Invalid validation token" });
     }
     user.emailVerified = true;
-    user.emailVerificationToken = null; // Clear the validation token
+    user.emailVerificationToken = null;
     await user.save();
 
     return res.status(200).json({ message: "Email successfully verified" });
@@ -165,12 +207,10 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "User not found" });
     }
     if (!user.emailVerified) {
-      return res
-        .status(401)
-        .json({
-          message:
-            "Email not verified, please register again to get a new verification link",
-        });
+      return res.status(401).json({
+        message:
+          "Email not verified, please register again to get a new verification link",
+      });
     }
     if (!user.active_status) {
       return res
@@ -218,9 +258,14 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     const token = generateToken(user, "10m");
-    const resetLink = `${req.protocol}://${req.get(
-      "host"
-    )}/codeVerification?token=${token}`;
+    const resetLink = buildAppLink(req, "/codeVerification", token);
+
+    if (!resetLink) {
+      return res.status(500).json({
+        message:
+          "Unable to generate reset link. Set APP_BASE_URL in environment variables.",
+      });
+    }
 
     await sendEmail(
       user.email,
@@ -262,12 +307,11 @@ const verifyOTP = async (req, res) => {
     if (user.emailVerificationToken !== OTP) {
       return res.status(401).json({ message: "Invalid OTP" });
     }
-    if (user.emailVerificationToken === OTP) {
-      user.emailVerificationToken = null; // Clear the OTP after successful reset
-      await user.save();
 
-      return res.status(200).json({ message: "OTP verified successfully" });
-    }
+    user.emailVerificationToken = null;
+    await user.save();
+
+    return res.status(200).json({ message: "OTP verified successfully" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -357,4 +401,5 @@ module.exports = {
   verifyEmail,
   verifyOTP,
   generateToken,
+  hashPassword,
 };

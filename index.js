@@ -4,26 +4,59 @@ const authRouter = require("./routers/auth");
 const userRouter = require("./routers/user");
 const quizRouter = require("./routers/quiz");
 const infoRouter = require("./routers/info");
-const schedule = require('node-schedule');
+const schedule = require("node-schedule");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const { verifyJWTAuthToken, restrictTo } = require('./middleware/auth');
-const cors = require('cors');
-const { getLeaderboard } = require("./controllers/quizAttempts");
+const { verifyJWTAuthToken } = require("./middleware/auth");
+const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const {
+  getLeaderboard,
+  deleteUnregisteredUsersQuizAttempts,
+} = require("./controllers/quizAttempts");
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({
-        origin: ["https://nextgen-quiz-app.vercel.app", "http://localhost:8000"],
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        credentials: true
-    }));
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  "https://nextgen-quiz-app.vercel.app,http://localhost:8000"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.set("trust proxy", 1);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 app.use(morgan("dev")); // Logging middleware
+app.use(apiLimiter);
 
 // Connect to MongoDB
 const connectWithRetry = async () => {
@@ -47,8 +80,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/authentication.js", (req, res) => {
-    res.sendFile(__dirname + '/frontend/authentication.js');
-})
+  res.sendFile(__dirname + "/frontend/authentication.js");
+});
 
 app.get("/signin", (req, res) => {
     res.sendFile(__dirname + '/frontend/signin.html');
@@ -172,11 +205,8 @@ app.get("/saved-drafts", (req, res) => {
 })
 
 app.get("/recommended-quizzes", (req, res) => {
-    res.sendFile(__dirname + '/frontend/recommendedquizzes.html');
-})
-
-
-
+  res.sendFile(__dirname + "/frontend/recommendedquizzes.html");
+});
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -186,8 +216,8 @@ app.use("/info", verifyJWTAuthToken, infoRouter);
 app.get("/leaderboard", verifyJWTAuthToken, getLeaderboard);
 
 // Delete unregistered users quiz attempts
-schedule.scheduleJob('0 0 * * *', () => {
-    deleteUnregisteredUsersQuizAttempts();
+schedule.scheduleJob("0 0 * * *", () => {
+  deleteUnregisteredUsersQuizAttempts();
 });
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
